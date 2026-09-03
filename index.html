@@ -23,11 +23,11 @@ a:hover{color:#0f2d72}
 </style>
 </helmet>
 
-<div style="width:100%;max-width:480px;margin:0 auto;position:relative;background:#000;height:100vh;overflow:hidden">
+<div style="width:100%;max-width:480px;margin:0 auto;position:relative;background:#000">
 
-  <div style="position:relative;width:100%;height:100%">
-    <img src="./assets/banner-hero.png" alt="Promoção DOT" style="width:100%;height:100%;object-fit:contain;display:block">
-    <div onClick="{{ openSheet }}" style="position:absolute;left:10%;right:10%;top:38%;height:9%;cursor:pointer;border-radius:6px"></div>
+  <div style="position:relative;width:100%;aspect-ratio:1152/2048">
+    <img src="./assets/banner-hero.png" alt="Promoção DOT" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block">
+    <div onClick="{{ openSheet }}" style="position:absolute;left:10%;right:10%;top:33%;height:8%;cursor:pointer;border-radius:6px"></div>
   </div>
 
   <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
