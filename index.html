@@ -33,21 +33,18 @@ body{margin:0;background:#000;font-family:'Inter Italic','Space Grotesk',sans-se
     <div onClick="{{ closeSheet }}" style="position:fixed;inset:0;background:rgba(4,20,47,.5)"></div>
     <div style="position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;max-height:85vh;background:#ffffff;border-top:2px solid #04142f;border-radius:18px 18px 0 0;display:flex;flex-direction:column;padding:10px 16px 16px;box-shadow:0 -6px 0 rgba(4,20,47,.1);overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain">
       <div onClick="{{ closeSheet }}" style="width:40px;height:4px;background:rgba(4,20,47,.25);border-radius:2px;margin:0 auto 12px;cursor:pointer"></div>
-      <div style="display:flex;align-items:center;justify-content:center">
+      <div style="display:flex;align-items:center;gap:10px">
+        <sc-if value="{{ showBackBtn }}" hint-placeholder-val="{{ false }}">
+          <div data-back-btn onClick="{{ backAction }}" style="flex:none;cursor:pointer;color:rgba(4,20,47,.4);font:500 22px 'Space Grotesk',sans-serif;line-height:1;padding:0 4px" style-hover="color:#04142f">←</div>
+        </sc-if>
         <div style="{{ sheetTitleStyle }}">{{ sheetTitle }}</div>
       </div>
-      <div style="margin-top:10px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">
-        <sc-if value="{{ showBackBtn }}" hint-placeholder-val="{{ false }}">
-          <div onClick="{{ backAction }}" style="width:32px;height:32px;border-radius:50%;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 150ms" style-hover="background:#f1f5f9"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04142f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
-        </sc-if>
-        <sc-if value="{{ showBackBtn }}" hint-placeholder-val="{{ false }}"></sc-if>
-        <div style="display:flex;gap:4px;align-items:center">
-          <div style="{{ dot1 }}"></div>
-          <div style="{{ dot2 }}"></div>
-          <div style="{{ dot3 }}"></div>
-        </div>
-        <div onClick="{{ goForward }}" data-next-btn style="width:32px;height:32px;border-radius:50%;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 150ms" style-hover="background:#f1f5f9"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04142f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
+      <div style="margin-top:8px;margin-bottom:14px;display:flex;gap:6px">
+        <div style="{{ sheetSeg1 }}"></div>
+        <div style="{{ sheetSeg2 }}"></div>
+        <div style="{{ sheetSeg3 }}"></div>
       </div>
+      <div data-next-btn onClick="{{ goForward }}" style="display:none"></div>
 
       <sc-if value="{{ notResgatado }}" hint-placeholder-val="{{ true }}">
         <div style="display:grid;overflow:hidden;margin:0 -16px">
@@ -245,9 +242,9 @@ class Component extends DCLogic {
       backAction: stage === 2 ? this.backToStage1 : this.backToStage2,
       showFinalizeBtn: hasReachedFinal,
       showFreebieCard: !hasReachedFinal,
-      dot1: `width:6px;height:6px;border-radius:50%;background:${stage >= 1 ? '#04142f' : '#e2e8f0'}`,
-      dot2: `width:6px;height:6px;border-radius:50%;background:${stage >= 2 ? '#04142f' : '#e2e8f0'}`,
-      dot3: `width:6px;height:6px;border-radius:50%;background:${stage >= 3 ? '#04142f' : '#e2e8f0'}`,
+      sheetSeg1: 'flex:1;height:5px;border-radius:3px;background:#1f9d55',
+      sheetSeg2: `flex:1;height:5px;border-radius:3px;background:${stage >= 2 ? '#1f9d55' : 'rgba(4,20,47,.12)'}`,
+      sheetSeg3: `flex:1;height:5px;border-radius:3px;background:${stage >= 3 ? '#1f9d55' : 'rgba(4,20,47,.12)'}`,
       flavorList1,
       flavorList2,
       freebieList,
