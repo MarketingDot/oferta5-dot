@@ -54,27 +54,27 @@ body{margin:0;background:#000;font-family:'Inter Italic','Space Grotesk',sans-se
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:10px;flex:1">
               <sc-for list="{{ flavorList1 }}" as="fl" hint-placeholder-count="4">
                 <sc-if value="{{ fl.selected }}" hint-placeholder-val="{{ false }}">
-                  <div onClick="{{ fl.onClick }}" style="position:relative;border-radius:12px;border:2px solid #fceb2e;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
-                    <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#fceb2e;border:2px solid #04142f;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #04142f;border-bottom:1.5px solid #04142f;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
-                    <div style="width:100%;height:160px;background:#f0f3fb;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
-                    <div style="font:700 12px 'Inter Italic','Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
+                  <div onClick="{{ fl.onClick }}" style="position:relative;border-radius:6px;border:1px solid #04142f;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+                    <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#04142f;border:2px solid #fff;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
+                    <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
+                    <div style="font:500 12px 'Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
                   </div>
                 </sc-if>
                 <sc-if value="{{ fl.unselected }}" hint-placeholder-val="{{ true }}">
-                  <div onClick="{{ fl.onClick }}" style="border-radius:12px;border:1px solid rgba(4,20,47,.15);background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer" style-hover="border-color:#fceb2e">
-                    <div style="width:100%;height:160px;background:#f0f3fb;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
-                    <div style="font:700 12px 'Inter Italic','Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
+                  <div onClick="{{ fl.onClick }}" style="border-radius:6px;border:1px solid #e2e8f0;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:border-color 150ms" style-hover="border-color:#04142f">
+                    <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
+                    <div style="font:500 12px 'Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
                   </div>
                 </sc-if>
               </sc-for>
             </div>
             <sc-if value="{{ showFinalizeBtn }}" hint-placeholder-val="{{ false }}">
-              <div onClick="{{ addToCart }}" style="margin-top:auto;background:#fceb2e;color:#04142f;text-align:center;padding:17px;border-radius:10px;font:700 16px 'Inter Italic','Space Grotesk',sans-serif;cursor:pointer" style-hover="background:#0d2040">FINALIZAR COMPRA <span style="font-size:20px;vertical-align:middle">→</span></div>
+              <div onClick="{{ addToCart }}" style="margin-top:auto;background:transparent;color:#04142f;text-align:center;padding:0 16px;height:44px;border-radius:6px;border:1px solid #04142f;font:500 14px 'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 150ms,color 150ms" style-hover="background:#04142f;color:#fff">FINALIZAR COMPRA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
             </sc-if>
             <sc-if value="{{ showFreebieCard }}" hint-placeholder-val="{{ true }}">
-              <div style="margin-top:auto;border:2px solid #04142f;border-radius:10px;background:#f0f3fb;padding:14px;display:flex;align-items:center;gap:12px">
-                <div style="flex:1;font:600 12px/1.4 'Inter Italic','Space Grotesk',sans-serif;color:#04142f">Você já desbloqueou: 3º Pouch, Mousepad, Apoio de Teclado e Frete Grátis</div>
-                <div style="width:60px;height:60px;flex:none;background:#dbe3f2;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img key="{{ freebieImgKey }}" src="{{ currentPrizeImg }}" alt="Prêmios DOT" style="width:100%;height:100%;object-fit:contain;animation:prizePop .6s cubic-bezier(.22,1,.36,1)"></div>
+              <div style="margin-top:auto;border:1px solid #e2e8f0;border-radius:6px;background:#fff;padding:14px;display:flex;align-items:center;gap:12px">
+                <div style="flex:1;font:500 12px/1.4 'Space Grotesk',sans-serif;color:#04142f">Você já desbloqueou: 3º Pouch, Mousepad, Apoio de Teclado e Frete Grátis</div>
+                <div style="width:60px;height:60px;flex:none;background:#f1f5f9;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img key="{{ freebieImgKey }}" src="{{ currentPrizeImg }}" alt="Prêmios DOT" style="width:100%;height:100%;object-fit:contain;animation:prizePop .6s cubic-bezier(.22,1,.36,1)"></div>
               </div>
             </sc-if>
           </div>
@@ -84,27 +84,27 @@ body{margin:0;background:#000;font-family:'Inter Italic','Space Grotesk',sans-se
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:10px;flex:1">
               <sc-for list="{{ flavorList2 }}" as="fl" hint-placeholder-count="4">
                 <sc-if value="{{ fl.selected }}" hint-placeholder-val="{{ false }}">
-                  <div onClick="{{ fl.onClick }}" style="position:relative;border-radius:12px;border:2px solid #fceb2e;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
-                    <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#fceb2e;border:2px solid #04142f;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #04142f;border-bottom:1.5px solid #04142f;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
-                    <div style="width:100%;height:160px;background:#f0f3fb;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
-                    <div style="font:700 12px 'Inter Italic','Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
+                  <div onClick="{{ fl.onClick }}" style="position:relative;border-radius:6px;border:1px solid #04142f;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+                    <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#04142f;border:2px solid #fff;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
+                    <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
+                    <div style="font:500 12px 'Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
                   </div>
                 </sc-if>
                 <sc-if value="{{ fl.unselected }}" hint-placeholder-val="{{ true }}">
-                  <div onClick="{{ fl.onClick }}" style="border-radius:12px;border:1px solid rgba(4,20,47,.15);background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer" style-hover="border-color:#fceb2e">
-                    <div style="width:100%;height:160px;background:#f0f3fb;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
-                    <div style="font:700 12px 'Inter Italic','Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
+                  <div onClick="{{ fl.onClick }}" style="border-radius:6px;border:1px solid #e2e8f0;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:border-color 150ms" style-hover="border-color:#04142f">
+                    <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
+                    <div style="font:500 12px 'Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
                   </div>
                 </sc-if>
               </sc-for>
             </div>
             <sc-if value="{{ showFinalizeBtn }}" hint-placeholder-val="{{ false }}">
-              <div onClick="{{ addToCart }}" style="margin-top:auto;background:#fceb2e;color:#04142f;text-align:center;padding:17px;border-radius:10px;font:700 16px 'Inter Italic','Space Grotesk',sans-serif;cursor:pointer" style-hover="background:#0d2040">FINALIZAR COMPRA <span style="font-size:20px;vertical-align:middle">→</span></div>
+              <div onClick="{{ addToCart }}" style="margin-top:auto;background:transparent;color:#04142f;text-align:center;padding:0 16px;height:44px;border-radius:6px;border:1px solid #04142f;font:500 14px 'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 150ms,color 150ms" style-hover="background:#04142f;color:#fff">FINALIZAR COMPRA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
             </sc-if>
             <sc-if value="{{ showFreebieCard }}" hint-placeholder-val="{{ true }}">
-              <div style="margin-top:auto;border:2px solid #04142f;border-radius:10px;background:#f0f3fb;padding:14px;display:flex;align-items:center;gap:12px">
-                <div style="flex:1;font:600 12px/1.4 'Inter Italic','Space Grotesk',sans-serif;color:#04142f">Você já desbloqueou: 3º Pouch, Mousepad, Apoio de Teclado e Frete Grátis</div>
-                <div style="width:60px;height:60px;flex:none;background:#dbe3f2;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img key="{{ freebieImgKey }}" src="{{ currentPrizeImg }}" alt="Prêmios DOT" style="width:100%;height:100%;object-fit:contain;animation:prizePop .6s cubic-bezier(.22,1,.36,1)"></div>
+              <div style="margin-top:auto;border:1px solid #e2e8f0;border-radius:6px;background:#fff;padding:14px;display:flex;align-items:center;gap:12px">
+                <div style="flex:1;font:500 12px/1.4 'Space Grotesk',sans-serif;color:#04142f">Você já desbloqueou: 3º Pouch, Mousepad, Apoio de Teclado e Frete Grátis</div>
+                <div style="width:60px;height:60px;flex:none;background:#f1f5f9;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img key="{{ freebieImgKey }}" src="{{ currentPrizeImg }}" alt="Prêmios DOT" style="width:100%;height:100%;object-fit:contain;animation:prizePop .6s cubic-bezier(.22,1,.36,1)"></div>
               </div>
             </sc-if>
           </div>
@@ -113,14 +113,14 @@ body{margin:0;background:#000;font-family:'Inter Italic','Space Grotesk',sans-se
           <div style="{{ stage3PanelStyle }}">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:10px">
               <sc-for list="{{ freebieList }}" as="fb" hint-placeholder-count="4">
-                <div style="position:relative;border-radius:12px;border:2px solid #fceb2e;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px">
-                  <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#fceb2e;border:2px solid #04142f;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #04142f;border-bottom:1.5px solid #04142f;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
-                  <div style="width:100%;height:160px;background:#f0f3fb;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fb.img }}" alt="{{ fb.label }}" style="{{ fb.imgStyle }}"></div>
-                  <div style="font:700 10.5px 'Inter Italic','Space Grotesk',sans-serif;color:#04142f;text-align:center;line-height:1.15">{{ fb.label }}</div>
+                <div style="position:relative;border-radius:6px;border:1px solid #e2e8f0;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px">
+                  <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#04142f;border:2px solid #fff;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
+                  <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fb.img }}" alt="{{ fb.label }}" style="{{ fb.imgStyle }}"></div>
+                  <div style="font:500 10.5px 'Space Grotesk',sans-serif;color:#04142f;text-align:center;line-height:1.15">{{ fb.label }}</div>
                 </div>
               </sc-for>
             </div>
-            <div onClick="{{ resgatar }}" style="margin-top:auto;background:#fceb2e;color:#04142f;text-align:center;padding:17px;border-radius:10px;font:700 16px 'Inter Italic','Space Grotesk',sans-serif;cursor:pointer" style-hover="background:#0d2040">FINALIZAR COMPRA <span style="font-size:20px;vertical-align:middle">→</span></div>
+            <div onClick="{{ resgatar }}" style="margin-top:auto;background:transparent;color:#04142f;text-align:center;padding:0 16px;height:44px;border-radius:6px;border:1px solid #04142f;font:500 14px 'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 150ms,color 150ms" style-hover="background:#04142f;color:#fff">FINALIZAR COMPRA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
           </div>
 
         </div>
