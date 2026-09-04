@@ -9,17 +9,30 @@
 <x-dc>
 <helmet data-dc-atomics>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 @font-face{font-family:'Inter Italic';src:url('./assets/Inter-Italic.ttf') format('truetype-variations');font-weight:100 900;font-style:italic}
-body{margin:0;background:#000;font-family:'Inter Italic','Space Grotesk',sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
-@keyframes prizePop{0%{opacity:0;transform:scale(.75) rotate(-6deg)}55%{opacity:1;transform:scale(1.08) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+
+.flavor-card{position:relative;overflow:hidden;border:1.5px solid #dce4ed;border-radius:13px;background:#fff;cursor:pointer;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s}
+.flavor-card.selected{border:2px solid #0b203e;box-shadow:0 3px 0 rgba(11,32,62,.12)}
+.flavor-photo{height:130px;margin:6px;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.flavor-photo img{width:100%;height:100%;object-fit:cover}
+.fl-mint{background:#a9e3f8}.fl-berry{background:#ffadc6}.fl-lime{background:#78d65b}.fl-citrus{background:#ffca66}
+.flavor-name{display:block;padding:2px 10px 11px;font-size:13px;font-weight:700;line-height:1.1;text-align:center;color:#0b203e}
+.flavor-badge{position:absolute;top:9px;right:9px;display:none;padding:4px 7px;border-radius:99px;background:#0b203e;color:#fff;font-size:10px;font-weight:800;letter-spacing:.02em}
+.flavor-card.selected .flavor-badge{display:block}
+
+.freebie-card{border:1.5px solid #dce4ed;border-radius:13px;background:#fff;display:flex;flex-direction:column;align-items:center;padding:8px}
+.freebie-photo{width:100%;height:108px;border-radius:8px;background:#f1f5f9;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.freebie-photo img{width:100%;height:100%;object-fit:contain}
+.freebie-label{font-size:11.5px;font-weight:700;color:#0b203e;text-align:center;padding:8px 4px 4px;line-height:1.2}
 </style>
 </helmet>
 
 <div style="width:100%;max-width:480px;margin:0 auto;position:relative;height:100vh;overflow:hidden;background:#000">
 
-  <!-- Hero image clicável -->
+  <!-- Hero -->
   <div onClick="{{ openSheet }}" style="position:relative;width:100%;height:100%;cursor:pointer">
     <img src="./assets/banner-hero.png" alt="Promoção DOT" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none">
   </div>
@@ -31,98 +44,96 @@ body{margin:0;background:#000;font-family:'Inter Italic','Space Grotesk',sans-se
 
   <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeSheet }}" style="position:fixed;inset:0;background:rgba(4,20,47,.5)"></div>
-    <div style="position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;max-height:85vh;background:#ffffff;border-top:2px solid #04142f;border-radius:18px 18px 0 0;display:flex;flex-direction:column;padding:10px 16px 16px;box-shadow:0 -6px 0 rgba(4,20,47,.1);overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain">
-      <div onClick="{{ closeSheet }}" style="width:40px;height:4px;background:rgba(4,20,47,.25);border-radius:2px;margin:0 auto 12px;cursor:pointer"></div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <sc-if value="{{ showBackBtn }}" hint-placeholder-val="{{ false }}">
-          <div data-back-btn onClick="{{ backAction }}" style="flex:none;cursor:pointer;color:rgba(4,20,47,.4);font:500 22px 'Space Grotesk',sans-serif;line-height:1;padding:0 4px" style-hover="color:#04142f">←</div>
-        </sc-if>
-        <div style="{{ sheetTitleStyle }}">{{ sheetTitle }}</div>
-      </div>
-      <div style="width:100%;height:6px;background:#e2e8f0;border-radius:9999px;overflow:hidden;margin-top:10px;margin-bottom:14px">
-        <div style="height:100%;background:#04142f;border-radius:9999px;width:{{ progressWidth }};transition:width 500ms cubic-bezier(.65,0,.35,1)"></div>
-      </div>
-      <div data-next-btn onClick="{{ goForward }}" style="display:none"></div>
+    <div style="position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;max-height:88vh;background:#fff;border-top:2px solid #0b203e;border-radius:18px 18px 0 0;display:flex;flex-direction:column;box-shadow:0 -6px 0 rgba(11,32,62,.1);overflow:hidden">
 
-      <sc-if value="{{ notResgatado }}" hint-placeholder-val="{{ true }}">
-        <div style="display:grid;overflow:hidden;margin:0 -16px">
+      <!-- Handle -->
+      <div onClick="{{ closeSheet }}" style="width:40px;height:4px;background:rgba(11,32,62,.22);border-radius:2px;margin:10px auto 0;cursor:pointer;flex-shrink:0"></div>
 
-          <!-- stage 1: escolher 1º sabor -->
-          <div style="{{ stage1PanelStyle }}">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:10px;flex:1">
-              <sc-for list="{{ flavorList1 }}" as="fl" hint-placeholder-count="4">
-                <sc-if value="{{ fl.selected }}" hint-placeholder-val="{{ false }}">
-                  <div onClick="{{ fl.onClick }}" style="position:relative;border-radius:6px;border:1px solid #04142f;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
-                    <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#04142f;border:2px solid #fff;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
-                    <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
-                    <div style="font:500 12px 'Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
-                  </div>
-                </sc-if>
-                <sc-if value="{{ fl.unselected }}" hint-placeholder-val="{{ true }}">
-                  <div onClick="{{ fl.onClick }}" style="border-radius:6px;border:1px solid #e2e8f0;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:border-color 150ms" style-hover="border-color:#04142f">
-                    <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
-                    <div style="font:500 12px 'Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
-                  </div>
-                </sc-if>
-              </sc-for>
+      <!-- Sliding panels -->
+      <div style="display:grid;flex:1;overflow:hidden">
+
+        <!-- Stage 1: 1º sabor -->
+        <div style="{{ stage1PanelStyle }}">
+          <div style="padding:12px 16px 0;flex-shrink:0">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="width:26px"></div>
+              <span style="color:#627086;font-size:12px;font-weight:800;letter-spacing:.04em">PASSO 1 DE 2</span>
             </div>
-            <sc-if value="{{ showFinalizeBtn }}" hint-placeholder-val="{{ false }}">
-              <div onClick="{{ addToCart }}" style="margin-top:auto;background:transparent;color:#04142f;text-align:center;padding:0 16px;height:44px;border-radius:6px;border:1px solid #04142f;font:500 14px 'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 150ms,color 150ms" style-hover="background:#04142f;color:#fff">FINALIZAR COMPRA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-            </sc-if>
-            <sc-if value="{{ showFreebieCard }}" hint-placeholder-val="{{ true }}">
-              <div style="margin-top:auto;border:1px solid #e2e8f0;border-radius:6px;background:#fff;padding:14px;display:flex;align-items:center;gap:12px">
-                <div style="flex:1;font:500 12px/1.4 'Space Grotesk',sans-serif;color:#04142f">Você já desbloqueou: 3º Pouch, Mousepad, Apoio de Teclado e Frete Grátis</div>
-                <div style="width:60px;height:60px;flex:none;background:#f1f5f9;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img key="{{ freebieImgKey }}" src="{{ currentPrizeImg }}" alt="Prêmios DOT" style="width:100%;height:100%;object-fit:contain;animation:prizePop .6s cubic-bezier(.22,1,.36,1)"></div>
+            <div style="height:6px;overflow:hidden;margin:14px 0 16px;border-radius:20px;background:#e3e8ee"><span style="display:block;width:50%;height:100%;border-radius:inherit;background:#0b203e"></span></div>
+            <h2 style="margin:0;font-size:24px;font-weight:700;line-height:1.12;letter-spacing:-.03em;color:#0b203e">Escolha seu 1º sabor</h2>
+            <p style="margin:7px 0 0;min-height:20px">&nbsp;</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px 0;flex:1;overflow-y:auto">
+            <sc-for list="{{ flavorList1 }}" as="fl" hint-placeholder-count="4">
+              <div onClick="{{ fl.onClick }}" class="{{ fl.cardClass }}">
+                <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
+                <span class="flavor-name">{{ fl.name }}</span>
+                <span class="flavor-badge">✓ Selecionado</span>
               </div>
-            </sc-if>
+            </sc-for>
           </div>
-
-          <!-- stage 2: escolher 2º sabor -->
-          <div style="{{ stage2PanelStyle }}">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:10px;flex:1">
-              <sc-for list="{{ flavorList2 }}" as="fl" hint-placeholder-count="4">
-                <sc-if value="{{ fl.selected }}" hint-placeholder-val="{{ false }}">
-                  <div onClick="{{ fl.onClick }}" style="position:relative;border-radius:6px;border:1px solid #04142f;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
-                    <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#04142f;border:2px solid #fff;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
-                    <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
-                    <div style="font:500 12px 'Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
-                  </div>
-                </sc-if>
-                <sc-if value="{{ fl.unselected }}" hint-placeholder-val="{{ true }}">
-                  <div onClick="{{ fl.onClick }}" style="border-radius:6px;border:1px solid #e2e8f0;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:border-color 150ms" style-hover="border-color:#04142f">
-                    <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fl.img }}" alt="{{ fl.name }}" style="width:100%;height:100%;object-fit:cover"></div>
-                    <div style="font:500 12px 'Space Grotesk',sans-serif;color:#04142f;text-align:center">{{ fl.name }}</div>
-                  </div>
-                </sc-if>
-              </sc-for>
-            </div>
-            <sc-if value="{{ showFinalizeBtn }}" hint-placeholder-val="{{ false }}">
-              <div onClick="{{ addToCart }}" style="margin-top:auto;background:transparent;color:#04142f;text-align:center;padding:0 16px;height:44px;border-radius:6px;border:1px solid #04142f;font:500 14px 'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 150ms,color 150ms" style-hover="background:#04142f;color:#fff">FINALIZAR COMPRA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-            </sc-if>
-            <sc-if value="{{ showFreebieCard }}" hint-placeholder-val="{{ true }}">
-              <div style="margin-top:auto;border:1px solid #e2e8f0;border-radius:6px;background:#fff;padding:14px;display:flex;align-items:center;gap:12px">
-                <div style="flex:1;font:500 12px/1.4 'Space Grotesk',sans-serif;color:#04142f">Você já desbloqueou: 3º Pouch, Mousepad, Apoio de Teclado e Frete Grátis</div>
-                <div style="width:60px;height:60px;flex:none;background:#f1f5f9;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img key="{{ freebieImgKey }}" src="{{ currentPrizeImg }}" alt="Prêmios DOT" style="width:100%;height:100%;object-fit:contain;animation:prizePop .6s cubic-bezier(.22,1,.36,1)"></div>
-              </div>
-            </sc-if>
-          </div>
-
-          <!-- stage 3: brindes -->
-          <div style="{{ stage3PanelStyle }}">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:10px">
-              <sc-for list="{{ freebieList }}" as="fb" hint-placeholder-count="4">
-                <div style="position:relative;border-radius:6px;border:1px solid #e2e8f0;background:#fff;padding:6px;display:flex;flex-direction:column;align-items:center;gap:5px">
-                  <div style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#04142f;border:2px solid #fff;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translate(0.5px,-0.5px)"></div></div>
-                  <div style="width:100%;height:160px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="{{ fb.img }}" alt="{{ fb.label }}" style="{{ fb.imgStyle }}"></div>
-                  <div style="font:500 10.5px 'Space Grotesk',sans-serif;color:#04142f;text-align:center;line-height:1.15">{{ fb.label }}</div>
-                </div>
-              </sc-for>
-            </div>
-            <div onClick="{{ resgatar }}" style="margin-top:auto;background:transparent;color:#04142f;text-align:center;padding:0 16px;height:44px;border-radius:6px;border:1px solid #04142f;font:500 14px 'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 150ms,color 150ms" style-hover="background:#04142f;color:#fff">FINALIZAR COMPRA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-          </div>
-
+          <div style="height:20px;flex-shrink:0"></div>
         </div>
-      </sc-if>
+
+        <!-- Stage 2: 2º sabor -->
+        <div style="{{ stage2PanelStyle }}">
+          <div style="padding:12px 16px 0;flex-shrink:0">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <button onClick="{{ backToStage1 }}" style="border:0;padding:0;background:none;color:rgba(11,32,62,.4);font-size:26px;line-height:1;cursor:pointer">←</button>
+              <span style="color:#627086;font-size:12px;font-weight:800;letter-spacing:.04em">PASSO 2 DE 2</span>
+            </div>
+            <div style="height:6px;overflow:hidden;margin:14px 0 16px;border-radius:20px;background:#e3e8ee"><span style="display:block;width:100%;height:100%;border-radius:inherit;background:#0b203e"></span></div>
+            <h2 style="margin:0;font-size:24px;font-weight:700;line-height:1.12;letter-spacing:-.03em;color:#0b203e">Escolha seu 2º sabor</h2>
+            <p style="margin:7px 0 0;color:#627086;font-size:14px">1º sabor escolhido: <strong style="color:#0b203e">{{ pick1Label }}</strong></p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px 0;flex:1;overflow-y:auto">
+            <sc-for list="{{ flavorList2 }}" as="fl" hint-placeholder-count="4">
+              <div onClick="{{ fl.onClick }}" class="{{ fl.cardClass }}">
+                <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
+                <span class="flavor-name">{{ fl.name }}</span>
+                <span class="flavor-badge">✓ Selecionado</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="padding:14px 16px 20px;border-top:1px solid #edf1f5;background:#fcfdff;flex-shrink:0">
+            <sc-if value="{{ hasTempPick2 }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;color:#627086;font-size:13px">
+                <span style="display:grid;width:20px;height:20px;place-items:center;border-radius:50%;background:#dceecf;color:#396d24;font-size:11px;flex-shrink:0">✓</span>
+                <span>Seu combo: <b style="color:#0b203e">{{ comboLabel }}</b></span>
+              </div>
+            </sc-if>
+            <button onClick="{{ confirmPick2 }}" style="width:100%;min-height:52px;border:0;border-radius:10px;background:#0b203e;color:#fff;font-size:14px;font-weight:800;letter-spacing:.02em;cursor:pointer;font-family:inherit">CONFIRMAR SABORES →</button>
+          </div>
+        </div>
+
+        <!-- Stage 3: Brindes -->
+        <div style="{{ stage3PanelStyle }}">
+          <div style="padding:12px 16px 0;flex-shrink:0">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <button onClick="{{ backToStage2 }}" style="border:0;padding:0;background:none;color:rgba(11,32,62,.4);font-size:26px;line-height:1;cursor:pointer">←</button>
+              <span style="width:26px"></span>
+            </div>
+            <h2 style="margin:14px 0 0;font-size:24px;font-weight:700;line-height:1.12;letter-spacing:-.03em;color:#0b203e">Você ganhou os brindes!</h2>
+            <p style="margin:7px 0 0;color:#627086;font-size:14px">Combo: <strong style="color:#0b203e">{{ comboLabel }}</strong></p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 0;flex:1;overflow-y:auto">
+            <sc-for list="{{ freebieList }}" as="fb" hint-placeholder-count="4">
+              <div class="freebie-card">
+                <div class="freebie-photo"><img src="{{ fb.img }}" alt="{{ fb.label }}" style="{{ fb.imgStyle }}"></div>
+                <span class="freebie-label">{{ fb.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="padding:14px 16px 20px;border-top:1px solid #edf1f5;background:#fcfdff;flex-shrink:0">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;color:#627086;font-size:13px">
+              <span style="display:grid;width:20px;height:20px;place-items:center;border-radius:50%;background:#dceecf;color:#396d24;font-size:11px;flex-shrink:0">✓</span>
+              <span>Seu combo: <b style="color:#0b203e">{{ comboLabel }}</b></span>
+            </div>
+            <button onClick="{{ resgatar }}" style="width:100%;min-height:52px;border:0;border-radius:10px;background:#0b203e;color:#fff;font-size:14px;font-weight:800;letter-spacing:.02em;cursor:pointer;font-family:inherit">RESGATAR AGORA →</button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </sc-if>
 
@@ -131,10 +142,10 @@ body{margin:0;background:#000;font-family:'Inter Italic','Space Grotesk',sans-se
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 const FLAVORS = [
-  { name: 'Menta', img: './assets/sabor-menta.jpg' },
-  { name: 'Frutas Vermelhas', img: './assets/sabor-frutas-vermelhas.jpg' },
-  { name: 'Melancia com Limão', img: './assets/sabor-melancia-novo.png' },
-  { name: 'Citrus', img: './assets/sabor-citrus.jpg' },
+  { name: 'Menta',              img: './assets/sabor-menta.jpg',            color: 'fl-mint'   },
+  { name: 'Frutas Vermelhas',   img: './assets/sabor-frutas-vermelhas.jpg', color: 'fl-berry'  },
+  { name: 'Melancia com Limão', img: './assets/sabor-melancia-novo.png',    color: 'fl-lime'   },
+  { name: 'Citrus',             img: './assets/sabor-citrus.jpg',           color: 'fl-citrus' },
 ];
 
 class Component extends DCLogic {
@@ -142,19 +153,8 @@ class Component extends DCLogic {
     sheetOpen: false,
     pick1: null,
     pick2: null,
-    hasReachedFinal: false,
-    resgatado: false,
-    carouselTick: 0,
-    car1Idx: 0,
-    car2Idx: 0,
+    tempPick2: null,
   };
-
-  componentDidMount() {
-    this._prizeInterval = setInterval(() => this.setState(s => ({ carouselTick: s.carouselTick + 1 })), 2600);
-  }
-  componentWillUnmount() {
-    clearInterval(this._prizeInterval);
-  }
 
   openSheet = () => {
     this._bodyScrollY = window.scrollY;
@@ -166,117 +166,67 @@ class Component extends DCLogic {
     window.scrollTo(0, this._bodyScrollY || 0);
     this.setState({ sheetOpen: false });
   };
-  backToStage1 = () => this.setState(s => ({ lastPick1: s.pick1, pick1: null }));
-  backToStage2 = () => this.setState(s => ({ lastPick2: s.pick2, pick2: null }));
-  goForward = () => {
-    const { pick1, pick2, hasReachedFinal, lastPick1, lastPick2 } = this.state;
-    const stage = pick1 == null ? 1 : pick2 == null ? 2 : 3;
-    if (stage === 1 && lastPick1) { this.setState({ pick1: lastPick1 }); return; }
-    if (stage === 2 && lastPick2) { this.setState({ pick2: lastPick2, hasReachedFinal: true }); return; }
-    if (stage === 2 && hasReachedFinal) { this.resgatar(); return; }
-    if (stage === 3) { this.resgatar(); }
+  backToStage1 = () => this.setState({ pick1: null, pick2: null, tempPick2: null });
+  backToStage2  = () => this.setState({ pick2: null });
+  confirmPick2  = () => {
+    const { tempPick2 } = this.state;
+    if (tempPick2) this.setState({ pick2: tempPick2 });
   };
   resgatar = () => {
     document.body.style.cssText = '';
     try { window.top.location.href = 'https://minhadot.com'; } catch(e) { window.location.href = 'https://minhadot.com'; }
   };
-  addToCart = () => {
-    document.body.style.cssText = '';
-    try { window.top.location.href = 'https://minhadot.com'; } catch(e) { window.location.href = 'https://minhadot.com'; }
-  };
 
   renderVals() {
-    const { sheetOpen, pick1, pick2, hasReachedFinal, resgatado, carouselTick } = this.state;
+    const { sheetOpen, pick1, pick2, tempPick2 } = this.state;
     const stage = pick1 == null ? 1 : pick2 == null ? 2 : 3;
-    const p = (n) => `grid-area:1/1;min-width:0;box-sizing:border-box;padding:0 16px;display:flex;flex-direction:column;gap:12px;transform:translateX(${(n-stage)*100}%);transition:transform .38s cubic-bezier(.25,.46,.45,.94)${stage!==n?';pointer-events:none':''}`;
+    const p = (n) => `grid-area:1/1;min-width:0;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;transform:translateX(${(n - stage) * 100}%);transition:transform .38s cubic-bezier(.25,.46,.45,.94)${stage !== n ? ';pointer-events:none' : ''}`;
 
-    const effectivePick1 = pick1 || this.state.lastPick1 || null;
-    const effectivePick2 = pick2 || this.state.lastPick2 || null;
     const flavorList1 = FLAVORS.map(f => ({
       name: f.name, img: f.img,
-      selected: effectivePick1 === f.name, unselected: effectivePick1 !== f.name,
+      cardClass: `flavor-card${pick1 === f.name ? ' selected' : ''}`,
+      photoClass: `flavor-photo ${f.color}`,
       onClick: () => this.setState({ pick1: f.name }),
     }));
+
     const flavorList2 = FLAVORS.map(f => ({
       name: f.name, img: f.img,
-      selected: effectivePick2 === f.name, unselected: effectivePick2 !== f.name,
-      onClick: () => this.setState({ pick2: f.name, hasReachedFinal: true }),
+      cardClass: `flavor-card${tempPick2 === f.name ? ' selected' : ''}`,
+      photoClass: `flavor-photo ${f.color}`,
+      onClick: () => this.setState({ tempPick2: f.name }),
     }));
 
     const FREEBIE_DEFS = [
       { label: 'Pouch Melancia c/ Limão', img: './assets/pouch-melancia.png', imgStyle: 'width:100%;height:100%;object-fit:contain' },
-      { label: 'Mousepad DOT', img: './assets/mousepad-dot.png', imgStyle: 'width:100%;height:100%;object-fit:contain' },
-      { label: 'Apoio de Teclado', img: './assets/apoio-teclado.png', imgStyle: 'width:100%;height:100%;object-fit:contain' },
-      { label: 'Frete Grátis', img: './assets/frete-gratis.png', imgStyle: 'width:150%;height:150%;object-fit:contain;transform:rotate(345deg)' },
+      { label: 'Mousepad DOT',            img: './assets/mousepad-dot.png',   imgStyle: 'width:100%;height:100%;object-fit:contain' },
+      { label: 'Apoio de Teclado',        img: './assets/apoio-teclado.png',  imgStyle: 'width:100%;height:100%;object-fit:contain' },
+      { label: 'Frete Grátis',            img: './assets/frete-gratis.png',   imgStyle: 'width:150%;height:150%;object-fit:contain;transform:rotate(345deg)' },
     ];
     const freebieList = FREEBIE_DEFS.map(d => ({ label: d.label, img: d.img, imgStyle: d.imgStyle }));
-    const currentPrizeImg = FREEBIE_DEFS[carouselTick % FREEBIE_DEFS.length].img;
 
-    const { car1Idx, car2Idx } = this.state;
+    const pick2eff = pick2 || tempPick2 || null;
+    const comboLabel = pick1 && pick2eff ? `${pick1} + ${pick2eff}` : (pick1 || '');
 
     return {
       sheetOpen,
-      currentPrizeImg,
-      car1Offset: `${car1Idx * 100}%`,
-      car1Prev: () => this.setState(s => ({ car1Idx: Math.max(0, s.car1Idx - 1) })),
-      car1Next: () => this.setState(s => ({ car1Idx: Math.min(FLAVORS.length - 1, s.car1Idx + 1) })),
-      car2Offset: `${car2Idx * 100}%`,
-      car2Prev: () => this.setState(s => ({ car2Idx: Math.max(0, s.car2Idx - 1) })),
-      car2Next: () => this.setState(s => ({ car2Idx: Math.min(FLAVORS.length - 1, s.car2Idx + 1) })),
-      freebieImgKey: carouselTick,
       openSheet: this.openSheet,
       closeSheet: this.closeSheet,
+      backToStage1: this.backToStage1,
+      backToStage2: this.backToStage2,
+      confirmPick2: this.confirmPick2,
       resgatar: this.resgatar,
-      addToCart: this.addToCart,
-      goForward: this.goForward,
-      resgatado,
-      notResgatado: !resgatado,
+      pick1Label: pick1 || '',
+      comboLabel,
+      hasTempPick2: !!tempPick2,
       stage1PanelStyle: p(1),
       stage2PanelStyle: p(2),
       stage3PanelStyle: p(3),
-      sheetTitle: resgatado ? 'Seu combo está pronto!' : stage === 1 ? 'Escolha seu 1º sabor' : stage === 2 ? 'Escolha seu 2º sabor' : 'Você ganhou os brindes!',
-      sheetTitleStyle: `font:700 22px 'Space Grotesk',sans-serif;color:#04142f;line-height:1.2;flex:1${stage === 1 || resgatado ? ';text-align:center' : ''}`,
-      showBackBtn: stage > 1 && !resgatado,
-      backAction: stage === 2 ? this.backToStage1 : this.backToStage2,
-      showFinalizeBtn: hasReachedFinal,
-      showFreebieCard: !hasReachedFinal,
-      progressWidth: stage === 1 ? '33%' : stage === 2 ? '66%' : '100%',
       flavorList1,
       flavorList2,
       freebieList,
     };
   }
 }
-</script>
-<script>
-(function() {
-  var startX = 0, startY = 0, swiping = false;
-  document.addEventListener('touchstart', function(e) {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    swiping = false;
-  }, { passive: true });
-  document.addEventListener('touchmove', function(e) {
-    if (!document.querySelector('[data-next-btn]')) return;
-    var dx = Math.abs(e.touches[0].clientX - startX);
-    var dy = Math.abs(e.touches[0].clientY - startY);
-    if (dx > dy && dx > 8) { swiping = true; e.preventDefault(); }
-  }, { passive: false });
-  document.addEventListener('touchend', function(e) {
-    if (!swiping) return;
-    var dx = e.changedTouches[0].clientX - startX;
-    var dy = e.changedTouches[0].clientY - startY;
-    if (Math.abs(dy) >= Math.abs(dx) * 0.75 || Math.abs(dx) < 60) return;
-    e.preventDefault();
-    if (dx > 0) {
-      var btn = document.querySelector('[data-back-btn]');
-      if (btn) btn.click();
-    } else {
-      var btn = document.querySelector('[data-next-btn]');
-      if (btn) btn.click();
-    }
-  }, { passive: false });
-})();
 </script>
 </body>
 </html>
