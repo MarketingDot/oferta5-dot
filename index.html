@@ -14,36 +14,62 @@
 @font-face{font-family:'Inter Italic';src:url('./assets/Inter-Italic.ttf') format('truetype-variations');font-weight:100 900;font-style:italic}
 body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 
-.purchase-backdrop{position:fixed;inset:0;background:rgba(4,17,38,.64);backdrop-filter:blur(4px)}
-.purchase-sheet{position:fixed;right:0;bottom:0;left:0;max-width:430px;height:min(82vh,700px);margin:0 auto;overflow:hidden;border-radius:30px 30px 0 0;background:#f7f6f1;box-shadow:0 -18px 60px rgba(4,17,38,.32);display:flex;flex-direction:column}
-.stage-panel{position:relative;padding-bottom:104px}
-.catalog-topbar{height:56px;padding:8px 14px 0;display:grid;grid-template-columns:42px 1fr 42px;align-items:center;flex-shrink:0}
+/* Full-screen shop: ivory catalog, navy checkout, lime interaction. */
+.purchase-sheet{position:fixed;inset:0;z-index:20;width:100%;max-width:480px;height:100dvh;margin:0 auto;overflow:hidden;background:#f7f6f1;box-shadow:0 0 50px rgba(4,17,38,.2)}
+.shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;scroll-behavior:smooth;background:#081a35}
+.catalog-screen{position:relative;height:100dvh;min-height:560px;overflow:hidden;scroll-snap-align:start;background:#f7f6f1;display:flex;flex-direction:column}
+.catalog-topbar{height:61px;padding:6px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
 .catalog-title{text-align:center;color:#0b203e;font-size:14px;font-weight:800;letter-spacing:-.01em}
-.icon-button{width:38px;height:38px;border:0;border-radius:50%;background:#fff;box-shadow:0 4px 14px rgba(11,32,62,.07);color:#0b203e;font-family:inherit;font-size:20px;font-weight:600;cursor:pointer;display:grid;place-items:center}
-.icon-button.close{font-size:24px;font-weight:400}
-.catalog-intro{padding:9px 18px 11px}
-.catalog-intro h2{margin:0;color:#0b203e;font-size:25px;font-weight:800;line-height:1.08;letter-spacing:-.04em}
-.catalog-intro p{margin:7px 0 0;color:#6f7886;font-size:13px;line-height:1.35}
-.flavor-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:4px 16px 22px;overflow-y:auto}
-.flavor-card{position:relative;min-height:156px;overflow:hidden;border:2px solid transparent;border-radius:20px;background:#fff;box-shadow:0 5px 18px rgba(11,32,62,.055);cursor:pointer;display:flex;flex-direction:column;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.icon-button{width:42px;height:42px;border:0;border-radius:50%;background:#fff;box-shadow:0 4px 16px rgba(11,32,62,.08);color:#0b203e;font-family:inherit;font-size:20px;font-weight:600;cursor:pointer;display:grid;place-items:center}
+.icon-button.close{font-size:25px;font-weight:400}
+.catalog-intro{padding:12px 18px 13px;flex-shrink:0}
+.catalog-intro h2{margin:0;color:#0b203e;font-size:28px;font-weight:800;line-height:1.05;letter-spacing:-.045em;text-wrap:pretty}
+.catalog-intro p{margin:8px 0 0;color:#707987;font-size:13px;line-height:1.35}
+.flavor-grid{min-height:0;flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;padding:3px 14px 108px}
+.flavor-card{position:relative;min-height:0;overflow:hidden;border:2px solid transparent;border-radius:20px;background:#fff;box-shadow:0 5px 18px rgba(11,32,62,.05);cursor:pointer;display:flex;flex-direction:column;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
 .flavor-card:active{transform:scale(.98)}
-.flavor-card.selected{border-color:#0b203e;box-shadow:0 0 0 3px #b9ef40,0 9px 22px rgba(11,32,62,.13);transform:translateY(-2px)}
-.flavor-photo{height:112px;margin:8px 8px 0;border-radius:14px;overflow:hidden;display:flex;flex-shrink:0;align-items:center;justify-content:center}
+.flavor-card.selected{border-color:#0b203e;box-shadow:0 0 0 3px #b9ef40,0 8px 20px rgba(11,32,62,.12)}
+.flavor-photo{min-height:0;margin:8px 8px 0;border-radius:14px;overflow:hidden;display:flex;flex:1;align-items:center;justify-content:center}
 .flavor-photo img{width:100%;height:100%;object-fit:contain}
 .fl-mint{background:#d9f3fc}.fl-berry{background:#ffe0e9}.fl-lime{background:#dff5d6}.fl-citrus{background:#ffedc9}
-.flavor-name{display:grid;min-height:35px;place-items:center;padding:4px 9px 8px;color:#0b203e;font-size:12px;font-weight:700;line-height:1.1;text-align:center}
-.flavor-badge{position:absolute;top:13px;right:13px;width:25px;height:25px;border-radius:50%;background:#b9ef40;box-shadow:0 3px 10px rgba(11,32,62,.18);color:#0b203e;font-size:14px;font-weight:900;display:none;place-items:center}
+.flavor-name{display:grid;min-height:38px;place-items:center;padding:4px 9px 7px;color:#0b203e;font-size:12px;font-weight:750;line-height:1.1;text-align:center}
+.flavor-badge{position:absolute;top:13px;right:13px;min-width:25px;height:25px;padding:0 5px;border-radius:99px;background:#b9ef40;box-shadow:0 3px 10px rgba(11,32,62,.16);color:#0b203e;font-size:11px;font-weight:900;display:none;place-items:center;box-sizing:border-box}
 .flavor-card.selected .flavor-badge{display:grid}
-.combo-dock{position:absolute;right:12px;bottom:12px;left:12px;z-index:5;min-height:72px;padding:10px 11px 10px 13px;border-radius:22px;background:#0b203e;box-shadow:0 12px 30px rgba(4,17,38,.28);display:flex;align-items:center;gap:10px}
-.dock-thumb{width:46px;height:46px;flex-shrink:0;border-radius:14px;background:#fff;object-fit:cover}
-.dock-copy{min-width:0;flex:1;color:#fff}
-.dock-copy small{display:block;margin-bottom:2px;color:#aeb8c7;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.dock-copy b{display:block;overflow:hidden;color:#fff;font-size:13px;font-weight:700;line-height:1.18;text-overflow:ellipsis;white-space:nowrap}
-.combo-count{width:45px;height:45px;flex-shrink:0;border-radius:50%;background:#b9ef40;color:#0b203e;font-size:13px;font-weight:900;display:grid;place-items:center}
-.combo-dock.ready .combo-count{display:none}
-.checkout-button{min-height:47px;padding:0 15px;border:0;border-radius:15px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:11px;font-weight:900;letter-spacing:.02em;cursor:pointer;white-space:nowrap}
-.checkout-button span{margin-left:5px;font-size:16px;vertical-align:-1px}
-@media (max-height:700px){.purchase-sheet{height:86vh}.catalog-topbar{height:49px}.catalog-intro{padding-top:4px;padding-bottom:8px}.catalog-intro h2{font-size:22px}.flavor-card{min-height:139px}.flavor-photo{height:96px}}
+.combo-dock{position:absolute;right:0;bottom:0;left:0;z-index:5;height:91px;padding:13px 18px;border-radius:28px 28px 0 0;background:#07172e;color:#fff;display:flex;align-items:center;gap:10px;box-sizing:border-box;cursor:default}
+.combo-dock.ready{cursor:pointer}
+.dock-title{margin-right:3px;font-size:19px;font-weight:800;letter-spacing:-.03em}
+.dock-thumbs{min-width:0;flex:1;display:flex;align-items:center;gap:7px}
+.dock-thumb{width:42px;height:42px;flex-shrink:0;border:3px solid #fff;border-radius:50%;background:#fff;object-fit:cover;box-sizing:border-box}
+.dock-empty{width:38px;height:38px;border:1px dashed rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:12px}
+.combo-count{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#b9ef40;color:#0b203e;font-size:14px;font-weight:900;display:grid;place-items:center}
+.dock-hint{position:absolute;right:79px;bottom:9px;color:#aeb8c7;font-size:9px;font-weight:700;letter-spacing:.03em}
+.detail-screen{position:absolute;inset:0;z-index:10;background:#fff;display:flex;flex-direction:column;animation:detailIn .3s cubic-bezier(.22,.8,.22,1)}
+@keyframes detailIn{from{opacity:.4;transform:translateX(12%)}to{opacity:1;transform:translateX(0)}}
+.detail-topbar{height:65px;padding:8px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
+.detail-visual{min-height:0;flex:1;margin:3px 18px 0;border-radius:28px;overflow:hidden;display:grid;place-items:center}
+.detail-visual img{width:100%;height:100%;object-fit:contain}
+.detail-info{padding:24px 22px 104px;background:#fff}
+.detail-kicker{display:block;margin-bottom:8px;color:#718096;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.detail-info h2{margin:0;color:#0b203e;font-size:32px;font-weight:800;line-height:1;letter-spacing:-.045em;text-wrap:pretty}
+.detail-info p{margin:12px 0 0;color:#707987;font-size:14px;line-height:1.45}
+.detail-action-wrap{position:absolute;right:0;bottom:0;left:0;padding:14px 18px 20px;background:linear-gradient(to top,#fff 78%,rgba(255,255,255,0))}
+.detail-action{width:100%;min-height:56px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
+.checkout-screen{position:relative;height:100dvh;min-height:620px;padding:22px 22px 24px;scroll-snap-align:start;background:#07172e;color:#fff;box-sizing:border-box;display:flex;flex-direction:column}
+.checkout-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.checkout-head h2{margin:0;font-size:30px;font-weight:800;letter-spacing:-.045em}
+.checkout-back{border:0;background:none;color:#b9ef40;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.checkout-list{display:grid;gap:16px}
+.checkout-item{display:grid;grid-template-columns:54px 1fr 34px;gap:12px;align-items:center}
+.checkout-item img{width:54px;height:54px;border:3px solid #fff;border-radius:50%;background:#fff;object-fit:cover;box-sizing:border-box}
+.checkout-item small{display:block;color:#8fa0b6;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.checkout-item b{display:block;margin-top:3px;color:#fff;font-size:14px;line-height:1.2}
+.remove-item{width:32px;height:32px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(255,255,255,.05);color:#fff;font-size:17px;cursor:pointer}
+.checkout-summary{margin-top:auto;padding-top:26px;border-top:1px solid rgba(255,255,255,.12)}
+.summary-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px}
+.summary-row span{color:#aeb8c7;font-size:13px}
+.summary-row strong{font-size:27px;line-height:1;letter-spacing:-.04em}
+.checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
+@media (max-height:680px){.catalog-topbar{height:52px}.catalog-intro{padding-top:5px;padding-bottom:9px}.catalog-intro h2{font-size:24px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.detail-info h2{font-size:27px}}
 
 </style>
 </helmet>
@@ -61,68 +87,84 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
   </div>
 
   <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
-    <div onClick="{{ closeSheet }}" class="purchase-backdrop"></div>
     <div class="purchase-sheet">
-      <!-- Sliding panels -->
-      <div style="display:grid;flex:1;overflow:hidden;position:relative">
-
-        <!-- Stage 1: 1º sabor -->
-        <div class="stage-panel" style="{{ stage1PanelStyle }}">
+      <div class="shop-flow">
+        <!-- Full-screen catalog -->
+        <section class="catalog-screen">
           <div class="catalog-topbar">
-            <span></span>
-            <span class="catalog-title">Sabores DOT</span>
+            <button onClick="{{ closeSheet }}" class="icon-button" aria-label="Voltar">←</button>
+            <span class="catalog-title">Monte seu combo</span>
             <button onClick="{{ closeSheet }}" class="icon-button close" aria-label="Fechar">×</button>
           </div>
           <div class="catalog-intro">
-            <h2>Monte seu combo</h2>
-            <p>Escolha o primeiro sabor para começar.</p>
+            <h2>{{ catalogHeading }}</h2>
+            <p>{{ catalogSubheading }}</p>
           </div>
           <div class="flavor-grid">
-            <sc-for list="{{ flavorList1 }}" as="fl" hint-placeholder-count="4">
+            <sc-for list="{{ flavorList }}" as="fl" hint-placeholder-count="4">
               <div onClick="{{ fl.onClick }}" class="{{ fl.cardClass }}">
                 <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
                 <span class="flavor-name">{{ fl.name }}</span>
-                <span class="flavor-badge">✓</span>
+                <span class="flavor-badge">{{ fl.badgeText }}</span>
               </div>
             </sc-for>
           </div>
-        </div>
+          <div onClick="{{ openCheckout }}" class="{{ dockClass }}">
+            <span class="dock-title">Combo</span>
+            <div class="dock-thumbs">
+              <sc-for list="{{ cartItems }}" as="item" hint-placeholder-count="2">
+                <img class="dock-thumb" src="{{ item.img }}" alt="{{ item.name }}">
+              </sc-for>
+              <sc-if value="{{ showFirstEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
+              <sc-if value="{{ showSecondEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
+            </div>
+            <span class="combo-count">{{ selectedCount }}</span>
+            <span class="dock-hint">{{ dockHint }}</span>
+          </div>
+        </section>
 
-        <!-- Stage 2: 2º sabor -->
-        <div class="stage-panel" style="{{ stage2PanelStyle }}">
-          <div class="catalog-topbar">
-            <button onClick="{{ backToStage1 }}" class="icon-button" aria-label="Voltar">←</button>
-            <span class="catalog-title">Sabores DOT</span>
-            <button onClick="{{ closeSheet }}" class="icon-button close" aria-label="Fechar">×</button>
-          </div>
-          <div class="catalog-intro">
-            <h2>Complete seu combo</h2>
-            <p>Agora escolha o segundo sabor.</p>
-          </div>
-          <div class="flavor-grid">
-            <sc-for list="{{ flavorList2 }}" as="fl" hint-placeholder-count="4">
-              <div onClick="{{ fl.onClick }}" class="{{ fl.cardClass }}">
-                <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
-                <span class="flavor-name">{{ fl.name }}</span>
-                <span class="flavor-badge">✓</span>
-              </div>
-            </sc-for>
-          </div>
-        </div>
+        <!-- Checkout revealed by vertical scroll -->
+        <sc-if value="{{ comboComplete }}" hint-placeholder-val="{{ true }}">
+          <section class="checkout-screen">
+            <div class="checkout-head">
+              <h2>Seu combo</h2>
+              <button onClick="{{ backToCatalog }}" class="checkout-back">↑ SABORES</button>
+            </div>
+            <div class="checkout-list">
+              <sc-for list="{{ checkoutItems }}" as="item" hint-placeholder-count="2">
+                <div class="checkout-item">
+                  <img src="{{ item.img }}" alt="{{ item.name }}">
+                  <span><small>1 × sabor</small><b>{{ item.name }}</b></span>
+                  <button onClick="{{ item.onRemove }}" class="remove-item" aria-label="Remover {{ item.name }}">×</button>
+                </div>
+              </sc-for>
+            </div>
+            <div class="checkout-summary">
+              <div class="summary-row"><span>Combo escolhido</span><strong>2 sabores</strong></div>
+              <button onClick="{{ finalizarCompra }}" class="checkout-button">FINALIZAR COMPRA →</button>
+            </div>
+          </section>
+        </sc-if>
 
-        <div class="{{ dockClass }}">
-          <sc-if value="{{ hasPick1 }}" hint-placeholder-val="{{ true }}">
-            <img class="dock-thumb" src="{{ pick1Img }}" alt="{{ pick1Label }}">
-          </sc-if>
-          <div class="dock-copy">
-            <small>Seu combo</small>
-            <b>{{ dockLabel }}</b>
-          </div>
-          <span class="combo-count">{{ selectedCount }}/2</span>
-          <sc-if value="{{ hasTempPick2 }}" hint-placeholder-val="{{ true }}">
-            <button onClick="{{ finalizarCompra }}" class="checkout-button">FINALIZAR <span>→</span></button>
-          </sc-if>
-        </div>
+        <!-- Full-screen product detail -->
+        <sc-if value="{{ hasDetail }}" hint-placeholder-val="{{ true }}">
+          <section class="detail-screen">
+            <div class="detail-topbar">
+              <button onClick="{{ closeDetail }}" class="icon-button" aria-label="Voltar aos sabores">←</button>
+              <span class="catalog-title">Detalhes do sabor</span>
+              <span></span>
+            </div>
+            <div class="{{ detailPhotoClass }}"><img src="{{ detailImg }}" alt="{{ detailName }}"></div>
+            <div class="detail-info">
+              <span class="detail-kicker">Sabor DOT</span>
+              <h2>{{ detailName }}</h2>
+              <p>Veja a embalagem completa e confirme para adicionar este sabor ao seu combo.</p>
+            </div>
+            <div class="detail-action-wrap">
+              <button onClick="{{ confirmDetail }}" class="detail-action">{{ detailActionLabel }}</button>
+            </div>
+          </section>
+        </sc-if>
       </div>
     </div>
   </sc-if>
@@ -141,68 +183,102 @@ const FLAVORS = [
 class Component extends DCLogic {
   state = {
     sheetOpen: false,
-    pick1: null,
-    tempPick2: null,
+    selectedFlavors: [],
+    detailFlavor: null,
   };
 
   openSheet = () => {
     this._bodyScrollY = window.scrollY;
     document.body.style.cssText = `position:fixed;top:-${this._bodyScrollY}px;width:100%;overflow:hidden`;
-    this.setState({ sheetOpen: true });
+    this.setState({ sheetOpen: true, selectedFlavors: [], detailFlavor: null });
   };
   closeSheet = () => {
     document.body.style.cssText = '';
     window.scrollTo(0, this._bodyScrollY || 0);
     this.setState({ sheetOpen: false });
   };
-  backToStage1 = () => this.setState({ pick1: null, tempPick2: null });
+  openDetail = (name) => this.setState({ detailFlavor: name });
+  closeDetail = () => this.setState({ detailFlavor: null });
+  confirmDetail = () => {
+    const { detailFlavor, selectedFlavors } = this.state;
+    if (!detailFlavor || selectedFlavors.length >= 2) {
+      this.setState({ detailFlavor: null });
+      return;
+    }
+    this.setState({ selectedFlavors: [...selectedFlavors, detailFlavor], detailFlavor: null });
+  };
+  removeItem = (index) => {
+    const flow = document.querySelector('.shop-flow');
+    if (flow) flow.scrollTo({ top: 0, behavior: 'smooth' });
+    this.setState({ selectedFlavors: this.state.selectedFlavors.filter((_, i) => i !== index) });
+  };
+  openCheckout = () => {
+    if (this.state.selectedFlavors.length < 2) return;
+    const flow = document.querySelector('.shop-flow');
+    if (flow) flow.scrollTo({ top: flow.clientHeight, behavior: 'smooth' });
+  };
+  backToCatalog = () => {
+    const flow = document.querySelector('.shop-flow');
+    if (flow) flow.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   finalizarCompra = () => {
     document.body.style.cssText = '';
     try { window.top.location.href = 'https://minhadot.com'; } catch(e) { window.location.href = 'https://minhadot.com'; }
   };
 
   renderVals() {
-    const { sheetOpen, pick1, tempPick2 } = this.state;
-    const stage = pick1 == null ? 1 : 2;
-    const p = (n) => `grid-area:1/1;min-width:0;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;transform:translateX(${(n - stage) * 100}%);transition:transform .38s cubic-bezier(.25,.46,.45,.94)${stage !== n ? ';pointer-events:none' : ''}`;
+    const { sheetOpen, selectedFlavors, detailFlavor } = this.state;
+    const selectedCount = selectedFlavors.length;
+    const detail = FLAVORS.find(f => f.name === detailFlavor);
+    const countFlavor = (name) => selectedFlavors.filter(item => item === name).length;
 
-    const flavorList1 = FLAVORS.map(f => ({
-      name: f.name, img: f.img,
-      cardClass: `flavor-card${pick1 === f.name ? ' selected' : ''}`,
-      photoClass: `flavor-photo ${f.color}`,
-      onClick: () => this.setState({ pick1: f.name }),
-    }));
+    const flavorList = FLAVORS.map(f => {
+      const quantity = countFlavor(f.name);
+      return {
+        name: f.name,
+        img: f.img,
+        cardClass: `flavor-card${quantity ? ' selected' : ''}`,
+        photoClass: `flavor-photo ${f.color}`,
+        badgeText: quantity ? `✓ ${quantity}` : '',
+        onClick: () => this.openDetail(f.name),
+      };
+    });
 
-    const flavorList2 = FLAVORS.map(f => ({
-      name: f.name, img: f.img,
-      cardClass: `flavor-card${tempPick2 === f.name ? ' selected' : ''}`,
-      photoClass: `flavor-photo ${f.color}`,
-      onClick: () => this.setState({ tempPick2: f.name }),
-    }));
+    const cartItems = selectedFlavors.map(name => {
+      const flavor = FLAVORS.find(f => f.name === name);
+      return { name, img: flavor.img };
+    });
 
-    const comboLabel = pick1 && tempPick2 ? `${pick1} + ${tempPick2}` : (pick1 || '');
-    const pick1Img = (FLAVORS.find(f => f.name === pick1) || {}).img || '';
-    const selectedCount = (pick1 ? 1 : 0) + (tempPick2 ? 1 : 0);
-    const dockLabel = comboLabel || 'Escolha 2 sabores';
+    const checkoutItems = selectedFlavors.map((name, index) => {
+      const flavor = FLAVORS.find(f => f.name === name);
+      return { name, img: flavor.img, onRemove: () => this.removeItem(index) };
+    });
 
     return {
       sheetOpen,
       openSheet: this.openSheet,
       closeSheet: this.closeSheet,
-      backToStage1: this.backToStage1,
+      closeDetail: this.closeDetail,
+      confirmDetail: this.confirmDetail,
+      openCheckout: this.openCheckout,
+      backToCatalog: this.backToCatalog,
       finalizarCompra: this.finalizarCompra,
-      pick1Label: pick1 || '',
-      pick1Img,
-      comboLabel,
-      dockLabel,
-      dockClass: `combo-dock${tempPick2 ? ' ready' : ''}`,
+      catalogHeading: selectedCount === 0 ? 'Escolha seu primeiro sabor' : selectedCount === 1 ? 'Escolha mais um sabor' : 'Seu combo está pronto',
+      catalogSubheading: selectedCount < 2 ? 'Toque em um produto para ver a embalagem completa.' : 'Confira os sabores e deslize para baixo para finalizar.',
+      dockClass: `combo-dock${selectedCount === 2 ? ' ready' : ''}`,
+      dockHint: selectedCount === 0 ? 'Escolha 2 sabores' : selectedCount === 1 ? 'Escolha mais 1' : 'Ver checkout ↓',
       selectedCount,
-      hasPick1: !!pick1,
-      hasTempPick2: !!tempPick2,
-      stage1PanelStyle: p(1),
-      stage2PanelStyle: p(2),
-      flavorList1,
-      flavorList2,
+      showFirstEmpty: selectedCount === 0,
+      showSecondEmpty: selectedCount < 2,
+      comboComplete: selectedCount === 2,
+      cartItems,
+      checkoutItems,
+      flavorList,
+      hasDetail: !!detail,
+      detailName: detail ? detail.name : '',
+      detailImg: detail ? detail.img : '',
+      detailPhotoClass: detail ? `detail-visual ${detail.color}` : 'detail-visual',
+      detailActionLabel: selectedCount >= 2 ? 'VOLTAR AO CATÁLOGO' : selectedCount === 1 ? 'ADICIONAR COMO 2º SABOR' : 'ADICIONAR AO COMBO',
     };
   }
 }
