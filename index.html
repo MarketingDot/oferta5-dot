@@ -34,12 +34,8 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .flavor-photo img{width:100%;height:100%;object-fit:contain}
 .fl-mint{background:#d8f2ff}.fl-berry{background:#ffe0ec}.fl-lime{background:#dbf4d4}.fl-citrus{background:#ffedc5}
 .flavor-name{display:grid;min-height:38px;place-items:center;padding:4px 8px 7px;color:#0b203e;font-size:12px;font-weight:750;line-height:1.1;text-align:center;box-sizing:border-box}
-.quantity-stepper{height:42px;margin:0 8px 8px;border-radius:14px;background:#0b203e;color:#fff;grid-template-columns:42px 1fr 42px;align-items:center;display:none}
-.quantity-stepper.visible{display:grid}
-.quantity-stepper b{text-align:center;font-size:14px;font-weight:900}
-.quantity-button{height:42px;border:0;background:transparent;color:#fff;font-family:inherit;font-size:21px;font-weight:700;cursor:pointer}
-.quantity-button.plus{color:#b9ef40}
-.quantity-button.disabled{opacity:.28;pointer-events:none}
+.flavor-badge{position:absolute;top:13px;right:13px;height:26px;padding:0 9px;border-radius:99px;background:#b9ef40;box-shadow:0 3px 10px rgba(11,32,62,.16);color:#0b203e;font-size:9px;font-weight:900;display:none;place-items:center}
+.flavor-card.selected .flavor-badge{display:grid}
 .combo-dock{position:absolute;right:0;bottom:0;left:0;z-index:5;height:91px;padding:13px 18px;border-radius:28px 28px 0 0;background:#07172e;color:#fff;display:flex;align-items:center;gap:10px;box-sizing:border-box;cursor:default}
 .combo-dock.ready{cursor:pointer}
 .dock-title{margin-right:3px;font-size:19px;font-weight:800;letter-spacing:-.03em}
@@ -59,6 +55,14 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .detail-info p{margin:12px 0 0;color:#707987;font-size:14px;line-height:1.45}
 .detail-action-wrap{position:absolute;right:0;bottom:0;left:0;padding:14px 18px 20px;background:linear-gradient(to top,#fff 78%,rgba(255,255,255,0))}
 .detail-action{width:100%;min-height:56px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
+.detail-action.hidden{display:none}
+.detail-action.disabled{background:#e4e8ed;color:#8791a0;pointer-events:none}
+.detail-stepper{width:100%;height:56px;border-radius:18px;background:#0b203e;color:#fff;grid-template-columns:64px 1fr 64px;align-items:center;display:none;overflow:hidden}
+.detail-stepper.visible{display:grid}
+.detail-stepper b{text-align:center;font-size:18px;font-weight:900}
+.detail-quantity-button{height:56px;border:0;background:transparent;color:#fff;font-family:inherit;font-size:25px;font-weight:700;cursor:pointer}
+.detail-quantity-button.plus{color:#b9ef40}
+.detail-quantity-button.disabled{opacity:.3;pointer-events:none}
 .checkout-screen{position:relative;height:100dvh;min-height:620px;padding:22px 22px 24px;scroll-snap-align:start;background:#07172e;color:#fff;box-sizing:border-box;display:flex;flex-direction:column}
 .checkout-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
 .checkout-head h2{margin:0;font-size:30px;font-weight:800;letter-spacing:-.045em}
@@ -112,11 +116,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
                   <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
                   <span class="flavor-name">{{ fl.name }}</span>
                 </div>
-                <div class="{{ fl.quantityClass }}">
-                  <button onClick="{{ fl.onMinus }}" class="quantity-button" aria-label="Remover uma unidade de {{ fl.name }}">−</button>
-                  <b>{{ fl.quantity }}</b>
-                  <button onClick="{{ fl.onPlus }}" class="{{ fl.plusClass }}" aria-label="Adicionar mais uma unidade de {{ fl.name }}">+</button>
-                </div>
+                <span class="flavor-badge">{{ fl.badgeText }}</span>
               </div>
             </sc-for>
           </div>
@@ -172,7 +172,12 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
               <p>Veja a embalagem completa e confirme para adicionar este sabor ao seu combo.</p>
             </div>
             <div class="detail-action-wrap">
-              <button onClick="{{ confirmDetail }}" class="detail-action">{{ detailActionLabel }}</button>
+              <button onClick="{{ confirmDetail }}" class="{{ detailAddClass }}" aria-disabled="{{ detailAddDisabled }}">{{ detailActionLabel }}</button>
+              <div class="{{ detailStepperClass }}">
+                <button onClick="{{ detailMinus }}" class="detail-quantity-button" aria-label="Remover uma unidade">−</button>
+                <b>{{ detailQuantity }}</b>
+                <button onClick="{{ detailPlus }}" class="{{ detailPlusClass }}" aria-label="Adicionar mais uma unidade" aria-disabled="{{ detailPlusDisabled }}">+</button>
+              </div>
             </div>
           </section>
         </sc-if>
@@ -212,11 +217,8 @@ class Component extends DCLogic {
   closeDetail = () => this.setState({ detailFlavor: null });
   confirmDetail = () => {
     const { detailFlavor, selectedFlavors } = this.state;
-    if (!detailFlavor || selectedFlavors.length >= 2) {
-      this.setState({ detailFlavor: null });
-      return;
-    }
-    this.setState({ selectedFlavors: [...selectedFlavors, detailFlavor], detailFlavor: null });
+    if (!detailFlavor || selectedFlavors.length >= 2) return;
+    this.setState({ selectedFlavors: [...selectedFlavors, detailFlavor] });
   };
   addFlavor = (name) => {
     if (this.state.selectedFlavors.length >= 2) return;
@@ -253,6 +255,7 @@ class Component extends DCLogic {
     const selectedCount = selectedFlavors.length;
     const detail = FLAVORS.find(f => f.name === detailFlavor);
     const countFlavor = (name) => selectedFlavors.filter(item => item === name).length;
+    const detailQuantity = detail ? countFlavor(detail.name) : 0;
 
     const flavorList = FLAVORS.map(f => {
       const quantity = countFlavor(f.name);
@@ -261,12 +264,8 @@ class Component extends DCLogic {
         img: f.img,
         cardClass: `flavor-card${quantity ? ' selected' : ''}`,
         photoClass: `flavor-photo ${f.color}`,
-        quantity,
-        quantityClass: `quantity-stepper${quantity ? ' visible' : ''}`,
-        plusClass: `quantity-button plus${selectedCount >= 2 ? ' disabled' : ''}`,
+        badgeText: quantity ? `${quantity} no combo` : '',
         onOpen: () => this.openDetail(f.name),
-        onMinus: () => this.removeFlavor(f.name),
-        onPlus: () => this.addFlavor(f.name),
       };
     });
 
@@ -304,7 +303,15 @@ class Component extends DCLogic {
       detailName: detail ? detail.name : '',
       detailImg: detail ? detail.img : '',
       detailPhotoClass: detail ? `detail-visual ${detail.color}` : 'detail-visual',
-      detailActionLabel: selectedCount >= 2 ? 'VOLTAR AO CATÁLOGO' : detail && countFlavor(detail.name) ? `ADICIONAR MAIS 1 ${detail.name.toUpperCase()}` : selectedCount === 1 ? 'ADICIONAR COMO 2º SABOR' : 'ADICIONAR AO COMBO',
+      detailActionLabel: selectedCount >= 2 ? 'COMBO COMPLETO' : 'ADICIONAR AO COMBO',
+      detailAddClass: `detail-action${detailQuantity ? ' hidden' : selectedCount >= 2 ? ' disabled' : ''}`,
+      detailAddDisabled: selectedCount >= 2 ? 'true' : 'false',
+      detailStepperClass: `detail-stepper${detailQuantity ? ' visible' : ''}`,
+      detailQuantity,
+      detailMinus: () => detail && this.removeFlavor(detail.name),
+      detailPlus: () => detail && this.addFlavor(detail.name),
+      detailPlusClass: `detail-quantity-button plus${selectedCount >= 2 ? ' disabled' : ''}`,
+      detailPlusDisabled: selectedCount >= 2 ? 'true' : 'false',
     };
   }
 }
