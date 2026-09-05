@@ -32,8 +32,10 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .flavor-photo{min-height:0;margin:8px 8px 0;border-radius:14px;overflow:hidden;display:flex;flex:1;align-items:center;justify-content:center}
 .flavor-photo img{width:100%;height:100%;object-fit:contain}
 .fl-mint{background:#d8f2ff}.fl-berry{background:#ffe0ec}.fl-lime{background:#dbf4d4}.fl-citrus{background:#ffedc5}
-.flavor-name{display:grid;min-height:38px;place-items:center;padding:4px 9px 7px;color:#0b203e;font-size:12px;font-weight:750;line-height:1.1;text-align:center}
-.flavor-badge{position:absolute;top:13px;right:13px;min-width:25px;height:25px;padding:0 5px;border-radius:99px;background:#b9ef40;box-shadow:0 3px 10px rgba(11,32,62,.16);color:#0b203e;font-size:11px;font-weight:900;display:none;place-items:center;box-sizing:border-box}
+.flavor-name{display:flex;min-height:49px;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:4px 8px 7px;color:#0b203e;font-size:12px;font-weight:750;line-height:1.1;text-align:center;box-sizing:border-box}
+.repeat-label{height:11px;color:#436322;font-size:9px;font-weight:850;line-height:1;visibility:hidden}
+.repeat-label.visible{visibility:visible}
+.flavor-badge{position:absolute;top:13px;right:13px;min-width:25px;height:25px;padding:0 8px;border-radius:99px;background:#b9ef40;box-shadow:0 3px 10px rgba(11,32,62,.16);color:#0b203e;font-size:9px;font-weight:900;display:none;place-items:center;box-sizing:border-box}
 .flavor-card.selected .flavor-badge{display:grid}
 .combo-dock{position:absolute;right:0;bottom:0;left:0;z-index:5;height:91px;padding:13px 18px;border-radius:28px 28px 0 0;background:#07172e;color:#fff;display:flex;align-items:center;gap:10px;box-sizing:border-box;cursor:default}
 .combo-dock.ready{cursor:pointer}
@@ -104,7 +106,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
             <sc-for list="{{ flavorList }}" as="fl" hint-placeholder-count="4">
               <div onClick="{{ fl.onClick }}" class="{{ fl.cardClass }}">
                 <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
-                <span class="flavor-name">{{ fl.name }}</span>
+                <span class="flavor-name">{{ fl.name }}<small class="{{ fl.repeatClass }}">{{ fl.repeatLabel }}</small></span>
                 <span class="flavor-badge">{{ fl.badgeText }}</span>
               </div>
             </sc-for>
@@ -239,7 +241,9 @@ class Component extends DCLogic {
         img: f.img,
         cardClass: `flavor-card${quantity ? ' selected' : ''}`,
         photoClass: `flavor-photo ${f.color}`,
-        badgeText: quantity ? `✓ ${quantity}` : '',
+        badgeText: quantity ? `${quantity} no combo` : '',
+        repeatClass: `repeat-label${quantity && selectedCount < 2 ? ' visible' : ''}`,
+        repeatLabel: quantity && selectedCount < 2 ? '+ Repetir sabor' : '',
         onClick: () => this.openDetail(f.name),
       };
     });
@@ -264,7 +268,7 @@ class Component extends DCLogic {
       backToCatalog: this.backToCatalog,
       finalizarCompra: this.finalizarCompra,
       catalogHeading: selectedCount === 0 ? 'Escolha seu primeiro sabor' : selectedCount === 1 ? 'Escolha mais um sabor' : 'Seu combo está pronto',
-      catalogSubheading: selectedCount < 2 ? 'Toque em um produto para ver a embalagem completa.' : 'Confira os sabores e deslize para baixo para finalizar.',
+      catalogSubheading: selectedCount === 0 ? 'Toque em um produto para ver a embalagem completa.' : selectedCount === 1 ? 'Escolha outro sabor ou toque no mesmo para repetir.' : 'Confira os sabores e deslize para baixo para finalizar.',
       dockClass: `combo-dock${selectedCount === 2 ? ' ready' : ''}`,
       dockHint: selectedCount === 0 ? 'Escolha 2 sabores' : selectedCount === 1 ? 'Escolha mais 1' : 'Ver checkout ↓',
       selectedCount,
@@ -278,7 +282,7 @@ class Component extends DCLogic {
       detailName: detail ? detail.name : '',
       detailImg: detail ? detail.img : '',
       detailPhotoClass: detail ? `detail-visual ${detail.color}` : 'detail-visual',
-      detailActionLabel: selectedCount >= 2 ? 'VOLTAR AO CATÁLOGO' : selectedCount === 1 ? 'ADICIONAR COMO 2º SABOR' : 'ADICIONAR AO COMBO',
+      detailActionLabel: selectedCount >= 2 ? 'VOLTAR AO CATÁLOGO' : detail && countFlavor(detail.name) ? `ADICIONAR MAIS 1 ${detail.name.toUpperCase()}` : selectedCount === 1 ? 'ADICIONAR COMO 2º SABOR' : 'ADICIONAR AO COMBO',
     };
   }
 }
