@@ -28,20 +28,20 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .catalog-intro p.feedback{color:#0b203e;font-weight:750}
 .flavor-grid{min-height:0;flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;padding:3px 14px 108px}
 .flavor-card{position:relative;min-height:0;overflow:hidden;border:2px solid transparent;border-radius:20px;background:#fff;box-shadow:0 5px 18px rgba(11,32,62,.05);display:flex;flex-direction:column;transition:border-color .18s ease,box-shadow .18s ease}
-.flavor-card.selected{border-color:#0b203e;box-shadow:0 0 0 3px #b9ef40,0 8px 20px rgba(11,32,62,.12)}
 .flavor-open{min-height:0;flex:1;display:flex;flex-direction:column;cursor:pointer;transition:transform .16s ease}
 .flavor-open:active{transform:scale(.98)}
 .flavor-photo{min-height:0;margin:8px 8px 0;border-radius:14px;overflow:hidden;display:flex;flex:1;align-items:center;justify-content:center}
 .flavor-photo img{width:100%;height:100%;object-fit:contain}
 .fl-mint{background:#d8f2ff}.fl-berry{background:#ffe0ec}.fl-lime{background:#dbf4d4}.fl-citrus{background:#ffedc5}
 .flavor-name{display:grid;min-height:38px;place-items:center;padding:4px 8px 7px;color:#0b203e;font-size:12px;font-weight:750;line-height:1.1;text-align:center;box-sizing:border-box}
-.flavor-badge{position:absolute;top:13px;right:13px;height:26px;padding:0 9px;border-radius:99px;background:#b9ef40;box-shadow:0 3px 10px rgba(11,32,62,.16);color:#0b203e;font-size:9px;font-weight:900;display:none;place-items:center}
-.flavor-card.selected .flavor-badge{display:grid}
 .combo-dock{position:absolute;right:0;bottom:0;left:0;z-index:5;height:91px;padding:13px 18px;border-radius:28px 28px 0 0;background:#07172e;color:#fff;display:flex;align-items:center;gap:10px;box-sizing:border-box;cursor:default}
 .combo-dock.ready{cursor:pointer}
 .dock-title{margin-right:3px;font-size:19px;font-weight:800;letter-spacing:-.03em}
 .dock-thumbs{min-width:0;flex:1;display:flex;align-items:center;gap:7px}
-.dock-thumb{width:42px;height:42px;flex-shrink:0;border:3px solid #fff;border-radius:50%;background:#fff;object-fit:cover;box-sizing:border-box}
+.dock-thumb-button{width:42px;height:42px;flex-shrink:0;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;transition:transform .16s ease}
+.dock-thumb-button:active{transform:scale(.92)}
+.dock-thumb-button:focus-visible{outline:2px solid #b9ef40;outline-offset:3px}
+.dock-thumb{width:42px;height:42px;border:3px solid #fff;border-radius:50%;background:#fff;object-fit:cover;box-sizing:border-box;display:block}
 .dock-empty{width:38px;height:38px;border:1px dashed rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:12px}
 .combo-count{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#b9ef40;color:#0b203e;font-size:14px;font-weight:900;display:grid;place-items:center}
 .dock-hint{position:absolute;right:79px;bottom:9px;color:#aeb8c7;font-size:9px;font-weight:700;letter-spacing:.03em}
@@ -82,7 +82,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .summary-row strong{font-size:27px;line-height:1;letter-spacing:-.04em}
 .checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
 @media (max-height:680px){.catalog-topbar{height:52px}.catalog-intro{padding-top:5px;padding-bottom:9px}.catalog-intro h2{font-size:24px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.detail-info h2{font-size:27px}}
-@media (prefers-reduced-motion:reduce){.detail-screen{animation:none}.flavor-card,.flavor-open{transition:none}}
+@media (prefers-reduced-motion:reduce){.detail-screen{animation:none}.flavor-card,.flavor-open,.dock-thumb-button{transition:none}}
 
 </style>
 </helmet>
@@ -120,7 +120,6 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
                   <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
                   <span class="flavor-name">{{ fl.name }}</span>
                 </div>
-                <span class="flavor-badge">{{ fl.badgeText }}</span>
               </div>
             </sc-for>
           </div>
@@ -128,7 +127,9 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
             <span class="dock-title">Combo</span>
             <div class="dock-thumbs">
               <sc-for list="{{ cartItems }}" as="item" hint-placeholder-count="2">
-                <img class="dock-thumb" src="{{ item.img }}" alt="{{ item.name }}">
+                <button onClick="{{ item.onOpen }}" class="dock-thumb-button" aria-label="Editar {{ item.name }}">
+                  <img class="dock-thumb" src="{{ item.img }}" alt="">
+                </button>
               </sc-for>
               <sc-if value="{{ showFirstEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
               <sc-if value="{{ showSecondEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
@@ -222,6 +223,10 @@ class Component extends DCLogic {
     this.setState({ sheetOpen: false, feedbackMessage: '' });
   };
   openDetail = (name) => this.setState({ detailFlavor: name });
+  openCartFlavor = (name, event) => {
+    if (event) event.stopPropagation();
+    this.setState({ detailFlavor: name });
+  };
   closeDetail = () => this.setState({ detailFlavor: null });
   prepareFlavorFlight = () => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
@@ -338,7 +343,8 @@ class Component extends DCLogic {
     if (flow) flow.scrollTo({ top: 0, behavior: 'smooth' });
     this.setState({ selectedFlavors: this.state.selectedFlavors.filter((_, i) => i !== index) });
   };
-  openCheckout = () => {
+  openCheckout = (event) => {
+    if (event && event.target && event.target.closest('.dock-thumb-button')) return;
     if (this.state.selectedFlavors.length < 2) return;
     const flow = document.querySelector('.shop-flow');
     if (flow) flow.scrollTo({ top: flow.clientHeight, behavior: 'smooth' });
@@ -360,20 +366,18 @@ class Component extends DCLogic {
     const detailQuantity = detail ? countFlavor(detail.name) : 0;
 
     const flavorList = FLAVORS.map(f => {
-      const quantity = countFlavor(f.name);
       return {
         name: f.name,
         img: f.img,
-        cardClass: `flavor-card${quantity ? ' selected' : ''}`,
+        cardClass: 'flavor-card',
         photoClass: `flavor-photo ${f.color}`,
-        badgeText: quantity ? `${quantity} no combo` : '',
         onOpen: () => this.openDetail(f.name),
       };
     });
 
     const cartItems = selectedFlavors.map(name => {
       const flavor = FLAVORS.find(f => f.name === name);
-      return { name, img: flavor.img };
+      return { name, img: flavor.img, onOpen: (event) => this.openCartFlavor(name, event) };
     });
 
     const checkoutItems = selectedFlavors.map((name, index) => {
