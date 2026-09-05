@@ -26,17 +26,20 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .catalog-intro h2{margin:0;color:#0b203e;font-size:28px;font-weight:800;line-height:1.05;letter-spacing:-.045em;text-wrap:pretty}
 .catalog-intro p{margin:8px 0 0;color:#707987;font-size:13px;line-height:1.35}
 .flavor-grid{min-height:0;flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;padding:3px 14px 108px}
-.flavor-card{position:relative;min-height:0;overflow:hidden;border:2px solid transparent;border-radius:20px;background:#fff;box-shadow:0 5px 18px rgba(11,32,62,.05);cursor:pointer;display:flex;flex-direction:column;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
-.flavor-card:active{transform:scale(.98)}
+.flavor-card{position:relative;min-height:0;overflow:hidden;border:2px solid transparent;border-radius:20px;background:#fff;box-shadow:0 5px 18px rgba(11,32,62,.05);display:flex;flex-direction:column;transition:border-color .18s ease,box-shadow .18s ease}
 .flavor-card.selected{border-color:#0b203e;box-shadow:0 0 0 3px #b9ef40,0 8px 20px rgba(11,32,62,.12)}
+.flavor-open{min-height:0;flex:1;display:flex;flex-direction:column;cursor:pointer;transition:transform .16s ease}
+.flavor-open:active{transform:scale(.98)}
 .flavor-photo{min-height:0;margin:8px 8px 0;border-radius:14px;overflow:hidden;display:flex;flex:1;align-items:center;justify-content:center}
 .flavor-photo img{width:100%;height:100%;object-fit:contain}
 .fl-mint{background:#d8f2ff}.fl-berry{background:#ffe0ec}.fl-lime{background:#dbf4d4}.fl-citrus{background:#ffedc5}
-.flavor-name{display:flex;min-height:49px;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:4px 8px 7px;color:#0b203e;font-size:12px;font-weight:750;line-height:1.1;text-align:center;box-sizing:border-box}
-.repeat-label{height:11px;color:#436322;font-size:9px;font-weight:850;line-height:1;visibility:hidden}
-.repeat-label.visible{visibility:visible}
-.flavor-badge{position:absolute;top:13px;right:13px;min-width:25px;height:25px;padding:0 8px;border-radius:99px;background:#b9ef40;box-shadow:0 3px 10px rgba(11,32,62,.16);color:#0b203e;font-size:9px;font-weight:900;display:none;place-items:center;box-sizing:border-box}
-.flavor-card.selected .flavor-badge{display:grid}
+.flavor-name{display:grid;min-height:38px;place-items:center;padding:4px 8px 7px;color:#0b203e;font-size:12px;font-weight:750;line-height:1.1;text-align:center;box-sizing:border-box}
+.quantity-stepper{height:42px;margin:0 8px 8px;border-radius:14px;background:#0b203e;color:#fff;grid-template-columns:42px 1fr 42px;align-items:center;display:none}
+.quantity-stepper.visible{display:grid}
+.quantity-stepper b{text-align:center;font-size:14px;font-weight:900}
+.quantity-button{height:42px;border:0;background:transparent;color:#fff;font-family:inherit;font-size:21px;font-weight:700;cursor:pointer}
+.quantity-button.plus{color:#b9ef40}
+.quantity-button.disabled{opacity:.28;pointer-events:none}
 .combo-dock{position:absolute;right:0;bottom:0;left:0;z-index:5;height:91px;padding:13px 18px;border-radius:28px 28px 0 0;background:#07172e;color:#fff;display:flex;align-items:center;gap:10px;box-sizing:border-box;cursor:default}
 .combo-dock.ready{cursor:pointer}
 .dock-title{margin-right:3px;font-size:19px;font-weight:800;letter-spacing:-.03em}
@@ -104,10 +107,16 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
           </div>
           <div class="flavor-grid">
             <sc-for list="{{ flavorList }}" as="fl" hint-placeholder-count="4">
-              <div onClick="{{ fl.onClick }}" class="{{ fl.cardClass }}">
-                <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
-                <span class="flavor-name">{{ fl.name }}<small class="{{ fl.repeatClass }}">{{ fl.repeatLabel }}</small></span>
-                <span class="flavor-badge">{{ fl.badgeText }}</span>
+              <div class="{{ fl.cardClass }}">
+                <div onClick="{{ fl.onOpen }}" class="flavor-open">
+                  <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
+                  <span class="flavor-name">{{ fl.name }}</span>
+                </div>
+                <div class="{{ fl.quantityClass }}">
+                  <button onClick="{{ fl.onMinus }}" class="quantity-button" aria-label="Remover uma unidade de {{ fl.name }}">−</button>
+                  <b>{{ fl.quantity }}</b>
+                  <button onClick="{{ fl.onPlus }}" class="{{ fl.plusClass }}" aria-label="Adicionar mais uma unidade de {{ fl.name }}">+</button>
+                </div>
               </div>
             </sc-for>
           </div>
@@ -209,6 +218,17 @@ class Component extends DCLogic {
     }
     this.setState({ selectedFlavors: [...selectedFlavors, detailFlavor], detailFlavor: null });
   };
+  addFlavor = (name) => {
+    if (this.state.selectedFlavors.length >= 2) return;
+    this.setState({ selectedFlavors: [...this.state.selectedFlavors, name] });
+  };
+  removeFlavor = (name) => {
+    const selectedFlavors = [...this.state.selectedFlavors];
+    const index = selectedFlavors.lastIndexOf(name);
+    if (index < 0) return;
+    selectedFlavors.splice(index, 1);
+    this.setState({ selectedFlavors });
+  };
   removeItem = (index) => {
     const flow = document.querySelector('.shop-flow');
     if (flow) flow.scrollTo({ top: 0, behavior: 'smooth' });
@@ -241,10 +261,12 @@ class Component extends DCLogic {
         img: f.img,
         cardClass: `flavor-card${quantity ? ' selected' : ''}`,
         photoClass: `flavor-photo ${f.color}`,
-        badgeText: quantity ? `${quantity} no combo` : '',
-        repeatClass: `repeat-label${quantity && selectedCount < 2 ? ' visible' : ''}`,
-        repeatLabel: quantity && selectedCount < 2 ? '+ Repetir sabor' : '',
-        onClick: () => this.openDetail(f.name),
+        quantity,
+        quantityClass: `quantity-stepper${quantity ? ' visible' : ''}`,
+        plusClass: `quantity-button plus${selectedCount >= 2 ? ' disabled' : ''}`,
+        onOpen: () => this.openDetail(f.name),
+        onMinus: () => this.removeFlavor(f.name),
+        onPlus: () => this.addFlavor(f.name),
       };
     });
 
