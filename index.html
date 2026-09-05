@@ -218,6 +218,7 @@ class Component extends DCLogic {
   closeSheet = () => {
     window.clearTimeout(this._feedbackTimer);
     if (this._finishFlight) this._finishFlight();
+    if (this._cancelRemove) this._cancelRemove();
     document.body.style.cssText = '';
     window.scrollTo(0, this._bodyScrollY || 0);
     this.setState({ sheetOpen: false, feedbackMessage: '' });
@@ -339,9 +340,37 @@ class Component extends DCLogic {
     this.setState({ selectedFlavors });
   };
   removeItem = (index) => {
+    if (this._removePending) return;
+    const nextFlavors = this.state.selectedFlavors.filter((_, i) => i !== index);
     const flow = document.querySelector('.shop-flow');
-    if (flow) flow.scrollTo({ top: 0, behavior: 'smooth' });
-    this.setState({ selectedFlavors: this.state.selectedFlavors.filter((_, i) => i !== index) });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let settled = false;
+    const cleanup = () => {
+      window.clearTimeout(this._removeTimer);
+      if (flow) flow.removeEventListener('scrollend', commit);
+      this._removePending = false;
+      this._cancelRemove = null;
+    };
+    const commit = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      this.setState({ selectedFlavors: nextFlavors });
+    };
+    this._cancelRemove = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+    };
+    if (!flow || flow.scrollTop < 2 || reduceMotion) {
+      if (flow) flow.scrollTo({ top: 0, behavior: 'auto' });
+      commit();
+      return;
+    }
+    this._removePending = true;
+    flow.addEventListener('scrollend', commit, { once: true });
+    this._removeTimer = window.setTimeout(commit, 700);
+    flow.scrollTo({ top: 0, behavior: 'smooth' });
   };
   openCheckout = (event) => {
     if (event && event.target && event.target.closest('.dock-thumb-button')) return;
