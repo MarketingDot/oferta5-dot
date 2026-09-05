@@ -31,7 +31,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .flavor-card.selected{border-color:#0b203e;box-shadow:0 0 0 3px #b9ef40,0 8px 20px rgba(11,32,62,.12)}
 .flavor-photo{min-height:0;margin:8px 8px 0;border-radius:14px;overflow:hidden;display:flex;flex:1;align-items:center;justify-content:center}
 .flavor-photo img{width:100%;height:100%;object-fit:contain}
-.fl-mint{background:#d9f3fc}.fl-berry{background:#ffe0e9}.fl-lime{background:#dff5d6}.fl-citrus{background:#ffedc9}
+.fl-mint{background:#d8f2ff}.fl-berry{background:#ffe0ec}.fl-lime{background:#dbf4d4}.fl-citrus{background:#ffedc5}
 .flavor-name{display:grid;min-height:38px;place-items:center;padding:4px 9px 7px;color:#0b203e;font-size:12px;font-weight:750;line-height:1.1;text-align:center}
 .flavor-badge{position:absolute;top:13px;right:13px;min-width:25px;height:25px;padding:0 5px;border-radius:99px;background:#b9ef40;box-shadow:0 3px 10px rgba(11,32,62,.16);color:#0b203e;font-size:11px;font-weight:900;display:none;place-items:center;box-sizing:border-box}
 .flavor-card.selected .flavor-badge{display:grid}
@@ -46,8 +46,8 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .detail-screen{position:absolute;inset:0;z-index:10;background:#fff;display:flex;flex-direction:column;animation:detailIn .3s cubic-bezier(.22,.8,.22,1)}
 @keyframes detailIn{from{opacity:.4;transform:translateX(12%)}to{opacity:1;transform:translateX(0)}}
 .detail-topbar{height:65px;padding:8px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
-.detail-visual{min-height:0;flex:1;margin:3px 18px 0;border-radius:28px;overflow:hidden;display:grid;place-items:center}
-.detail-visual img{width:100%;height:100%;object-fit:contain}
+.detail-visual{position:relative;min-height:0;flex:1;margin:3px 18px 0;border-radius:28px;overflow:hidden}
+.detail-visual img{position:absolute;inset:0;width:100%;height:100%;padding:18px;box-sizing:border-box;object-fit:contain}
 .detail-info{padding:24px 22px 104px;background:#fff}
 .detail-kicker{display:block;margin-bottom:8px;color:#718096;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .detail-info h2{margin:0;color:#0b203e;font-size:32px;font-weight:800;line-height:1;letter-spacing:-.045em;text-wrap:pretty}
@@ -174,10 +174,10 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 const FLAVORS = [
-  { name: 'Menta',              img: './assets/sabor-menta.jpg',            color: 'fl-mint'   },
-  { name: 'Frutas Vermelhas',   img: './assets/sabor-frutas-vermelhas.jpg', color: 'fl-berry'  },
-  { name: 'Melancia com Limão', img: './assets/sabor-melancia-novo.png',    color: 'fl-lime'   },
-  { name: 'Citrus',             img: './assets/sabor-citrus.jpg',           color: 'fl-citrus' },
+  { name: 'Menta',              img: './assets/pouch-menta-25.png',             color: 'fl-mint'   },
+  { name: 'Frutas Vermelhas',   img: './assets/pouch-frutas-vermelhas-25.png',  color: 'fl-berry'  },
+  { name: 'Melancia com Limão', img: './assets/pouch-melancia-limao-25.png',    color: 'fl-lime'   },
+  { name: 'Citrus',             img: './assets/pouch-citrus-25.png',            color: 'fl-citrus' },
 ];
 
 class Component extends DCLogic {
