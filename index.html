@@ -218,11 +218,19 @@ class Component extends DCLogic {
   confirmDetail = () => {
     const { detailFlavor, selectedFlavors } = this.state;
     if (!detailFlavor || selectedFlavors.length >= 2) return;
-    this.setState({ selectedFlavors: [...selectedFlavors, detailFlavor] });
+    const nextFlavors = [...selectedFlavors, detailFlavor];
+    this.setState({
+      selectedFlavors: nextFlavors,
+      detailFlavor: nextFlavors.length === 2 ? null : detailFlavor,
+    });
   };
   addFlavor = (name) => {
     if (this.state.selectedFlavors.length >= 2) return;
-    this.setState({ selectedFlavors: [...this.state.selectedFlavors, name] });
+    const nextFlavors = [...this.state.selectedFlavors, name];
+    this.setState({
+      selectedFlavors: nextFlavors,
+      detailFlavor: nextFlavors.length === 2 ? null : this.state.detailFlavor,
+    });
   };
   removeFlavor = (name) => {
     const selectedFlavors = [...this.state.selectedFlavors];
