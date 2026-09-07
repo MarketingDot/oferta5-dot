@@ -21,10 +21,6 @@ body{margin:0;overflow:hidden;background:#000;font-family:'Space Grotesk',ui-rou
 .offer-hero:focus-visible{outline:3px solid #fff200;outline-offset:-5px}
 .offer-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;pointer-events:none;transition:transform .5s cubic-bezier(.22,.8,.22,1)}
 .offer-hero:active .offer-art{transform:scale(1.012)}
-.hero-scroll-cue{position:absolute;right:0;bottom:51px;left:0;display:flex;flex-direction:column;align-items:center;gap:5px;color:#fff;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.55);pointer-events:none;animation:cueFloat 1.8s ease-in-out infinite}
-.hero-scroll-cue::before{content:'';position:absolute;inset:-12px -28px;border-radius:30px;background:rgba(4,17,56,.42);box-shadow:0 8px 26px rgba(0,0,0,.16);backdrop-filter:blur(6px);z-index:-1}
-.hero-scroll-arrow{display:block;width:18px;height:18px;border-right:2px solid #fff200;border-bottom:2px solid #fff200;transform:rotate(45deg)}
-@keyframes cueFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
 
 /* Full-screen shop: ivory catalog, navy checkout, lime interaction. */
 .catalog-screen{position:relative;z-index:2;height:100dvh;min-height:560px;margin-top:-32px;overflow:hidden;border-radius:34px 34px 0 0;scroll-snap-align:start;background:#f7f6f1;box-shadow:0 -14px 34px rgba(4,17,38,.2);display:flex;flex-direction:column}
@@ -104,7 +100,7 @@ body{margin:0;overflow:hidden;background:#000;font-family:'Space Grotesk',ui-rou
 .summary-row strong{font-size:27px;line-height:1;letter-spacing:-.04em}
 .checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
 @media (max-height:680px){.catalog-topbar{height:52px}.catalog-intro{padding-top:5px;padding-bottom:9px}.catalog-intro h2{font-size:24px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.detail-info h2{font-size:27px}}
-@media (prefers-reduced-motion:reduce){.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap,.hero-scroll-cue{animation:none}.offer-art,.flavor-card,.flavor-open,.dock-thumb-button{transition:none}}
+@media (prefers-reduced-motion:reduce){.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap{animation:none}.offer-art,.flavor-card,.flavor-open,.dock-thumb-button{transition:none}}
 
 </style>
 </helmet>
@@ -114,7 +110,6 @@ body{margin:0;overflow:hidden;background:#000;font-family:'Space Grotesk',ui-rou
     <!-- Cropped campaign cover; the live selector remains visible in the first fold. -->
     <section onClick="{{ goToCatalog }}" onKeyDown="{{ heroKeyDown }}" class="offer-hero" role="button" tabindex="0" aria-label="Ir para a seleção de sabores">
       <img src="./assets/banner-hero.png" alt="Promoção DOT: compre um combo e ganhe outro" class="offer-art">
-      <span class="hero-scroll-cue"><span>Deslize para escolher</span><i class="hero-scroll-arrow"></i></span>
     </section>
 
     <!-- Full-screen catalog -->
