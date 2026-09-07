@@ -234,6 +234,8 @@ class Component extends DCLogic {
   openSheet = () => {
     if (this.state.sheetOpen) return;
     window.clearTimeout(this._feedbackTimer);
+    window.clearTimeout(this._checkoutTimer);
+    this._didAutoOpenCheckout = false;
     this._bodyScrollY = window.scrollY;
     document.body.style.cssText = `position:fixed;top:-${this._bodyScrollY}px;width:100%;overflow:hidden`;
     this.setState({ sheetOpen: true, selectedFlavors: [], detailFlavor: null, detailTransitioning: false, feedbackMessage: '' });
@@ -269,6 +271,7 @@ class Component extends DCLogic {
   };
   closeSheet = () => {
     window.clearTimeout(this._feedbackTimer);
+    window.clearTimeout(this._checkoutTimer);
     if (this._finishFlight) this._finishFlight();
     if (this._finishDetailMorph) this._finishDetailMorph();
     if (this._cancelRemove) this._cancelRemove();
@@ -581,6 +584,8 @@ class Component extends DCLogic {
     if (this.state.selectedFlavors.length >= 2) return;
     const preparedFlight = this.prepareFlavorFlight();
     const nextFlavors = [...this.state.selectedFlavors, name];
+    const shouldAutoOpenCheckout = nextFlavors.length === 2 && !this._didAutoOpenCheckout;
+    if (shouldAutoOpenCheckout) this._didAutoOpenCheckout = true;
     const feedbackMessage = nextFlavors.length === 2
       ? '✓ Combo completo — confira antes de finalizar.'
       : `✓ ${name} entrou no combo — escolha mais 1 sabor.`;
@@ -593,6 +598,10 @@ class Component extends DCLogic {
       feedbackMessage,
     });
     this.animateFlavorToDock(preparedFlight);
+    if (shouldAutoOpenCheckout) {
+      window.clearTimeout(this._checkoutTimer);
+      this._checkoutTimer = window.setTimeout(() => this.openCheckout(), preparedFlight ? 760 : 60);
+    }
     this._feedbackTimer = window.setTimeout(() => this.setState({ feedbackMessage: '' }), 2200);
   };
   removeFlavor = (name) => {
