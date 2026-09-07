@@ -91,6 +91,9 @@ body{margin:0;overflow:hidden;background:#000;font-family:'Space Grotesk',ui-rou
 .checkout-back{border:0;background:none;color:#b9ef40;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
 .checkout-list{display:grid;gap:16px}
 .checkout-item{display:grid;grid-template-columns:54px 1fr 34px;gap:12px;align-items:center}
+.checkout-thumb-button{width:54px;height:54px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;transition:transform .16s ease}
+.checkout-thumb-button:active{transform:scale(.92)}
+.checkout-thumb-button:focus-visible{outline:2px solid #b9ef40;outline-offset:3px}
 .checkout-item img{width:54px;height:54px;padding:4px;border:3px solid #fff;border-radius:50%;background-size:cover;background-position:center;background-repeat:no-repeat;object-fit:contain;box-sizing:border-box;filter:drop-shadow(0 3px 4px rgba(5,20,43,.16))}
 .checkout-item small{display:block;color:#8fa0b6;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .checkout-item b{display:block;margin-top:3px;color:#fff;font-size:14px;line-height:1.2}
@@ -101,7 +104,7 @@ body{margin:0;overflow:hidden;background:#000;font-family:'Space Grotesk',ui-rou
 .summary-row strong{font-size:27px;line-height:1;letter-spacing:-.04em}
 .checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
 @media (max-height:680px){.catalog-topbar{height:52px}.catalog-intro{padding-top:5px;padding-bottom:9px}.catalog-intro h2{font-size:24px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.detail-info h2{font-size:27px}}
-@media (prefers-reduced-motion:reduce){.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap{animation:none}.offer-art,.flavor-card,.flavor-open,.dock-thumb-button{transition:none}}
+@media (prefers-reduced-motion:reduce){.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap{animation:none}.offer-art,.flavor-card,.flavor-open,.dock-thumb-button,.checkout-thumb-button{transition:none}}
 
 </style>
 </helmet>
@@ -163,7 +166,9 @@ body{margin:0;overflow:hidden;background:#000;font-family:'Space Grotesk',ui-rou
             <div class="checkout-list">
               <sc-for list="{{ checkoutItems }}" as="item" hint-placeholder-count="2">
                 <div class="checkout-item">
-                  <img class="{{ item.thumbClass }}" src="{{ item.img }}" alt="{{ item.name }}">
+                  <button onClick="{{ item.onOpen }}" class="checkout-thumb-button" aria-label="Ver detalhes de {{ item.name }}">
+                    <img class="{{ item.thumbClass }}" src="{{ item.img }}" alt="">
+                  </button>
                   <span><small>1 × sabor</small><b>{{ item.name }}</b></span>
                   <button onClick="{{ item.onRemove }}" class="remove-item" aria-label="Remover {{ item.name }}">×</button>
                 </div>
@@ -259,7 +264,7 @@ class Component extends DCLogic {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
     if (this._finishDetailMorph) this._finishDetailMorph();
     const trigger = event && event.currentTarget;
-    const source = trigger && (trigger.querySelector('.flavor-photo') || trigger.querySelector('.dock-thumb') || trigger);
+    const source = trigger && (trigger.querySelector('.flavor-photo') || trigger.querySelector('.dock-thumb') || trigger.querySelector('.checkout-thumb') || trigger);
     const sourceImg = source && (source.matches('img') ? source : source.querySelector('img'));
     if (!source || !sourceImg) return null;
     const rect = source.getBoundingClientRect();
@@ -662,7 +667,13 @@ class Component extends DCLogic {
 
     const checkoutItems = selectedFlavors.map((name, index) => {
       const flavor = FLAVORS.find(f => f.name === name);
-      return { name, img: flavor.img, thumbClass: `checkout-thumb ${flavor.color}`, onRemove: () => this.removeItem(index) };
+      return {
+        name,
+        img: flavor.img,
+        thumbClass: `checkout-thumb ${flavor.color}`,
+        onOpen: (event) => this.openCartFlavor(name, event),
+        onRemove: () => this.removeItem(index),
+      };
     });
 
     return {
