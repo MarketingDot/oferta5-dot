@@ -57,16 +57,21 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .dock-hint{position:absolute;right:79px;bottom:9px;color:#aeb8c7;font-size:9px;font-weight:700;letter-spacing:.03em}
 .flavor-flight{position:fixed;z-index:1000;overflow:hidden;pointer-events:none;box-sizing:border-box;box-shadow:0 18px 42px rgba(7,23,46,.26);will-change:top,left,width,height,border-radius,transform}
 .flavor-flight img{width:100%;height:100%;padding:4%;object-fit:contain;box-sizing:border-box}
-.detail-screen{position:absolute;inset:0;z-index:10;background:#fff;display:flex;flex-direction:column;animation:detailIn .3s cubic-bezier(.22,.8,.22,1)}
-@keyframes detailIn{from{opacity:.4;transform:translateX(12%)}to{opacity:1;transform:translateX(0)}}
+.detail-morph{position:fixed;z-index:1001;overflow:hidden;pointer-events:none;box-sizing:border-box;box-shadow:0 20px 48px rgba(7,23,46,.2);will-change:top,left,width,height,border-radius,background-color}
+.detail-morph img{width:100%;height:100%;object-fit:contain;box-sizing:border-box;will-change:padding}
+.detail-screen{position:absolute;inset:0;z-index:10;background:#fff;display:flex;flex-direction:column;animation:detailShellIn .22s ease-out both}
+@keyframes detailShellIn{from{opacity:0}to{opacity:1}}
+@keyframes detailContentIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .detail-topbar{height:65px;padding:8px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
 .detail-visual{position:relative;min-height:0;flex:1;margin:3px 18px 0;border-radius:28px;overflow:hidden}
+.detail-visual.detail-awaiting{opacity:0}
 .detail-visual img{position:absolute;inset:0;width:100%;height:100%;padding:18px;box-sizing:border-box;object-fit:contain}
 .detail-info{padding:24px 22px 104px;background:#fff}
 .detail-kicker{display:block;margin-bottom:8px;color:#718096;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .detail-info h2{margin:0;color:#0b203e;font-size:32px;font-weight:800;line-height:1;letter-spacing:-.045em;text-wrap:pretty}
 .detail-info p{margin:12px 0 0;color:#707987;font-size:14px;line-height:1.45}
 .detail-action-wrap{position:absolute;right:0;bottom:0;left:0;padding:14px 18px 20px;background:linear-gradient(to top,#fff 78%,rgba(255,255,255,0))}
+.detail-topbar,.detail-info,.detail-action-wrap{animation:detailContentIn .38s cubic-bezier(.22,.8,.22,1) .14s both}
 .detail-action{width:100%;min-height:56px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
 .detail-action.hidden{display:none}
 .detail-action.disabled{background:#e4e8ed;color:#8791a0;pointer-events:none}
@@ -92,7 +97,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .summary-row strong{font-size:27px;line-height:1;letter-spacing:-.04em}
 .checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
 @media (max-height:680px){.catalog-topbar{height:52px}.catalog-intro{padding-top:5px;padding-bottom:9px}.catalog-intro h2{font-size:24px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.detail-info h2{font-size:27px}}
-@media (prefers-reduced-motion:reduce){.purchase-sheet,.detail-screen,.hero-scroll-cue{animation:none}.flavor-card,.flavor-open,.dock-thumb-button{transition:none}}
+@media (prefers-reduced-motion:reduce){.purchase-sheet,.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap,.hero-scroll-cue{animation:none}.flavor-card,.flavor-open,.dock-thumb-button{transition:none}}
 
 </style>
 </helmet>
@@ -217,6 +222,7 @@ class Component extends DCLogic {
     sheetOpen: false,
     selectedFlavors: [],
     detailFlavor: null,
+    detailTransitioning: false,
     feedbackMessage: '',
   };
 
@@ -225,7 +231,7 @@ class Component extends DCLogic {
     window.clearTimeout(this._feedbackTimer);
     this._bodyScrollY = window.scrollY;
     document.body.style.cssText = `position:fixed;top:-${this._bodyScrollY}px;width:100%;overflow:hidden`;
-    this.setState({ sheetOpen: true, selectedFlavors: [], detailFlavor: null, feedbackMessage: '' });
+    this.setState({ sheetOpen: true, selectedFlavors: [], detailFlavor: null, detailTransitioning: false, feedbackMessage: '' });
   };
   heroKeyDown = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -259,19 +265,189 @@ class Component extends DCLogic {
   closeSheet = () => {
     window.clearTimeout(this._feedbackTimer);
     if (this._finishFlight) this._finishFlight();
+    if (this._finishDetailMorph) this._finishDetailMorph();
     if (this._cancelRemove) this._cancelRemove();
     document.body.style.cssText = '';
     window.scrollTo(0, this._bodyScrollY || 0);
-    this.setState({ sheetOpen: false, feedbackMessage: '' });
+    this.setState({ sheetOpen: false, detailFlavor: null, detailTransitioning: false, feedbackMessage: '' });
   };
-  openDetail = (name) => this.setState({ detailFlavor: name });
+  prepareDetailMorph = (event) => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+    if (this._finishDetailMorph) this._finishDetailMorph();
+    const trigger = event && event.currentTarget;
+    const source = trigger && (trigger.querySelector('.flavor-photo') || trigger.querySelector('.dock-thumb') || trigger);
+    const sourceImg = source && (source.matches('img') ? source : source.querySelector('img'));
+    if (!source || !sourceImg) return null;
+    const rect = source.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    const morph = document.createElement('div');
+    const image = document.createElement('img');
+    const sourceStyle = getComputedStyle(source);
+    morph.className = 'detail-morph';
+    image.src = sourceImg.currentSrc || sourceImg.src;
+    image.alt = '';
+    morph.appendChild(image);
+    Object.assign(morph.style, {
+      top: `${rect.top}px`,
+      left: `${rect.left}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+      borderRadius: sourceStyle.borderRadius,
+      backgroundColor: sourceStyle.backgroundColor,
+    });
+    image.style.padding = '0px';
+    document.body.appendChild(morph);
+    source.style.opacity = '0';
+    const finishPrepared = () => {
+      source.style.opacity = '';
+      morph.remove();
+      if (this._finishDetailMorph === finishPrepared) this._finishDetailMorph = null;
+    };
+    this._finishDetailMorph = finishPrepared;
+    return { morph, image, rect, source, finishPrepared };
+  };
+  animateDetailExpansion = (prepared, name) => {
+    if (!prepared) return;
+    const { morph, image, rect, source, finishPrepared } = prepared;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const target = document.querySelector('.detail-visual');
+      if (!target || !morph.isConnected) {
+        finishPrepared();
+        return;
+      }
+      const destination = target.getBoundingClientRect();
+      const targetStyle = getComputedStyle(target);
+      let finished = false;
+      let motion;
+      let imageMotion;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        source.style.opacity = '';
+        target.style.opacity = '1';
+        morph.remove();
+        if (motion && motion.playState === 'running') motion.cancel();
+        if (imageMotion && imageMotion.playState === 'running') imageMotion.cancel();
+        if (this._finishDetailMorph === finish) this._finishDetailMorph = null;
+        if (this.state.detailFlavor === name && this.state.detailTransitioning) {
+          this.setState({ detailTransitioning: false });
+        }
+      };
+      this._finishDetailMorph = finish;
+      motion = morph.animate([
+        {
+          top: `${rect.top}px`, left: `${rect.left}px`,
+          width: `${rect.width}px`, height: `${rect.height}px`,
+          borderRadius: getComputedStyle(source).borderRadius,
+          backgroundColor: getComputedStyle(source).backgroundColor,
+        },
+        {
+          top: `${destination.top}px`, left: `${destination.left}px`,
+          width: `${destination.width}px`, height: `${destination.height}px`,
+          borderRadius: targetStyle.borderRadius,
+          backgroundColor: targetStyle.backgroundColor,
+        },
+      ], { duration: 560, easing: 'cubic-bezier(.2,.82,.24,1)', fill: 'forwards' });
+      imageMotion = image.animate([
+        { padding: '0px' },
+        { padding: '18px' },
+      ], { duration: 560, easing: 'cubic-bezier(.2,.82,.24,1)', fill: 'forwards' });
+      motion.onfinish = finish;
+      motion.oncancel = finish;
+    }));
+  };
+  openDetail = (name, event) => {
+    const prepared = this.prepareDetailMorph(event);
+    this._detailOrigin = prepared ? prepared.source : null;
+    this.setState({ detailFlavor: name, detailTransitioning: !!prepared });
+    this.animateDetailExpansion(prepared, name);
+  };
   openCartFlavor = (name, event) => {
     if (event) event.stopPropagation();
-    this.setState({ detailFlavor: name });
+    this.openDetail(name, event);
   };
-  closeDetail = () => this.setState({ detailFlavor: null });
+  closeDetail = () => {
+    const { detailFlavor } = this.state;
+    if (!detailFlavor) return;
+    if (this._finishDetailMorph) this._finishDetailMorph();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this._detailOrigin = null;
+      this.setState({ detailFlavor: null, detailTransitioning: false });
+      return;
+    }
+    const source = document.querySelector('.detail-visual');
+    const sourceImg = source && source.querySelector('img');
+    const flavorIndex = FLAVORS.findIndex(f => f.name === detailFlavor);
+    const cards = document.querySelectorAll('.flavor-photo');
+    const target = this._detailOrigin && this._detailOrigin.isConnected
+      ? this._detailOrigin
+      : cards[flavorIndex];
+    if (!source || !sourceImg || !target) {
+      this._detailOrigin = null;
+      this.setState({ detailFlavor: null, detailTransitioning: false });
+      return;
+    }
+    const start = source.getBoundingClientRect();
+    const destination = target.getBoundingClientRect();
+    const morph = document.createElement('div');
+    const image = document.createElement('img');
+    const sourceStyle = getComputedStyle(source);
+    const targetStyle = getComputedStyle(target);
+    morph.className = 'detail-morph';
+    image.src = sourceImg.currentSrc || sourceImg.src;
+    image.alt = '';
+    image.style.padding = '18px';
+    morph.appendChild(image);
+    Object.assign(morph.style, {
+      top: `${start.top}px`, left: `${start.left}px`,
+      width: `${start.width}px`, height: `${start.height}px`,
+      borderRadius: sourceStyle.borderRadius,
+      backgroundColor: sourceStyle.backgroundColor,
+    });
+    document.body.appendChild(morph);
+    target.style.opacity = '0';
+    this._detailOrigin = null;
+    this.setState({ detailFlavor: null, detailTransitioning: false });
+    let finished = false;
+    let motion;
+    let imageMotion;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      target.style.opacity = '';
+      morph.remove();
+      if (motion && motion.playState === 'running') motion.cancel();
+      if (imageMotion && imageMotion.playState === 'running') imageMotion.cancel();
+      if (this._finishDetailMorph === finish) this._finishDetailMorph = null;
+    };
+    this._finishDetailMorph = finish;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!morph.isConnected) return;
+      motion = morph.animate([
+        {
+          top: `${start.top}px`, left: `${start.left}px`,
+          width: `${start.width}px`, height: `${start.height}px`,
+          borderRadius: sourceStyle.borderRadius,
+          backgroundColor: sourceStyle.backgroundColor,
+        },
+        {
+          top: `${destination.top}px`, left: `${destination.left}px`,
+          width: `${destination.width}px`, height: `${destination.height}px`,
+          borderRadius: targetStyle.borderRadius,
+          backgroundColor: targetStyle.backgroundColor,
+        },
+      ], { duration: 500, easing: 'cubic-bezier(.24,.76,.28,1)', fill: 'forwards' });
+      imageMotion = image.animate([
+        { padding: '18px' },
+        { padding: '0px' },
+      ], { duration: 500, easing: 'cubic-bezier(.24,.76,.28,1)', fill: 'forwards' });
+      motion.onfinish = finish;
+      motion.oncancel = finish;
+    }));
+  };
   prepareFlavorFlight = () => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+    if (this._finishDetailMorph) this._finishDetailMorph();
     if (this._finishFlight) this._finishFlight();
     const source = document.querySelector('.detail-visual');
     const sourceImg = source && source.querySelector('img');
@@ -365,9 +541,11 @@ class Component extends DCLogic {
       ? '✓ Combo completo — confira antes de finalizar.'
       : `✓ ${name} entrou no combo — escolha mais 1 sabor.`;
     window.clearTimeout(this._feedbackTimer);
+    this._detailOrigin = null;
     this.setState({
       selectedFlavors: nextFlavors,
       detailFlavor: null,
+      detailTransitioning: false,
       feedbackMessage,
     });
     this.animateFlavorToDock(preparedFlight);
@@ -429,7 +607,7 @@ class Component extends DCLogic {
   };
 
   renderVals() {
-    const { sheetOpen, selectedFlavors, detailFlavor, feedbackMessage } = this.state;
+    const { sheetOpen, selectedFlavors, detailFlavor, detailTransitioning, feedbackMessage } = this.state;
     const selectedCount = selectedFlavors.length;
     const detail = FLAVORS.find(f => f.name === detailFlavor);
     const countFlavor = (name) => selectedFlavors.filter(item => item === name).length;
@@ -441,7 +619,7 @@ class Component extends DCLogic {
         img: f.img,
         cardClass: 'flavor-card',
         photoClass: `flavor-photo ${f.color}`,
-        onOpen: () => this.openDetail(f.name),
+        onOpen: (event) => this.openDetail(f.name, event),
       };
     });
 
@@ -485,7 +663,7 @@ class Component extends DCLogic {
       hasDetail: !!detail,
       detailName: detail ? detail.name : '',
       detailImg: detail ? detail.img : '',
-      detailPhotoClass: detail ? `detail-visual ${detail.color}` : 'detail-visual',
+      detailPhotoClass: detail ? `detail-visual ${detail.color}${detailTransitioning ? ' detail-awaiting' : ''}` : 'detail-visual',
       detailActionLabel: selectedCount >= 2 ? 'COMBO COMPLETO' : 'ADICIONAR AO COMBO',
       detailAddClass: `detail-action${detailQuantity ? ' hidden' : selectedCount >= 2 ? ' disabled' : ''}`,
       detailAddDisabled: selectedCount >= 2 ? 'true' : 'false',
