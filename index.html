@@ -17,7 +17,7 @@ body{margin:0;overflow:hidden;background:#000;font-family:'Space Grotesk',ui-rou
 /* One continuous mobile story: campaign first, real flavor cards already peeking below. */
 .offer-app{position:relative;width:100%;max-width:480px;height:100dvh;margin:0 auto;overflow:hidden;background:#07172e}
 .shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y proximity;scroll-behavior:smooth;background:#081a35;-webkit-overflow-scrolling:touch}
-.offer-hero{position:relative;z-index:1;width:100%;height:clamp(430px,68dvh,650px);flex-shrink:0;overflow:hidden;cursor:pointer;touch-action:pan-y;background:#06194d;scroll-snap-align:start}
+.offer-hero{position:relative;z-index:1;width:100%;height:clamp(360px,56dvh,540px);flex-shrink:0;overflow:hidden;cursor:pointer;touch-action:pan-y;background:#06194d;scroll-snap-align:start}
 .offer-hero:focus-visible{outline:3px solid #fff200;outline-offset:-5px}
 .offer-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;pointer-events:none;transition:transform .5s cubic-bezier(.22,.8,.22,1)}
 .offer-hero:active .offer-art{transform:scale(1.012)}
@@ -231,6 +231,10 @@ class Component extends DCLogic {
   goToCatalog = () => {
     this.scrollToSection('.catalog-screen');
   };
+  isCatalogActive = () => {
+    const catalog = document.querySelector('.catalog-screen');
+    return !!catalog && catalog.getBoundingClientRect().top <= 2;
+  };
   backToHero = () => {
     this.scrollToSection('.offer-hero');
   };
@@ -347,6 +351,10 @@ class Component extends DCLogic {
     }));
   };
   openDetail = (name, event) => {
+    if (!this.isCatalogActive()) {
+      this.goToCatalog();
+      return;
+    }
     const prepared = this.prepareDetailMorph(event);
     this._detailOrigin = prepared ? prepared.source : null;
     this.setState({ detailFlavor: name, detailTransitioning: !!prepared });
