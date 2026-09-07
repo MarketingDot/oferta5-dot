@@ -58,6 +58,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .dock-thumb{width:42px;height:42px;padding:3px;border:3px solid #fff;border-radius:50%;background-size:cover;background-position:center;background-repeat:no-repeat;object-fit:contain;box-sizing:border-box;display:block;filter:drop-shadow(0 3px 4px rgba(5,20,43,.16))}
 .dock-empty{width:38px;height:38px;border:1px dashed rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:12px}
 .combo-count{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#b9ef40;color:#0b203e;font-size:14px;font-weight:900;display:grid;place-items:center}
+.combo-count.ready{width:112px;border-radius:24px;font-size:10px;line-height:1.1;letter-spacing:.02em;text-align:center;text-transform:uppercase}
 .dock-hint{position:absolute;right:79px;bottom:9px;color:#aeb8c7;font-size:9px;font-weight:700;letter-spacing:.03em}
 .flavor-flight{position:fixed;z-index:1000;overflow:hidden;pointer-events:none;box-sizing:border-box;box-shadow:0 18px 42px rgba(7,23,46,.26);will-change:top,left,width,height,border-radius,transform}
 .flavor-flight img{width:100%;height:100%;padding:4%;object-fit:contain;box-sizing:border-box}
@@ -154,7 +155,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
               <sc-if value="{{ showFirstEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
               <sc-if value="{{ showSecondEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
             </div>
-            <span class="combo-count">{{ selectedCount }}</span>
+            <span class="{{ comboCountClass }}">{{ comboCountLabel }}</span>
             <span class="dock-hint">{{ dockHint }}</span>
           </div>
         </section>
@@ -695,8 +696,9 @@ class Component extends DCLogic {
       catalogSubheading: feedbackMessage || (selectedCount === 0 ? 'Toque em um produto para ver a embalagem completa.' : selectedCount === 1 ? 'Escolha outro sabor ou toque no mesmo para repetir.' : 'Confira os sabores e deslize para baixo para finalizar.'),
       catalogSubheadingClass: `catalog-subheading${feedbackMessage ? ' feedback' : ''}`,
       dockClass: `combo-dock${selectedCount === 2 ? ' ready' : ''}`,
-      dockHint: selectedCount === 0 ? 'Escolha 2 sabores' : selectedCount === 1 ? 'Escolha mais 1' : 'Ver checkout ↓',
-      selectedCount,
+      dockHint: selectedCount === 0 ? 'Escolha 2 sabores' : selectedCount === 1 ? 'Escolha mais 1' : '',
+      comboCountClass: `combo-count${selectedCount === 2 ? ' ready' : ''}`,
+      comboCountLabel: selectedCount === 2 ? 'Ir para o checkout' : selectedCount,
       showFirstEmpty: selectedCount === 0,
       showSecondEmpty: selectedCount < 2,
       comboComplete: selectedCount === 2,
