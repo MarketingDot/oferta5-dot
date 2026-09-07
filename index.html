@@ -55,7 +55,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .dock-thumb-button{width:42px;height:42px;flex-shrink:0;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;transition:transform .16s ease}
 .dock-thumb-button:active{transform:scale(.92)}
 .dock-thumb-button:focus-visible{outline:2px solid #b9ef40;outline-offset:3px}
-.dock-thumb{width:42px;height:42px;border:3px solid #fff;border-radius:50%;background:#fff;object-fit:cover;box-sizing:border-box;display:block}
+.dock-thumb{width:42px;height:42px;padding:3px;border:3px solid #fff;border-radius:50%;background-size:cover;background-position:center;background-repeat:no-repeat;object-fit:contain;box-sizing:border-box;display:block;filter:drop-shadow(0 3px 4px rgba(5,20,43,.16))}
 .dock-empty{width:38px;height:38px;border:1px dashed rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:12px}
 .combo-count{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#b9ef40;color:#0b203e;font-size:14px;font-weight:900;display:grid;place-items:center}
 .dock-hint{position:absolute;right:79px;bottom:9px;color:#aeb8c7;font-size:9px;font-weight:700;letter-spacing:.03em}
@@ -91,7 +91,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .checkout-back{border:0;background:none;color:#b9ef40;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
 .checkout-list{display:grid;gap:16px}
 .checkout-item{display:grid;grid-template-columns:54px 1fr 34px;gap:12px;align-items:center}
-.checkout-item img{width:54px;height:54px;border:3px solid #fff;border-radius:50%;background:#fff;object-fit:cover;box-sizing:border-box}
+.checkout-item img{width:54px;height:54px;padding:4px;border:3px solid #fff;border-radius:50%;background-size:cover;background-position:center;background-repeat:no-repeat;object-fit:contain;box-sizing:border-box;filter:drop-shadow(0 3px 4px rgba(5,20,43,.16))}
 .checkout-item small{display:block;color:#8fa0b6;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .checkout-item b{display:block;margin-top:3px;color:#fff;font-size:14px;line-height:1.2}
 .remove-item{width:32px;height:32px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(255,255,255,.05);color:#fff;font-size:17px;cursor:pointer}
@@ -148,7 +148,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
             <div class="dock-thumbs">
               <sc-for list="{{ cartItems }}" as="item" hint-placeholder-count="2">
                 <button onClick="{{ item.onOpen }}" class="dock-thumb-button" aria-label="Editar {{ item.name }}">
-                  <img class="dock-thumb" src="{{ item.img }}" alt="">
+                  <img class="{{ item.thumbClass }}" src="{{ item.img }}" alt="">
                 </button>
               </sc-for>
               <sc-if value="{{ showFirstEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
@@ -169,7 +169,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
             <div class="checkout-list">
               <sc-for list="{{ checkoutItems }}" as="item" hint-placeholder-count="2">
                 <div class="checkout-item">
-                  <img src="{{ item.img }}" alt="{{ item.name }}">
+                  <img class="{{ item.thumbClass }}" src="{{ item.img }}" alt="{{ item.name }}">
                   <span><small>1 × sabor</small><b>{{ item.name }}</b></span>
                   <button onClick="{{ item.onRemove }}" class="remove-item" aria-label="Remover {{ item.name }}">×</button>
                 </div>
@@ -492,6 +492,7 @@ class Component extends DCLogic {
     const rect = source.getBoundingClientRect();
     const flight = document.createElement('div');
     const image = document.createElement('img');
+    const sourceStyle = getComputedStyle(source);
     flight.className = 'flavor-flight';
     image.src = sourceImg.currentSrc || sourceImg.src;
     image.alt = '';
@@ -501,8 +502,12 @@ class Component extends DCLogic {
       left: `${rect.left}px`,
       width: `${rect.width}px`,
       height: `${rect.height}px`,
-      borderRadius: getComputedStyle(source).borderRadius,
-      backgroundColor: getComputedStyle(source).backgroundColor,
+      borderRadius: sourceStyle.borderRadius,
+      backgroundColor: sourceStyle.backgroundColor,
+      backgroundImage: sourceStyle.backgroundImage,
+      backgroundSize: sourceStyle.backgroundSize,
+      backgroundPosition: sourceStyle.backgroundPosition,
+      backgroundRepeat: sourceStyle.backgroundRepeat,
     });
     document.body.appendChild(flight);
     const finishPrepared = () => {
@@ -524,6 +529,7 @@ class Component extends DCLogic {
         return;
       }
       const destination = target.getBoundingClientRect();
+      const targetStyle = getComputedStyle(target);
       let finished = false;
       let animation;
       const finish = () => {
@@ -551,7 +557,7 @@ class Component extends DCLogic {
         {
           top: `${destination.top}px`, left: `${destination.left}px`,
           width: `${destination.width}px`, height: `${destination.height}px`,
-          borderRadius: '50%', backgroundColor: '#fff', transform: 'rotate(0deg)',
+          borderRadius: '50%', backgroundColor: targetStyle.backgroundColor, transform: 'rotate(0deg)',
         },
       ], { duration: 680, easing: 'cubic-bezier(.18,.82,.28,1)', fill: 'forwards' });
       animation.onfinish = () => {
@@ -662,12 +668,12 @@ class Component extends DCLogic {
 
     const cartItems = selectedFlavors.map(name => {
       const flavor = FLAVORS.find(f => f.name === name);
-      return { name, img: flavor.img, onOpen: (event) => this.openCartFlavor(name, event) };
+      return { name, img: flavor.img, thumbClass: `dock-thumb ${flavor.color}`, onOpen: (event) => this.openCartFlavor(name, event) };
     });
 
     const checkoutItems = selectedFlavors.map((name, index) => {
       const flavor = FLAVORS.find(f => f.name === name);
-      return { name, img: flavor.img, onRemove: () => this.removeItem(index) };
+      return { name, img: flavor.img, thumbClass: `checkout-thumb ${flavor.color}`, onRemove: () => this.removeItem(index) };
     });
 
     return {
