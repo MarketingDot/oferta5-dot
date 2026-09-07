@@ -12,24 +12,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 @font-face{font-family:'Inter Italic';src:url('./assets/Inter-Italic.ttf') format('truetype-variations');font-weight:100 900;font-style:italic}
-body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+body{margin:0;overflow:hidden;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 
-/* The offer art behaves like the first card in a vertical story. */
-.offer-hero{position:relative;width:100%;height:100%;overflow:hidden;cursor:pointer;touch-action:pan-y;background:#06194d}
+/* One continuous mobile story: campaign first, real flavor cards already peeking below. */
+.offer-app{position:relative;width:100%;max-width:480px;height:100dvh;margin:0 auto;overflow:hidden;background:#07172e}
+.shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y proximity;scroll-behavior:smooth;background:#081a35;-webkit-overflow-scrolling:touch}
+.offer-hero{position:relative;z-index:1;width:100%;height:clamp(430px,68dvh,650px);flex-shrink:0;overflow:hidden;cursor:pointer;touch-action:pan-y;background:#06194d;scroll-snap-align:start}
 .offer-hero:focus-visible{outline:3px solid #fff200;outline-offset:-5px}
-.offer-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
-.hero-scroll-cue{position:absolute;right:0;bottom:max(16px,env(safe-area-inset-bottom));left:0;display:flex;flex-direction:column;align-items:center;gap:5px;color:#fff;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.55);pointer-events:none;animation:cueFloat 1.8s ease-in-out infinite}
+.offer-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;pointer-events:none;transition:transform .5s cubic-bezier(.22,.8,.22,1)}
+.offer-hero:active .offer-art{transform:scale(1.012)}
+.hero-scroll-cue{position:absolute;right:0;bottom:51px;left:0;display:flex;flex-direction:column;align-items:center;gap:5px;color:#fff;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.55);pointer-events:none;animation:cueFloat 1.8s ease-in-out infinite}
 .hero-scroll-cue::before{content:'';position:absolute;inset:-12px -28px;border-radius:30px;background:rgba(4,17,56,.42);box-shadow:0 8px 26px rgba(0,0,0,.16);backdrop-filter:blur(6px);z-index:-1}
 .hero-scroll-arrow{display:block;width:18px;height:18px;border-right:2px solid #fff200;border-bottom:2px solid #fff200;transform:rotate(45deg)}
 @keyframes cueFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
 
 /* Full-screen shop: ivory catalog, navy checkout, lime interaction. */
-.purchase-sheet{position:fixed;inset:0;z-index:20;width:100%;max-width:480px;height:100dvh;margin:0 auto;overflow:hidden;background:#f7f6f1;box-shadow:0 0 50px rgba(4,17,38,.2);animation:selectorSlideUp .52s cubic-bezier(.22,.82,.24,1) both}
-@keyframes selectorSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;scroll-behavior:smooth;background:#081a35}
-.catalog-screen{position:relative;height:100dvh;min-height:560px;overflow:hidden;scroll-snap-align:start;background:#f7f6f1;display:flex;flex-direction:column}
+.catalog-screen{position:relative;z-index:2;height:100dvh;min-height:560px;margin-top:-32px;overflow:hidden;border-radius:34px 34px 0 0;scroll-snap-align:start;background:#f7f6f1;box-shadow:0 -14px 34px rgba(4,17,38,.2);display:flex;flex-direction:column}
+.catalog-handle{width:46px;height:4px;margin:10px auto 0;flex-shrink:0;border-radius:99px;background:#d7d8d5}
 .catalog-topbar{height:61px;padding:6px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
 .catalog-title{text-align:center;color:#0b203e;font-size:14px;font-weight:800;letter-spacing:-.01em}
+.combo-progress{width:42px;height:28px;border-radius:14px;background:#e8ebdf;color:#0b203e;font-size:11px;font-weight:900;display:grid;place-items:center}
 .icon-button{width:42px;height:42px;border:0;border-radius:50%;background:#fff;box-shadow:0 4px 16px rgba(11,32,62,.08);color:#0b203e;font-family:inherit;font-size:20px;font-weight:600;cursor:pointer;display:grid;place-items:center}
 .icon-button.close{font-size:25px;font-weight:400}
 .catalog-intro{padding:12px 18px 13px;flex-shrink:0}
@@ -64,7 +66,7 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .flavor-flight img{width:100%;height:100%;padding:4%;object-fit:contain;box-sizing:border-box}
 .detail-morph{position:fixed;z-index:1001;overflow:hidden;pointer-events:none;box-sizing:border-box;background-size:cover;background-position:center;background-repeat:no-repeat;box-shadow:0 20px 48px rgba(7,23,46,.2);will-change:top,left,width,height,border-radius,background-color}
 .detail-morph img{width:100%;height:100%;object-fit:contain;box-sizing:border-box;will-change:padding,transform}
-.detail-screen{position:absolute;inset:0;z-index:10;background:#fff;display:flex;flex-direction:column;animation:detailShellIn .22s ease-out both}
+.detail-screen{position:fixed;inset:0;z-index:50;width:100%;max-width:480px;height:100dvh;margin:auto;background:#fff;box-sizing:border-box;display:flex;flex-direction:column;animation:detailShellIn .22s ease-out both}
 @keyframes detailShellIn{from{opacity:0}to{opacity:1}}
 @keyframes detailContentIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .detail-topbar{height:65px;padding:8px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
@@ -102,34 +104,27 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
 .summary-row strong{font-size:27px;line-height:1;letter-spacing:-.04em}
 .checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
 @media (max-height:680px){.catalog-topbar{height:52px}.catalog-intro{padding-top:5px;padding-bottom:9px}.catalog-intro h2{font-size:24px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.detail-info h2{font-size:27px}}
-@media (prefers-reduced-motion:reduce){.purchase-sheet,.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap,.hero-scroll-cue{animation:none}.flavor-card,.flavor-open,.dock-thumb-button{transition:none}}
+@media (prefers-reduced-motion:reduce){.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap,.hero-scroll-cue{animation:none}.offer-art,.flavor-card,.flavor-open,.dock-thumb-button{transition:none}}
 
 </style>
 </helmet>
 
-<div style="width:100%;max-width:480px;margin:0 auto;position:relative;height:100dvh;overflow:hidden;background:#000">
+<div class="offer-app">
+  <div class="shop-flow">
+    <!-- Cropped campaign cover; the live selector remains visible in the first fold. -->
+    <section onClick="{{ goToCatalog }}" onKeyDown="{{ heroKeyDown }}" class="offer-hero" role="button" tabindex="0" aria-label="Ir para a seleção de sabores">
+      <img src="./assets/banner-hero.png" alt="Promoção DOT: compre um combo e ganhe outro" class="offer-art">
+      <span class="hero-scroll-cue"><span>Deslize para escolher</span><i class="hero-scroll-arrow"></i></span>
+    </section>
 
-  <!-- Hero -->
-  <div onClick="{{ openSheet }}" onKeyDown="{{ heroKeyDown }}" onWheel="{{ heroWheel }}" onTouchStart="{{ heroTouchStart }}" onTouchMove="{{ heroTouchMove }}" onTouchEnd="{{ heroTouchEnd }}" onTouchCancel="{{ heroTouchCancel }}" class="offer-hero" role="button" tabindex="0" aria-label="Deslize para escolher os sabores do combo">
-    <img src="./assets/banner-hero.png" alt="Promoção DOT: compre um combo e ganhe outro" class="offer-art">
-    <span class="hero-scroll-cue"><span>Deslize para escolher</span><i class="hero-scroll-arrow"></i></span>
-  </div>
-
-  <!-- Lightbox -->
-  <div id="img-lightbox" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(4,20,47,.88);align-items:center;justify-content:center;padding:24px;cursor:zoom-out">
-    <img id="img-lightbox-img" src="" alt="" style="max-width:100%;max-height:88vh;border-radius:14px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)">
-  </div>
-
-  <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
-    <div class="purchase-sheet">
-      <div class="shop-flow">
-        <!-- Full-screen catalog -->
-        <section class="catalog-screen">
-          <div class="catalog-topbar">
-            <button onClick="{{ closeSheet }}" class="icon-button" aria-label="Voltar">←</button>
-            <span class="catalog-title">Monte seu combo</span>
-            <button onClick="{{ closeSheet }}" class="icon-button close" aria-label="Fechar">×</button>
-          </div>
+    <!-- Full-screen catalog -->
+    <section class="catalog-screen">
+      <span class="catalog-handle" aria-hidden="true"></span>
+      <div class="catalog-topbar">
+        <button onClick="{{ backToHero }}" class="icon-button" aria-label="Voltar para a oferta">↑</button>
+        <span class="catalog-title">Monte seu combo</span>
+        <span class="combo-progress">{{ progressLabel }}</span>
+      </div>
           <div class="catalog-intro">
             <h2>{{ catalogHeading }}</h2>
             <p class="{{ catalogSubheadingClass }}">{{ catalogSubheading }}</p>
@@ -158,11 +153,11 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
             <span class="{{ comboCountClass }}">{{ comboCountLabel }}</span>
             <span class="dock-hint">{{ dockHint }}</span>
           </div>
-        </section>
+    </section>
 
-        <!-- Checkout revealed by vertical scroll -->
-        <sc-if value="{{ comboComplete }}" hint-placeholder-val="{{ true }}">
-          <section class="checkout-screen">
+    <!-- Checkout revealed by vertical scroll -->
+    <sc-if value="{{ comboComplete }}" hint-placeholder-val="{{ true }}">
+      <section class="checkout-screen">
             <div class="checkout-head">
               <h2>Seu combo</h2>
               <button onClick="{{ backToCatalog }}" class="checkout-back">↑ SABORES</button>
@@ -180,12 +175,12 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
               <div class="summary-row"><span>Combo escolhido</span><strong>2 sabores</strong></div>
               <button onClick="{{ finalizarCompra }}" class="checkout-button">FINALIZAR COMPRA →</button>
             </div>
-          </section>
-        </sc-if>
+      </section>
+    </sc-if>
 
-        <!-- Full-screen product detail -->
-        <sc-if value="{{ hasDetail }}" hint-placeholder-val="{{ true }}">
-          <section class="detail-screen">
+    <!-- Full-screen product detail -->
+    <sc-if value="{{ hasDetail }}" hint-placeholder-val="{{ true }}">
+      <section class="detail-screen">
             <div class="detail-topbar">
               <button onClick="{{ closeDetail }}" class="icon-button" aria-label="Voltar aos sabores">←</button>
               <span class="catalog-title">Detalhes do sabor</span>
@@ -205,12 +200,14 @@ body{margin:0;background:#000;font-family:'Space Grotesk',ui-rounded,'Avenir Nex
                 <button onClick="{{ detailPlus }}" class="{{ detailPlusClass }}" aria-label="Adicionar mais uma unidade" aria-disabled="{{ detailPlusDisabled }}">+</button>
               </div>
             </div>
-          </section>
-        </sc-if>
-      </div>
-    </div>
-  </sc-if>
+      </section>
+    </sc-if>
+  </div>
 
+  <!-- Lightbox -->
+  <div id="img-lightbox" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(4,20,47,.88);align-items:center;justify-content:center;padding:24px;cursor:zoom-out">
+    <img id="img-lightbox-img" src="" alt="" style="max-width:100%;max-height:88vh;border-radius:14px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)">
+  </div>
 </div>
 
 </x-dc>
@@ -223,61 +220,30 @@ const FLAVORS = [
 ];
 
 class Component extends DCLogic {
+  _didAutoOpenCheckout = false;
+
   state = {
-    sheetOpen: false,
     selectedFlavors: [],
     detailFlavor: null,
     detailTransitioning: false,
     feedbackMessage: '',
   };
 
-  openSheet = () => {
-    if (this.state.sheetOpen) return;
-    window.clearTimeout(this._feedbackTimer);
-    window.clearTimeout(this._checkoutTimer);
-    this._didAutoOpenCheckout = false;
-    this._bodyScrollY = window.scrollY;
-    document.body.style.cssText = `position:fixed;top:-${this._bodyScrollY}px;width:100%;overflow:hidden`;
-    this.setState({ sheetOpen: true, selectedFlavors: [], detailFlavor: null, detailTransitioning: false, feedbackMessage: '' });
+  scrollToSection = (selector, behavior = 'smooth') => {
+    const section = document.querySelector(selector);
+    if (section) section.scrollIntoView({ behavior, block: 'start' });
+  };
+  goToCatalog = () => {
+    this.scrollToSection('.catalog-screen');
+  };
+  backToHero = () => {
+    this.scrollToSection('.offer-hero');
   };
   heroKeyDown = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      this.openSheet();
+      this.goToCatalog();
     }
-  };
-  heroWheel = (event) => {
-    if (event.deltaY > 6) this.openSheet();
-  };
-  heroTouchStart = (event) => {
-    const touch = event.touches && event.touches[0];
-    this._heroTouchStartY = touch ? touch.clientY : null;
-    this._heroTouchLastY = this._heroTouchStartY;
-  };
-  heroTouchMove = (event) => {
-    const touch = event.touches && event.touches[0];
-    if (touch) this._heroTouchLastY = touch.clientY;
-  };
-  heroTouchEnd = () => {
-    if (this._heroTouchStartY === null || this._heroTouchLastY === null) return;
-    const distance = this._heroTouchStartY - this._heroTouchLastY;
-    this._heroTouchStartY = null;
-    this._heroTouchLastY = null;
-    if (distance > 18) this.openSheet();
-  };
-  heroTouchCancel = () => {
-    this._heroTouchStartY = null;
-    this._heroTouchLastY = null;
-  };
-  closeSheet = () => {
-    window.clearTimeout(this._feedbackTimer);
-    window.clearTimeout(this._checkoutTimer);
-    if (this._finishFlight) this._finishFlight();
-    if (this._finishDetailMorph) this._finishDetailMorph();
-    if (this._cancelRemove) this._cancelRemove();
-    document.body.style.cssText = '';
-    window.scrollTo(0, this._bodyScrollY || 0);
-    this.setState({ sheetOpen: false, detailFlavor: null, detailTransitioning: false, feedbackMessage: '' });
   };
   prepareDetailMorph = (event) => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
@@ -615,6 +581,8 @@ class Component extends DCLogic {
     if (this._removePending) return;
     const nextFlavors = this.state.selectedFlavors.filter((_, i) => i !== index);
     const flow = document.querySelector('.shop-flow');
+    const catalog = document.querySelector('.catalog-screen');
+    const catalogTop = catalog ? catalog.offsetTop : 0;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let settled = false;
     const cleanup = () => {
@@ -634,33 +602,30 @@ class Component extends DCLogic {
       settled = true;
       cleanup();
     };
-    if (!flow || flow.scrollTop < 2 || reduceMotion) {
-      if (flow) flow.scrollTo({ top: 0, behavior: 'auto' });
+    if (!flow || Math.abs(flow.scrollTop - catalogTop) < 2 || reduceMotion) {
+      if (flow) flow.scrollTo({ top: catalogTop, behavior: 'auto' });
       commit();
       return;
     }
     this._removePending = true;
     flow.addEventListener('scrollend', commit, { once: true });
     this._removeTimer = window.setTimeout(commit, 700);
-    flow.scrollTo({ top: 0, behavior: 'smooth' });
+    flow.scrollTo({ top: catalogTop, behavior: 'smooth' });
   };
   openCheckout = (event) => {
     if (event && event.target && event.target.closest('.dock-thumb-button')) return;
     if (this.state.selectedFlavors.length < 2) return;
-    const flow = document.querySelector('.shop-flow');
-    if (flow) flow.scrollTo({ top: flow.clientHeight, behavior: 'smooth' });
+    this.scrollToSection('.checkout-screen');
   };
   backToCatalog = () => {
-    const flow = document.querySelector('.shop-flow');
-    if (flow) flow.scrollTo({ top: 0, behavior: 'smooth' });
+    this.scrollToSection('.catalog-screen');
   };
   finalizarCompra = () => {
-    document.body.style.cssText = '';
     try { window.top.location.href = 'https://minhadot.com'; } catch(e) { window.location.href = 'https://minhadot.com'; }
   };
 
   renderVals() {
-    const { sheetOpen, selectedFlavors, detailFlavor, detailTransitioning, feedbackMessage } = this.state;
+    const { selectedFlavors, detailFlavor, detailTransitioning, feedbackMessage } = this.state;
     const selectedCount = selectedFlavors.length;
     const detail = FLAVORS.find(f => f.name === detailFlavor);
     const countFlavor = (name) => selectedFlavors.filter(item => item === name).length;
@@ -687,15 +652,9 @@ class Component extends DCLogic {
     });
 
     return {
-      sheetOpen,
-      openSheet: this.openSheet,
+      goToCatalog: this.goToCatalog,
+      backToHero: this.backToHero,
       heroKeyDown: this.heroKeyDown,
-      heroWheel: this.heroWheel,
-      heroTouchStart: this.heroTouchStart,
-      heroTouchMove: this.heroTouchMove,
-      heroTouchEnd: this.heroTouchEnd,
-      heroTouchCancel: this.heroTouchCancel,
-      closeSheet: this.closeSheet,
       closeDetail: this.closeDetail,
       confirmDetail: this.confirmDetail,
       openCheckout: this.openCheckout,
@@ -704,6 +663,7 @@ class Component extends DCLogic {
       catalogHeading: selectedCount === 0 ? 'Escolha seu primeiro sabor' : selectedCount === 1 ? 'Escolha mais um sabor' : 'Seu combo está pronto',
       catalogSubheading: feedbackMessage || (selectedCount === 0 ? 'Toque em um produto para ver a embalagem completa.' : selectedCount === 1 ? 'Escolha outro sabor ou toque no mesmo para repetir.' : 'Confira os sabores e deslize para baixo para finalizar.'),
       catalogSubheadingClass: `catalog-subheading${feedbackMessage ? ' feedback' : ''}`,
+      progressLabel: `${selectedCount}/2`,
       dockClass: `combo-dock${selectedCount === 2 ? ' ready' : ''}`,
       dockHint: selectedCount === 0 ? 'Escolha 2 sabores' : selectedCount === 1 ? 'Escolha mais 1' : '',
       comboCountClass: `combo-count${selectedCount === 2 ? ' ready' : ''}`,
