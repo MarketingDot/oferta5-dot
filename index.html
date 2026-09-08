@@ -101,7 +101,24 @@ button,input,select,textarea{font-family:var(--font-dot)}
 .detail-topbar{height:65px;padding:8px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
 .detail-visual{position:relative;min-height:0;flex:1;margin:3px 18px 0;border-radius:28px;overflow:hidden;background-size:cover;background-position:center;background-repeat:no-repeat}
 .detail-visual.detail-awaiting{opacity:0}
-.detail-visual img{position:absolute;inset:0;width:100%;height:100%;padding:4%;box-sizing:border-box;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(5,20,43,.17));transform:scale(1.04)}
+.detail-carousel-track{width:100%;height:100%;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.detail-carousel-track::-webkit-scrollbar{display:none}
+.detail-slide{position:relative;width:100%;height:100%;flex:0 0 100%;box-sizing:border-box;scroll-snap-align:start;scroll-snap-stop:always}
+.detail-product-photo{position:absolute;inset:0;width:100%;height:100%;padding:4%;box-sizing:border-box;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(5,20,43,.17));transform:scale(1.04)}
+.detail-info-slide{padding:24px 12px 29px;background:linear-gradient(145deg,rgba(255,221,226,.85),rgba(239,54,132,.76));display:flex;flex-direction:column;justify-content:flex-start;color:#07172e}
+.info-equation{min-height:0;flex:1;display:grid;grid-template-columns:minmax(94px,.7fr) 22px minmax(155px,1.3fr);gap:6px;align-items:center}
+.info-pouch{width:100%;max-height:218px;object-fit:contain;filter:drop-shadow(0 9px 10px rgba(91,8,47,.22))}
+.info-equals{font-size:27px;font-weight:900;text-align:center}
+.info-can-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px 2px;align-items:end}
+.info-can{width:100%;height:48px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(7,23,46,.2))}
+.info-slide-note{max-width:330px;margin:14px auto 9px;font-size:15px;font-weight:850;line-height:1.18;text-align:center}
+.detail-carousel-arrow{position:absolute;top:50%;z-index:4;width:42px;height:42px;margin-top:-21px;border:0;border-radius:50%;background:#fceb2e;color:#07172e;font-family:inherit;font-size:20px;font-weight:600;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 16px rgba(11,32,62,.08);transition:opacity .18s ease,transform .16s ease}
+.detail-carousel-arrow:active{transform:scale(.92)}
+.detail-carousel-arrow.prev{left:9px;border:0;background:transparent;box-shadow:none;text-shadow:0 1px 4px rgba(254,251,230,.8)}.detail-carousel-arrow.next{right:9px}
+.detail-carousel-arrow.hidden{opacity:0;pointer-events:none}
+.detail-carousel-dots{position:absolute;bottom:10px;left:50%;z-index:4;display:flex;gap:6px;transform:translateX(-50%)}
+.detail-carousel-dot{width:7px;height:7px;padding:0;border:0;border-radius:50%;background:rgba(7,23,46,.38);cursor:pointer}
+.detail-carousel-dot.active{width:20px;border-radius:7px;background:#fefbe6;box-shadow:0 0 0 1px rgba(7,23,46,.25)}
 .detail-info{padding:24px 22px 104px;background:#fefbe6}
 .detail-info-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
 .detail-name{min-width:0}
@@ -150,7 +167,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
 .checkout-button i{font-size:15px;line-height:0;display:inline-flex}
 @media (min-width:520px){.offer-app{--catalog-preview:calc(20dvh - 6px);height:calc(100dvh - 32px);margin:16px auto;border-radius:34px;box-shadow:0 28px 70px rgba(4,17,38,.24)}.offer-hero,.catalog-screen,.checkout-screen{height:calc(100dvh - 32px)}.offer-products{height:170px}}
 @media (max-height:680px){.offer-copy{top:50px}.offer-copy h1{font-size:36px}.offer-copy p{margin-top:7px}.offer-products{height:160px}.selector-stage{padding-top:6px}.catalog-topbar{height:42px}.flavor-icons-preview{top:46px}.flavor-icon-preview{width:47px;height:42px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}}
-@media (prefers-reduced-motion:reduce){.shop-flow{scroll-behavior:auto}.catalog-screen,.flavor-grid{transition:none}.catalog-scroll-cue span,.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap,.dock-thumb-button.free,.dock-free-badge.visible{animation:none}.flavor-card,.flavor-open,.dock-thumb-button,.checkout-thumb-button{transition:none}}
+@media (prefers-reduced-motion:reduce){.shop-flow{scroll-behavior:auto}.catalog-screen,.flavor-grid,.detail-carousel-track{transition:none}.catalog-scroll-cue span,.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap,.dock-thumb-button.free,.dock-free-badge.visible{animation:none}.flavor-card,.flavor-open,.dock-thumb-button,.checkout-thumb-button{transition:none}}
 
 </style>
 </helmet>
@@ -258,7 +275,33 @@ button,input,select,textarea{font-family:var(--font-dot)}
               <span class="catalog-title">Detalhes do sabor</span>
               <span></span>
             </div>
-            <div class="{{ detailPhotoClass }}"><img src="{{ detailImg }}" alt="{{ detailName }}"></div>
+            <div class="{{ detailPhotoClass }}">
+              <div onScroll="{{ detailCarouselScroll }}" class="{{ detailCarouselTrackClass }}">
+                <div class="detail-slide"><img class="detail-product-photo" src="{{ detailImg }}" alt="{{ detailName }}"></div>
+                <sc-if value="{{ hasInfoCarousel }}" hint-placeholder-val="{{ true }}">
+                  <div class="detail-slide detail-info-slide">
+                    <div class="info-equation" aria-label="Um pouch equivale a 25 latas de energético">
+                      <img class="info-pouch" src="{{ detailImg }}" alt="">
+                      <span class="info-equals">=</span>
+                      <div class="info-can-grid" aria-hidden="true">
+                        <sc-for list="{{ infoCans }}" as="can" hint-placeholder-count="25">
+                          <img class="info-can" src="{{ can.img }}" alt="">
+                        </sc-for>
+                      </div>
+                    </div>
+                    <p class="info-slide-note">Um pouch rende o equivalente a 25 latas de energético.</p>
+                  </div>
+                </sc-if>
+              </div>
+              <sc-if value="{{ hasInfoCarousel }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ detailCarouselPrev }}" class="{{ detailPrevClass }}" aria-label="Ver imagem do produto">←</button>
+                <button onClick="{{ detailCarouselNext }}" class="{{ detailNextClass }}" aria-label="Ver rendimento do produto">→</button>
+                <div class="detail-carousel-dots" aria-label="Imagens do produto">
+                  <button onClick="{{ detailCarouselFirst }}" class="{{ detailFirstDotClass }}" aria-label="Imagem 1 de 2"></button>
+                  <button onClick="{{ detailCarouselSecond }}" class="{{ detailSecondDotClass }}" aria-label="Imagem 2 de 2"></button>
+                </div>
+              </sc-if>
+            </div>
             <div class="detail-info">
               <div class="detail-info-head">
                 <div class="detail-name">
@@ -318,6 +361,10 @@ const FLAVORS = [
     color: 'fl-citrus',
   },
 ];
+const INFO_CANS = Array.from({ length: 25 }, (_, index) => ({
+  index,
+  img: './assets/info-can-frutas-vermelhas.png',
+}));
 
 class Component extends DCLogic {
   _didAutoOpenCheckout = false;
@@ -327,6 +374,7 @@ class Component extends DCLogic {
     selectedFlavors: [],
     detailFlavor: null,
     detailPriceIndex: null,
+    detailSlide: 0,
     detailTransitioning: false,
   };
 
@@ -563,13 +611,34 @@ class Component extends DCLogic {
     const prepared = this.prepareDetailMorph(event);
     this._detailOrigin = prepared ? prepared.source : null;
     const nextPriceIndex = priceIndex === null ? Math.min(this.state.selectedFlavors.length, 1) : priceIndex;
-    this.setState({ detailFlavor: name, detailPriceIndex: nextPriceIndex, detailTransitioning: !!prepared });
+    this.setState({ detailFlavor: name, detailPriceIndex: nextPriceIndex, detailSlide: 0, detailTransitioning: !!prepared });
     this.animateDetailExpansion(prepared, name);
   };
   openCartFlavor = (name, event, index) => {
     if (event) event.stopPropagation();
     this.openDetail(name, event, index);
   };
+  detailCarouselScroll = (event) => {
+    if (this.state.detailFlavor !== 'Frutas Vermelhas' || this._detailCarouselScrollFrame) return;
+    const track = event.currentTarget;
+    this._detailCarouselScrollFrame = requestAnimationFrame(() => {
+      this._detailCarouselScrollFrame = null;
+      if (!track || !track.clientWidth) return;
+      const nextSlide = Math.max(0, Math.min(1, Math.round(track.scrollLeft / track.clientWidth)));
+      if (nextSlide !== this.state.detailSlide) this.setState({ detailSlide: nextSlide });
+    });
+  };
+  detailCarouselGoTo = (slide) => {
+    const nextSlide = Math.max(0, Math.min(1, slide));
+    const track = document.querySelector('.detail-carousel-track');
+    if (track) {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      track.scrollTo({ left: track.clientWidth * nextSlide, behavior: reducedMotion ? 'auto' : 'smooth' });
+    }
+    if (nextSlide !== this.state.detailSlide) this.setState({ detailSlide: nextSlide });
+  };
+  detailCarouselPrev = () => this.detailCarouselGoTo(0);
+  detailCarouselNext = () => this.detailCarouselGoTo(1);
   closeDetail = () => {
     const { detailFlavor } = this.state;
     if (!detailFlavor) return;
@@ -766,6 +835,7 @@ class Component extends DCLogic {
       selectedFlavors: nextFlavors,
       detailFlavor: null,
       detailPriceIndex: null,
+      detailSlide: 0,
       detailTransitioning: false,
     });
     this.animateFlavorToDock(preparedFlight);
@@ -829,7 +899,7 @@ class Component extends DCLogic {
   };
 
   renderVals() {
-    const { catalogLocked, selectedFlavors, detailFlavor, detailPriceIndex, detailTransitioning } = this.state;
+    const { catalogLocked, selectedFlavors, detailFlavor, detailPriceIndex, detailSlide, detailTransitioning } = this.state;
     const selectedCount = selectedFlavors.length;
     const detail = FLAVORS.find(f => f.name === detailFlavor);
     const countFlavor = (name) => selectedFlavors.filter(item => item === name).length;
@@ -881,6 +951,11 @@ class Component extends DCLogic {
       expandCatalog: this.expandCatalog,
       closeDetail: this.closeDetail,
       confirmDetail: this.confirmDetail,
+      detailCarouselScroll: this.detailCarouselScroll,
+      detailCarouselPrev: this.detailCarouselPrev,
+      detailCarouselNext: this.detailCarouselNext,
+      detailCarouselFirst: this.detailCarouselPrev,
+      detailCarouselSecond: this.detailCarouselNext,
       openCheckout: this.openCheckout,
       backToCatalog: this.backToCatalog,
       finalizarCompra: this.finalizarCompra,
@@ -901,6 +976,13 @@ class Component extends DCLogic {
       detailDescription: detail ? detail.description : '',
       detailImg: detail ? detail.img : '',
       detailPhotoClass: detail ? `detail-visual ${detail.color}${detailTransitioning ? ' detail-awaiting' : ''}` : 'detail-visual',
+      hasInfoCarousel: detail ? detail.name === 'Frutas Vermelhas' : false,
+      detailCarouselTrackClass: 'detail-carousel-track',
+      detailPrevClass: `detail-carousel-arrow prev${detailSlide === 0 ? ' hidden' : ''}`,
+      detailNextClass: `detail-carousel-arrow next${detailSlide === 1 ? ' hidden' : ''}`,
+      detailFirstDotClass: `detail-carousel-dot${detailSlide === 0 ? ' active' : ''}`,
+      detailSecondDotClass: `detail-carousel-dot${detailSlide === 1 ? ' active' : ''}`,
+      infoCans: INFO_CANS,
       detailPriceClass: `detail-price${detailPriceIndex === 1 ? ' free' : ''}`,
       detailOldPriceClass: detailPriceIndex === 1 ? '' : 'hidden',
       detailPriceText: detailPriceIndex === 1 ? 'GRÁTIS' : 'R$ 162,49',
