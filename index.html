@@ -11,14 +11,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-@font-face{font-family:'Inter Italic';src:url('./assets/Inter-Italic.ttf') format('truetype-variations');font-weight:100 900;font-style:italic}
-body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+:root{--font-dot:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif}
+body{margin:0;overflow:hidden;background:#e8e7e2;font-family:var(--font-dot);overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font-family:var(--font-dot)}
 
 /* One continuous mobile story: 80% campaign, 20% of the real selector. */
 .offer-app{--catalog-preview:20dvh;position:relative;width:100%;max-width:480px;height:100dvh;margin:0 auto;overflow:hidden;background:#07172e}
-.shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-snap-type:y proximity;scroll-behavior:smooth;background:#e8e7e2;-webkit-overflow-scrolling:touch}
+.shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-behavior:smooth;overscroll-behavior-y:contain;touch-action:pan-y;background:#e8e7e2;-webkit-overflow-scrolling:touch}
 .shop-flow::-webkit-scrollbar{display:none}
-.offer-hero{position:relative;z-index:1;width:100%;height:100dvh;margin:0;flex-shrink:0;overflow:hidden;touch-action:pan-y;background:#06194d url('./assets/textura-navy.png') center/cover;scroll-snap-align:start;isolation:isolate}
+.offer-hero{position:relative;z-index:1;width:100%;height:100dvh;margin:0;flex-shrink:0;overflow:hidden;touch-action:pan-y;background:#06194d url('./assets/textura-navy.png') center/cover;scroll-snap-align:start;scroll-snap-stop:always;isolation:isolate}
 .offer-hero::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 28%,rgba(30,82,183,.38),transparent 48%),linear-gradient(180deg,rgba(1,15,55,.08),rgba(2,13,37,.5))}
 .offer-logo-crop{position:absolute;top:12px;left:50%;width:94px;height:42px;overflow:hidden;transform:translateX(-50%);pointer-events:none}
 .offer-logo-crop img{position:absolute;top:-26px;left:2px;width:90px;height:90px;object-fit:contain}
@@ -35,8 +36,8 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
 .offer-product:nth-child(4){right:3%;transform:rotate(8deg)}
 
 /* Full-screen shop: ivory catalog, navy checkout, yellow interaction. */
-.catalog-screen{--catalog-progress:0;position:relative;z-index:2;height:100dvh;min-height:560px;margin-top:calc(0px - var(--catalog-preview));overflow:hidden;border-radius:34px 34px 0 0;scroll-snap-align:start;background:#fefbe6;box-shadow:0 -14px 34px rgba(4,17,38,.2);transition:border-radius .18s ease,box-shadow .18s ease}
-.catalog-screen.locked{--catalog-progress:1;margin-top:0;border-radius:0;box-shadow:none}
+.catalog-screen{--catalog-progress:0;position:relative;z-index:2;height:100dvh;min-height:560px;margin-top:calc(0px - var(--catalog-preview));overflow:hidden;border-radius:34px 34px 0 0;scroll-snap-align:start;scroll-snap-stop:always;background:#fefbe6;box-shadow:0 -14px 34px rgba(4,17,38,.2);transition:border-radius .18s ease,box-shadow .18s ease}
+.catalog-screen.locked{--catalog-progress:1;margin-top:calc(0px - var(--catalog-preview));border-radius:0;box-shadow:none}
 .catalog-stage{position:absolute;inset:0;display:flex;flex-direction:column;background:#fefbe6}
 .selector-stage{padding-top:8px;box-sizing:border-box}
 .catalog-topbar{height:44px;padding:0 16px 3px;box-sizing:border-box;display:grid;grid-template-columns:44px 1fr 44px;align-items:end;flex-shrink:0;transform:translateY(-8px)}
@@ -108,7 +109,7 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
 .detail-quantity-button{height:56px;border:0;background:transparent;color:#fff;font-family:inherit;font-size:25px;font-weight:700;cursor:pointer}
 .detail-quantity-button.plus{color:#fceb2e}
 .detail-quantity-button.disabled{opacity:.3;pointer-events:none}
-.checkout-screen{position:relative;height:100dvh;min-height:620px;padding:22px 22px 24px;scroll-snap-align:start;background:#07172e;color:#fff;box-sizing:border-box;display:flex;flex-direction:column}
+.checkout-screen{position:relative;height:100dvh;min-height:620px;padding:22px 22px 24px;scroll-snap-align:start;scroll-snap-stop:always;background:#07172e;color:#fff;box-sizing:border-box;display:flex;flex-direction:column}
 .checkout-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
 .checkout-head h2{margin:0;font-size:30px;font-weight:800;letter-spacing:-.045em}
 .checkout-back{border:0;background:none;color:#fceb2e;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
@@ -134,7 +135,7 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
 </helmet>
 
 <div class="offer-app">
-  <div onScroll="{{ handleFlowScroll }}" class="shop-flow">
+  <div onScroll="{{ handleFlowScroll }}" onTouchStart="{{ handleCarouselTouchStart }}" onTouchEnd="{{ handleCarouselTouchEnd }}" onTouchCancel="{{ handleCarouselTouchCancel }}" class="shop-flow">
     <sc-if value="{{ showHero }}" hint-placeholder-val="{{ true }}">
       <section class="offer-hero" aria-labelledby="offer-title">
         <div class="offer-logo-crop"><img src="./assets/dot-logo.png" alt="DOT"></div>
@@ -296,10 +297,25 @@ class Component extends DCLogic {
     if (section) section.scrollIntoView({ behavior, block: 'start' });
   };
   expandCatalog = () => {
+    this._navigatingToHero = false;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.scrollToSection('.catalog-screen', reducedMotion ? 'auto' : 'smooth');
     window.clearTimeout(this._expandCatalogTimer);
     this._expandCatalogTimer = window.setTimeout(this.handleCatalogScrollEnd, reducedMotion ? 40 : 1200);
+  };
+  goToHero = () => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._navigatingToHero = true;
+    window.clearTimeout(this._catalogSettleTimer);
+    window.clearTimeout(this._expandCatalogTimer);
+    window.clearTimeout(this._heroNavigationTimer);
+    this.setState({ catalogLocked: false });
+    requestAnimationFrame(() => this.scrollToSection('.offer-hero', reducedMotion ? 'auto' : 'smooth'));
+    this._heroNavigationTimer = window.setTimeout(() => {
+      const catalog = document.querySelector('.catalog-screen');
+      if (catalog) catalog.style.setProperty('--catalog-progress', '0');
+      this._navigatingToHero = false;
+    }, reducedMotion ? 80 : 700);
   };
   isCatalogActive = () => {
     const catalog = document.querySelector('.catalog-screen');
@@ -311,27 +327,28 @@ class Component extends DCLogic {
     window.clearTimeout(this._expandCatalogTimer);
     this._lockingCatalog = true;
     this._catalogTransitioning = true;
-
-    const flow = document.querySelector('.shop-flow');
-    const previousOverflow = flow ? flow.style.overflowY : '';
-    if (flow) flow.style.overflowY = 'hidden';
     this.setState({ catalogLocked: true });
 
     requestAnimationFrame(() => {
-      const currentFlow = document.querySelector('.shop-flow');
-      if (currentFlow) {
-        currentFlow.scrollTo({ top: 0, behavior: 'auto' });
-        currentFlow.style.overflowY = previousOverflow;
-      }
       this._catalogTransitioning = false;
       this._lockingCatalog = false;
     });
   };
   handleCatalogScrollEnd = () => {
-    if (!this.state.catalogLocked && !this._lockingCatalog && this.isCatalogActive()) this.lockCatalog();
+    if (this._lockingCatalog || this._navigatingToHero) return;
+    const flow = document.querySelector('.shop-flow');
+    const catalog = document.querySelector('.catalog-screen');
+    if (!flow || !catalog) return;
+    const catalogTop = catalog.getBoundingClientRect().top - flow.getBoundingClientRect().top;
+    if (this.state.catalogLocked && catalogTop > flow.clientHeight * .25) {
+      catalog.style.setProperty('--catalog-progress', '0');
+      this.setState({ catalogLocked: false });
+      return;
+    }
+    if (!this.state.catalogLocked && catalogTop <= 2) this.lockCatalog();
   };
   handleFlowScroll = () => {
-    if (this.state.catalogLocked || this._lockingCatalog) return;
+    if (this._lockingCatalog) return;
     const flow = document.querySelector('.shop-flow');
     const catalog = document.querySelector('.catalog-screen');
     if (flow && catalog) {
@@ -345,10 +362,57 @@ class Component extends DCLogic {
       const progress = travel > 0 ? Math.min(1, Math.max(0, flow.scrollTop / travel)) : 1;
       catalog.style.setProperty('--catalog-progress', progress.toFixed(3));
     }
+    if (this.state.catalogLocked || this._navigatingToHero) return;
     window.clearTimeout(this._catalogSettleTimer);
     this._catalogSettleTimer = window.setTimeout(this.handleCatalogScrollEnd, 90);
     if (!this.isCatalogActive()) return;
     this.lockCatalog();
+  };
+  handleCarouselTouchStart = (event) => {
+    if (!event.touches || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    const flow = document.querySelector('.shop-flow');
+    this._carouselTouch = {
+      x: touch.clientX,
+      y: touch.clientY,
+      scrollTop: flow ? flow.scrollTop : 0,
+    };
+  };
+  handleCarouselTouchCancel = () => {
+    this._carouselTouch = null;
+  };
+  handleCarouselTouchEnd = (event) => {
+    const start = this._carouselTouch;
+    this._carouselTouch = null;
+    if (!start || this.state.detailFlavor || !event.changedTouches || !event.changedTouches.length) return;
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    if (Math.abs(deltaY) < 14 || Math.abs(deltaY) <= Math.abs(deltaX)) return;
+
+    const flow = document.querySelector('.shop-flow');
+    const hero = document.querySelector('.offer-hero');
+    const catalog = document.querySelector('.catalog-screen');
+    const checkout = document.querySelector('.checkout-screen');
+    if (!flow || !hero || !catalog) return;
+    const flowTop = flow.getBoundingClientRect().top;
+    const sections = [hero, catalog];
+    if (checkout) sections.push(checkout);
+    const positions = sections.map(section => flow.scrollTop + section.getBoundingClientRect().top - flowTop);
+    let currentIndex = 0;
+    positions.forEach((position, index) => {
+      if (Math.abs(position - start.scrollTop) < Math.abs(positions[currentIndex] - start.scrollTop)) currentIndex = index;
+    });
+    const direction = deltaY < 0 ? 1 : -1;
+    const targetIndex = Math.max(0, Math.min(sections.length - 1, currentIndex + direction));
+    const target = sections[targetIndex];
+    if (target === hero) {
+      this.goToHero();
+    } else if (target === catalog) {
+      this.expandCatalog();
+    } else {
+      this.openCheckout();
+    }
   };
   prepareDetailMorph = (event) => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
@@ -759,6 +823,9 @@ class Component extends DCLogic {
 
     return {
       handleFlowScroll: this.handleFlowScroll,
+      handleCarouselTouchStart: this.handleCarouselTouchStart,
+      handleCarouselTouchEnd: this.handleCarouselTouchEnd,
+      handleCarouselTouchCancel: this.handleCarouselTouchCancel,
       expandCatalog: this.expandCatalog,
       closeDetail: this.closeDetail,
       confirmDetail: this.confirmDetail,
@@ -766,7 +833,7 @@ class Component extends DCLogic {
       backToCatalog: this.backToCatalog,
       finalizarCompra: this.finalizarCompra,
       catalogTitle: selectedCount === 0 ? 'MONTE SEU COMBO DOT' : selectedCount === 1 ? 'ESCOLHA SEU SABOR GRÁTIS' : 'OFERTA APLICADA',
-      showHero: !catalogLocked,
+      showHero: true,
       catalogScreenClass: `catalog-screen${catalogLocked ? ' locked' : ''}`,
       dockClass: `combo-dock${selectedCount === 2 ? ' ready' : ''}`,
       comboCountClass: `combo-count${selectedCount === 2 ? ' ready' : ''}`,
