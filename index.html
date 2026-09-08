@@ -14,28 +14,51 @@
 @font-face{font-family:'Inter Italic';src:url('./assets/Inter-Italic.ttf') format('truetype-variations');font-weight:100 900;font-style:italic}
 body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 
-/* One continuous mobile story: campaign first, real flavor cards already peeking below. */
-.offer-app{position:relative;width:100%;max-width:480px;height:100dvh;margin:0 auto;overflow:hidden;background:#07172e}
-.shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y proximity;scroll-behavior:smooth;background:#e8e7e2;-webkit-overflow-scrolling:touch}
-.offer-hero{position:relative;z-index:1;width:calc(100% - 24px);height:clamp(390px,59dvh,520px);margin:12px 12px 0;flex-shrink:0;overflow:hidden;border-radius:30px;cursor:pointer;touch-action:pan-y;background:#06194d;box-shadow:0 20px 48px rgba(4,17,38,.2);scroll-snap-align:start}
-.offer-hero:focus-visible{outline:3px solid #fff200;outline-offset:-5px}
-.offer-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;pointer-events:none;transition:transform .5s cubic-bezier(.22,.8,.22,1)}
-.offer-hero:active .offer-art{transform:scale(1.012)}
+/* One continuous mobile story: 80% campaign, 20% of the real selector. */
+.offer-app{--catalog-preview:20dvh;position:relative;width:100%;max-width:480px;height:100dvh;margin:0 auto;overflow:hidden;background:#07172e}
+.shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-snap-type:y proximity;scroll-behavior:smooth;background:#e8e7e2;-webkit-overflow-scrolling:touch}
+.shop-flow::-webkit-scrollbar{display:none}
+.offer-hero{position:relative;z-index:1;width:100%;height:100dvh;margin:0;flex-shrink:0;overflow:hidden;touch-action:pan-y;background:#06194d url('./assets/textura-navy.png') center/cover;scroll-snap-align:start;isolation:isolate}
+.offer-hero::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 28%,rgba(30,82,183,.38),transparent 48%),linear-gradient(180deg,rgba(1,15,55,.08),rgba(2,13,37,.5))}
+.offer-logo-crop{position:absolute;top:12px;left:50%;width:94px;height:42px;overflow:hidden;transform:translateX(-50%);pointer-events:none}
+.offer-logo-crop img{position:absolute;top:-26px;left:2px;width:90px;height:90px;object-fit:contain}
+.offer-copy{position:absolute;top:60px;right:22px;left:22px;z-index:3;text-align:center;color:#fffdf0}
+.offer-kicker{display:inline-flex;min-height:22px;padding:0 10px;border:1px solid rgba(255,255,255,.34);border-radius:99px;align-items:center;color:#fff200;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.offer-copy h1{margin:10px 0 0;font-size:clamp(39px,11vw,51px);font-weight:800;line-height:.88;letter-spacing:-.065em;text-transform:uppercase}
+.offer-copy h1 span{display:block;color:#fff200}
+.offer-copy p{max-width:310px;margin:12px auto 0;color:rgba(255,255,255,.86);font-size:12px;font-weight:600;line-height:1.35}
+.offer-products{position:absolute;right:0;bottom:calc(var(--catalog-preview) + 8px);left:0;height:clamp(180px,23dvh,205px);z-index:2;pointer-events:none}
+.offer-product{position:absolute;bottom:0;width:33%;height:100%;object-fit:contain;filter:drop-shadow(0 15px 18px rgba(0,0,0,.36))}
+.offer-product:nth-child(1){left:3%;transform:rotate(-8deg)}
+.offer-product:nth-child(2){left:23%;transform:rotate(-3deg)}
+.offer-product:nth-child(3){right:23%;transform:rotate(3deg)}
+.offer-product:nth-child(4){right:3%;transform:rotate(8deg)}
 
-/* Full-screen shop: ivory catalog, navy checkout, lime interaction. */
-.catalog-screen{position:relative;z-index:2;height:100dvh;min-height:560px;margin-top:-82px;overflow:hidden;border-radius:34px 34px 0 0;scroll-snap-align:start;background:#f7f6f1;box-shadow:0 -14px 34px rgba(4,17,38,.2);display:flex;flex-direction:column}
-.catalog-screen.locked{margin-top:0;border-radius:0;box-shadow:none}
-.catalog-handle{width:46px;height:4px;margin:10px auto 0;flex-shrink:0;border-radius:99px;background:#d7d8d5}
-.catalog-topbar{height:61px;padding:6px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
-.catalog-title{text-align:center;color:#0b203e;font-size:14px;font-weight:800;letter-spacing:-.01em}
-.combo-progress{width:42px;height:28px;border-radius:14px;background:#e8ebdf;color:#0b203e;font-size:11px;font-weight:900;display:grid;place-items:center}
-.icon-button{width:42px;height:42px;border:0;border-radius:50%;background:#fff;box-shadow:0 4px 16px rgba(11,32,62,.08);color:#0b203e;font-family:inherit;font-size:20px;font-weight:600;cursor:pointer;display:grid;place-items:center}
+/* Full-screen shop: ivory catalog, navy checkout, yellow interaction. */
+.catalog-screen{--catalog-progress:0;position:relative;z-index:2;height:100dvh;min-height:560px;margin-top:calc(0px - var(--catalog-preview));overflow:hidden;border-radius:34px 34px 0 0;scroll-snap-align:start;background:#fefbe6;box-shadow:0 -14px 34px rgba(4,17,38,.2);transition:border-radius .18s ease,box-shadow .18s ease}
+.catalog-screen.locked{--catalog-progress:1;margin-top:0;border-radius:0;box-shadow:none}
+.catalog-stage{position:absolute;inset:0;display:flex;flex-direction:column;background:#fefbe6}
+.selector-stage{padding-top:8px;box-sizing:border-box}
+.catalog-topbar{height:44px;padding:0 16px 3px;box-sizing:border-box;display:grid;grid-template-columns:44px 1fr 44px;align-items:end;flex-shrink:0;transform:translateY(-8px)}
+.catalog-title{margin:0;text-align:center;color:#0b203e;font-size:13px;font-weight:800;letter-spacing:-.01em}
+.selector-stage .catalog-title{font-size:clamp(18px,4.8vw,22px);font-weight:900;letter-spacing:-.035em;white-space:nowrap}
+.flavor-icons-preview{position:absolute;top:43px;left:50%;z-index:6;display:flex;gap:8px;opacity:calc(1 - (var(--catalog-progress) * 2));transform:translateX(-50%);pointer-events:none}
+.flavor-icon-preview{width:50px;height:44px;background-image:url('./assets/flavor-icons-preview.png');background-size:400% 100%;background-repeat:no-repeat;filter:drop-shadow(0 4px 5px rgba(4,20,47,.14))}
+.flavor-icon-preview:nth-child(1){background-position:33.333% center}
+.flavor-icon-preview:nth-child(2){background-position:66.667% center}
+.flavor-icon-preview:nth-child(3){background-position:100% center}
+.flavor-icon-preview:nth-child(4){background-position:0 center}
+.catalog-screen.locked .flavor-icons-preview{display:none}
+.icon-button{width:42px;height:42px;border:0;border-radius:50%;background:#fceb2e;box-shadow:0 4px 16px rgba(11,32,62,.08);color:#0b203e;font-family:inherit;font-size:20px;font-weight:600;cursor:pointer;display:grid;place-items:center}
 .icon-button.close{font-size:25px;font-weight:400}
-.catalog-intro{padding:12px 18px 13px;flex-shrink:0}
-.catalog-intro h2{margin:0;color:#0b203e;font-size:28px;font-weight:800;line-height:1.05;letter-spacing:-.045em;text-wrap:pretty}
-.catalog-intro p{margin:8px 0 0;color:#707987;font-size:13px;line-height:1.35}
-.catalog-intro p.feedback{color:#0b203e;font-weight:750}
-.flavor-grid{min-height:0;flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;padding:3px 14px 108px}
+.flavor-grid{min-height:0;flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;padding:0 14px 108px;transition:opacity .12s linear}
+.catalog-screen:not(.locked) .flavor-grid{opacity:var(--catalog-progress);pointer-events:none}
+.catalog-scroll-cue{position:absolute;top:calc(var(--catalog-preview) - 46px);left:50%;z-index:7;width:108px;height:46px;padding:0;border:0;border-radius:54px 54px 0 0;background:#fceb2e;color:#04142f;display:grid;place-items:center;opacity:calc(1 - (var(--catalog-progress) * 2));transform:translateX(-50%);cursor:pointer}
+.catalog-scroll-cue:focus-visible{outline:3px solid #04142f;outline-offset:-5px}
+.catalog-scroll-cue span{position:relative;width:13px;height:13px;margin-top:4px;border-right:2px solid #04142f;border-bottom:2px solid #04142f;transform:rotate(45deg);animation:catalogCueBounce 1.6s ease-in-out infinite}
+.catalog-scroll-cue span::after{content:'';position:absolute;width:13px;height:13px;top:-7px;left:-7px;border-right:2px solid rgba(4,20,47,.46);border-bottom:2px solid rgba(4,20,47,.46)}
+.catalog-screen.locked .catalog-scroll-cue{display:none}
+@keyframes catalogCueBounce{0%,100%{translate:0 -2px}50%{translate:0 3px}}
 .flavor-card{position:relative;min-height:0;overflow:hidden;border:0;border-radius:22px;background:#dbe8ea;box-shadow:0 8px 22px rgba(11,32,62,.12);display:flex;flex-direction:column;transition:box-shadow .18s ease,transform .18s ease}
 .flavor-open{position:relative;min-height:0;flex:1;display:flex;flex-direction:column;overflow:hidden;cursor:pointer;transition:transform .16s ease}
 .flavor-open:active{transform:scale(.98)}
@@ -53,83 +76,59 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
 .dock-thumbs{min-width:0;flex:1;display:flex;align-items:center;gap:7px}
 .dock-thumb-button{width:42px;height:42px;flex-shrink:0;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;transition:transform .16s ease}
 .dock-thumb-button:active{transform:scale(.92)}
-.dock-thumb-button:focus-visible{outline:2px solid #b9ef40;outline-offset:3px}
-.dock-thumb{width:42px;height:42px;padding:3px;border:3px solid #fff;border-radius:50%;background-size:cover;background-position:center;background-repeat:no-repeat;object-fit:contain;box-sizing:border-box;display:block;filter:drop-shadow(0 3px 4px rgba(5,20,43,.16))}
+.dock-thumb-button:focus-visible{outline:2px solid #fceb2e;outline-offset:3px}
+.dock-thumb{width:42px;height:42px;padding:3px;border:0;border-radius:50%;background-size:cover;background-position:center;background-repeat:no-repeat;object-fit:contain;box-sizing:border-box;display:block;filter:drop-shadow(0 3px 4px rgba(5,20,43,.16))}
 .dock-empty{width:38px;height:38px;border:1px dashed rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:12px}
-.combo-count{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#b9ef40;color:#0b203e;font-size:14px;font-weight:900;display:grid;place-items:center}
+.combo-count{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#fceb2e;color:#0b203e;font-size:14px;font-weight:900;display:grid;place-items:center}
 .combo-count.ready{width:112px;border-radius:24px;font-size:10px;line-height:1.1;letter-spacing:.02em;text-align:center;text-transform:uppercase}
-.dock-hint{position:absolute;right:79px;bottom:9px;color:#aeb8c7;font-size:9px;font-weight:700;letter-spacing:.03em}
 
-/* Editorial first viewport: campaign cover, overlapping product tray and floating combo pill. */
-.catalog-screen:not(.locked):not(.expanding){animation:catalogTrayIn .55s ease-out both}
-.catalog-screen:not(.locked):not(.expanding) .catalog-handle{display:none}
-.catalog-screen:not(.locked):not(.expanding) .catalog-topbar{height:48px;padding:9px 18px 0}
-.catalog-screen:not(.locked):not(.expanding) .catalog-title{text-align:left;font-size:12px;letter-spacing:.01em}
-.catalog-screen:not(.locked):not(.expanding) .catalog-intro{padding:9px 18px 12px}
-.catalog-screen:not(.locked):not(.expanding) .catalog-intro h2{font-size:22px;line-height:1;letter-spacing:-.04em}
-.catalog-screen:not(.locked):not(.expanding) .catalog-intro p{margin-top:6px;font-size:11px}
-.catalog-screen:not(.locked):not(.expanding) .flavor-grid{min-height:0;flex:0 0 clamp(172px,24dvh,210px);display:flex;gap:12px;padding:2px 18px 12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none}
-.catalog-screen:not(.locked):not(.expanding) .flavor-grid::-webkit-scrollbar{display:none}
-.catalog-screen:not(.locked):not(.expanding) .flavor-card{min-width:0;flex:0 0 calc(50% - 6px);overflow:visible;border-radius:0;background:transparent;box-shadow:none;scroll-snap-align:start}
-.catalog-screen:not(.locked):not(.expanding) .flavor-open{overflow:visible}
-.catalog-screen:not(.locked):not(.expanding) .flavor-photo{border-radius:20px;box-shadow:0 10px 22px rgba(11,32,62,.13)}
-.catalog-screen:not(.locked):not(.expanding) .flavor-photo::after{display:none}
-.catalog-screen:not(.locked):not(.expanding) .flavor-photo img{padding:1%;transform:scale(1.08)}
-.catalog-screen:not(.locked):not(.expanding) .flavor-name{position:static;z-index:auto;min-height:27px;padding:8px 2px 0;color:#0b203e;font-size:10px;line-height:1.05;text-align:left;text-shadow:none}
-.catalog-screen:not(.locked):not(.expanding) .combo-dock{position:fixed;right:auto;bottom:12px;left:50%;width:min(calc(100% - 24px),456px);height:78px;padding:11px 16px;border-radius:27px;box-shadow:0 16px 36px rgba(4,17,38,.3);transform:translateX(-50%)}
-.catalog-screen:not(.locked):not(.expanding) .dock-title{font-size:16px}
-.catalog-screen:not(.locked):not(.expanding) .dock-hint{right:75px;bottom:8px}
-@keyframes catalogTrayIn{from{opacity:.65}to{opacity:1}}
-.catalog-screen.expanding{pointer-events:none;touch-action:none}
-.catalog-screen.expanding .flavor-grid{overflow:hidden;scroll-snap-type:none}
-.catalog-screen.expanding .flavor-card,.catalog-screen.expanding .combo-dock{will-change:transform,opacity,clip-path}
 .flavor-flight{position:fixed;z-index:1000;overflow:hidden;pointer-events:none;box-sizing:border-box;box-shadow:0 18px 42px rgba(7,23,46,.26);will-change:top,left,width,height,border-radius,transform}
 .flavor-flight img{width:100%;height:100%;padding:4%;object-fit:contain;box-sizing:border-box}
 .detail-morph{position:fixed;z-index:1001;overflow:hidden;pointer-events:none;box-sizing:border-box;background-size:cover;background-position:center;background-repeat:no-repeat;box-shadow:0 20px 48px rgba(7,23,46,.2);will-change:top,left,width,height,border-radius,background-color}
 .detail-morph img{width:100%;height:100%;object-fit:contain;box-sizing:border-box;will-change:padding,transform}
-.detail-screen{position:fixed;inset:0;z-index:50;width:100%;max-width:480px;height:100dvh;margin:auto;background:#fff;box-sizing:border-box;display:flex;flex-direction:column;animation:detailShellIn .22s ease-out both}
+.detail-screen{position:fixed;inset:0;z-index:50;width:100%;max-width:480px;height:100dvh;margin:auto;background:#fefbe6;box-sizing:border-box;display:flex;flex-direction:column;animation:detailShellIn .22s ease-out both}
 @keyframes detailShellIn{from{opacity:0}to{opacity:1}}
 @keyframes detailContentIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .detail-topbar{height:65px;padding:8px 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;flex-shrink:0}
 .detail-visual{position:relative;min-height:0;flex:1;margin:3px 18px 0;border-radius:28px;overflow:hidden;background-size:cover;background-position:center;background-repeat:no-repeat}
 .detail-visual.detail-awaiting{opacity:0}
 .detail-visual img{position:absolute;inset:0;width:100%;height:100%;padding:4%;box-sizing:border-box;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(5,20,43,.17));transform:scale(1.04)}
-.detail-info{padding:24px 22px 104px;background:#fff}
+.detail-info{padding:24px 22px 104px;background:#fefbe6}
 .detail-kicker{display:block;margin-bottom:8px;color:#718096;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-.detail-info h2{margin:0;color:#0b203e;font-size:32px;font-weight:800;line-height:1;letter-spacing:-.045em;text-wrap:pretty}
+.detail-info h2{margin:0;color:#0b203e;font-size:clamp(18px,4.8vw,22px);font-weight:900;line-height:1;letter-spacing:-.035em;white-space:nowrap}
 .detail-info p{margin:12px 0 0;color:#707987;font-size:14px;line-height:1.45}
-.detail-action-wrap{position:absolute;right:0;bottom:0;left:0;padding:14px 18px 20px;background:linear-gradient(to top,#fff 78%,rgba(255,255,255,0))}
+.detail-action-wrap{position:absolute;right:0;bottom:0;left:0;padding:14px 18px 20px;background:linear-gradient(to top,#fefbe6 78%,rgba(254,251,230,0))}
 .detail-topbar,.detail-info,.detail-action-wrap{animation:detailContentIn .38s cubic-bezier(.22,.8,.22,1) .14s both}
-.detail-action{width:100%;min-height:56px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
+.detail-action{width:100%;min-height:56px;border:0;border-radius:18px;background:#fceb2e;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
 .detail-action.hidden{display:none}
 .detail-action.disabled{background:#e4e8ed;color:#8791a0;pointer-events:none}
 .detail-stepper{width:100%;height:56px;border-radius:18px;background:#0b203e;color:#fff;grid-template-columns:64px 1fr 64px;align-items:center;display:none;overflow:hidden}
 .detail-stepper.visible{display:grid}
 .detail-stepper b{text-align:center;font-size:18px;font-weight:900}
 .detail-quantity-button{height:56px;border:0;background:transparent;color:#fff;font-family:inherit;font-size:25px;font-weight:700;cursor:pointer}
-.detail-quantity-button.plus{color:#b9ef40}
+.detail-quantity-button.plus{color:#fceb2e}
 .detail-quantity-button.disabled{opacity:.3;pointer-events:none}
 .checkout-screen{position:relative;height:100dvh;min-height:620px;padding:22px 22px 24px;scroll-snap-align:start;background:#07172e;color:#fff;box-sizing:border-box;display:flex;flex-direction:column}
 .checkout-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
 .checkout-head h2{margin:0;font-size:30px;font-weight:800;letter-spacing:-.045em}
-.checkout-back{border:0;background:none;color:#b9ef40;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.checkout-back{border:0;background:none;color:#fceb2e;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
 .checkout-list{display:grid;gap:16px}
 .checkout-item{display:grid;grid-template-columns:54px 1fr 34px;gap:12px;align-items:center}
 .checkout-thumb-button{width:54px;height:54px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;transition:transform .16s ease}
 .checkout-thumb-button:active{transform:scale(.92)}
-.checkout-thumb-button:focus-visible{outline:2px solid #b9ef40;outline-offset:3px}
-.checkout-item img{width:54px;height:54px;padding:4px;border:3px solid #fff;border-radius:50%;background-size:cover;background-position:center;background-repeat:no-repeat;object-fit:contain;box-sizing:border-box;filter:drop-shadow(0 3px 4px rgba(5,20,43,.16))}
+.checkout-thumb-button:focus-visible{outline:2px solid #fceb2e;outline-offset:3px}
+.checkout-item img{width:54px;height:54px;padding:4px;border:0;border-radius:50%;background-size:cover;background-position:center;background-repeat:no-repeat;object-fit:contain;box-sizing:border-box;filter:drop-shadow(0 3px 4px rgba(5,20,43,.16))}
 .checkout-item small{display:block;color:#8fa0b6;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .checkout-item b{display:block;margin-top:3px;color:#fff;font-size:14px;line-height:1.2}
 .remove-item{width:32px;height:32px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(255,255,255,.05);color:#fff;font-size:17px;cursor:pointer}
 .checkout-summary{margin-top:auto;padding-top:26px;border-top:1px solid rgba(255,255,255,.12)}
 .summary-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px}
 .summary-row span{color:#aeb8c7;font-size:13px}
-.summary-row strong{font-size:27px;line-height:1;letter-spacing:-.04em}
-.checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#b9ef40;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
-@media (min-width:520px){.offer-app{height:calc(100dvh - 32px);margin:16px auto;border-radius:34px;box-shadow:0 28px 70px rgba(4,17,38,.24)}}
-@media (max-height:680px){.offer-hero{height:clamp(350px,59dvh,402px)}.catalog-topbar{height:52px}.catalog-intro{padding-top:5px;padding-bottom:9px}.catalog-intro h2{font-size:24px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.catalog-screen:not(.locked):not(.expanding) .catalog-topbar{height:44px}.catalog-screen:not(.locked):not(.expanding) .catalog-intro h2{font-size:20px}.catalog-screen:not(.locked):not(.expanding) .flavor-grid{padding-bottom:10px}.catalog-screen:not(.locked):not(.expanding) .combo-dock{height:74px}.detail-info{padding-top:16px}.detail-info h2{font-size:27px}}
-@media (prefers-reduced-motion:reduce){.catalog-screen:not(.locked):not(.expanding),.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap{animation:none}.offer-art,.flavor-card,.flavor-open,.dock-thumb-button,.checkout-thumb-button{transition:none}}
+.summary-row strong{max-width:62%;font-size:21px;line-height:1.05;letter-spacing:-.035em;text-align:right}
+.checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#fceb2e;color:#0b203e;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer}
+@media (min-width:520px){.offer-app{--catalog-preview:calc(20dvh - 6px);height:calc(100dvh - 32px);margin:16px auto;border-radius:34px;box-shadow:0 28px 70px rgba(4,17,38,.24)}.offer-hero,.catalog-screen,.checkout-screen{height:calc(100dvh - 32px)}.offer-products{height:170px}}
+@media (max-height:680px){.offer-copy{top:50px}.offer-copy h1{font-size:36px}.offer-copy p{margin-top:7px}.offer-products{height:160px}.selector-stage{padding-top:6px}.catalog-topbar{height:42px}.flavor-icons-preview{top:40px}.flavor-icon-preview{width:47px;height:42px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}}
+@media (prefers-reduced-motion:reduce){.shop-flow{scroll-behavior:auto}.catalog-screen,.flavor-grid{transition:none}.catalog-scroll-cue span,.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap{animation:none}.flavor-card,.flavor-open,.dock-thumb-button,.checkout-thumb-button{transition:none}}
 
 </style>
 </helmet>
@@ -137,24 +136,39 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
 <div class="offer-app">
   <div onScroll="{{ handleFlowScroll }}" class="shop-flow">
     <sc-if value="{{ showHero }}" hint-placeholder-val="{{ true }}">
-      <!-- Cropped campaign cover; removed after the selector reaches the viewport. -->
-      <section onClick="{{ goToCatalog }}" onKeyDown="{{ heroKeyDown }}" class="offer-hero" role="button" tabindex="0" aria-label="Ir para a seleção de sabores">
-        <img src="./assets/banner-hero.png" alt="Promoção DOT: compre um combo e ganhe outro" class="offer-art">
+      <section class="offer-hero" aria-labelledby="offer-title">
+        <div class="offer-logo-crop"><img src="./assets/dot-logo.png" alt="DOT"></div>
+        <div class="offer-copy">
+          <span class="offer-kicker">OFERTA 2 POR 1</span>
+          <h1 id="offer-title">LEVE 2.<span>PAGUE 1.</span></h1>
+          <p>Escolha dois sabores e o segundo produto DOT é grátis.</p>
+        </div>
+        <div class="offer-products" aria-hidden="true">
+          <img src="./assets/pouch-menta-25.png" alt="" class="offer-product">
+          <img src="./assets/pouch-frutas-vermelhas-25.png" alt="" class="offer-product">
+          <img src="./assets/pouch-melancia-limao-25-cropped.png" alt="" class="offer-product">
+          <img src="./assets/pouch-citrus-25.png" alt="" class="offer-product">
+        </div>
       </section>
     </sc-if>
 
-    <!-- Full-screen catalog -->
+    <!-- The real flavor selector begins inside the first viewport and expands on scroll. -->
     <section class="{{ catalogScreenClass }}">
-      <span class="catalog-handle" aria-hidden="true"></span>
-      <div class="catalog-topbar">
-        <span></span>
-        <span class="catalog-title">Monte seu combo</span>
-        <span class="combo-progress">{{ progressLabel }}</span>
-      </div>
-          <div class="catalog-intro">
-            <h2>{{ catalogHeading }}</h2>
-            <p class="{{ catalogSubheadingClass }}">{{ catalogSubheading }}</p>
+      <div class="catalog-stage selector-stage">
+          <div class="catalog-topbar">
+            <span></span>
+            <h2 class="catalog-title">{{ catalogTitle }}</h2>
+            <span></span>
           </div>
+          <div class="flavor-icons-preview" aria-hidden="true">
+            <span class="flavor-icon-preview"></span>
+            <span class="flavor-icon-preview"></span>
+            <span class="flavor-icon-preview"></span>
+            <span class="flavor-icon-preview"></span>
+          </div>
+          <button onClick="{{ expandCatalog }}" class="catalog-scroll-cue" aria-label="Descer para escolher os pouches">
+            <span aria-hidden="true"></span>
+          </button>
           <div class="flavor-grid">
             <sc-for list="{{ flavorList }}" as="fl" hint-placeholder-count="4">
               <div class="{{ fl.cardClass }}">
@@ -177,8 +191,8 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
               <sc-if value="{{ showSecondEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
             </div>
             <span class="{{ comboCountClass }}">{{ comboCountLabel }}</span>
-            <span class="dock-hint">{{ dockHint }}</span>
           </div>
+      </div>
     </section>
 
     <!-- Checkout revealed by vertical scroll -->
@@ -200,8 +214,8 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
               </sc-for>
             </div>
             <div class="checkout-summary">
-              <div class="summary-row"><span>Combo escolhido</span><strong>2 sabores</strong></div>
-              <button onClick="{{ finalizarCompra }}" class="checkout-button">FINALIZAR COMPRA →</button>
+              <div class="summary-row"><span>Oferta aplicada</span><strong>2 produtos • 1 grátis</strong></div>
+              <button onClick="{{ finalizarCompra }}" class="checkout-button">GARANTIR MINHA OFERTA →</button>
             </div>
       </section>
     </sc-if>
@@ -218,7 +232,7 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
             <div class="detail-info">
               <span class="detail-kicker">Sabor DOT</span>
               <h2>{{ detailName }}</h2>
-              <p>Veja a embalagem completa e confirme para adicionar este sabor ao seu combo.</p>
+              <p>{{ detailDescription }}</p>
             </div>
             <div class="detail-action-wrap">
               <button onClick="{{ confirmDetail }}" class="{{ detailAddClass }}" aria-disabled="{{ detailAddDisabled }}">{{ detailActionLabel }}</button>
@@ -241,253 +255,100 @@ body{margin:0;overflow:hidden;background:#e8e7e2;font-family:'Space Grotesk',ui-
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 const FLAVORS = [
-  { name: 'Menta',              img: './assets/pouch-menta-25.png',             color: 'fl-mint'   },
-  { name: 'Frutas Vermelhas',   img: './assets/pouch-frutas-vermelhas-25.png',  color: 'fl-berry'  },
-  { name: 'Melancia com Limão', img: './assets/pouch-melancia-limao-25-cropped.png', color: 'fl-lime' },
-  { name: 'Citrus',             img: './assets/pouch-citrus-25.png',            color: 'fl-citrus' },
+  {
+    name: 'Menta',
+    description: 'Super fresh, com doçura equilibrada e só um toque de azedinho. Refrescância intensa do começo ao fim.',
+    img: './assets/pouch-menta-25.png',
+    color: 'fl-mint',
+  },
+  {
+    name: 'Frutas Vermelhas',
+    description: 'Bem azedinho, levemente doce e cheio de sabor. Perfeito para quem gosta de uma experiência mais intensa.',
+    img: './assets/pouch-frutas-vermelhas-25.png',
+    color: 'fl-berry',
+  },
+  {
+    name: 'Melancia com Limão',
+    description: 'Docinho, refrescante e com um suave toque azedinho. Um sabor leve e irresistível para qualquer momento.',
+    img: './assets/pouch-melancia-limao-25-cropped.png',
+    color: 'fl-lime',
+  },
+  {
+    name: 'Citrus',
+    description: 'Uma mistura equilibrada de azedinho, doçura e frescor. Vibrante, leve e refrescante na medida certa.',
+    img: './assets/pouch-citrus-25.png',
+    color: 'fl-citrus',
+  },
 ];
 
 class Component extends DCLogic {
   _didAutoOpenCheckout = false;
 
   state = {
-    introDismissed: false,
+    catalogLocked: false,
     selectedFlavors: [],
     detailFlavor: null,
     detailTransitioning: false,
-    feedbackMessage: '',
   };
 
   scrollToSection = (selector, behavior = 'smooth') => {
     const section = document.querySelector(selector);
     if (section) section.scrollIntoView({ behavior, block: 'start' });
   };
-  goToCatalog = () => {
-    this.scrollToSection('.catalog-screen');
+  expandCatalog = () => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.scrollToSection('.catalog-screen', reducedMotion ? 'auto' : 'smooth');
+    window.clearTimeout(this._expandCatalogTimer);
+    this._expandCatalogTimer = window.setTimeout(this.handleCatalogScrollEnd, reducedMotion ? 40 : 1200);
   };
   isCatalogActive = () => {
     const catalog = document.querySelector('.catalog-screen');
     return !!catalog && catalog.getBoundingClientRect().top <= 2;
   };
-  animateCatalogToGrid = () => {
-    const catalog = document.querySelector('.catalog-screen:not(.locked):not(.expanding)');
+  lockCatalog = () => {
+    if (this.state.catalogLocked || this._lockingCatalog) return;
+    window.clearTimeout(this._catalogSettleTimer);
+    window.clearTimeout(this._expandCatalogTimer);
+    this._lockingCatalog = true;
+    this._catalogTransitioning = true;
+
     const flow = document.querySelector('.shop-flow');
-    const grid = catalog && catalog.querySelector('.flavor-grid');
-    const cards = catalog ? Array.from(catalog.querySelectorAll('.flavor-card')) : [];
-    if (!catalog || !flow || !grid || cards.length !== FLAVORS.length || typeof catalog.animate !== 'function') return false;
+    const previousOverflow = flow ? flow.style.overflowY : '';
+    if (flow) flow.style.overflowY = 'hidden';
+    this.setState({ catalogLocked: true });
 
-    const carouselRect = grid.getBoundingClientRect();
-    const sourceCards = cards.map(card => {
-      const photo = card.querySelector('.flavor-photo');
-      const image = photo && photo.querySelector('img');
-      const label = card.querySelector('.flavor-name');
-      if (!photo || !image || !label) return null;
-      const rect = card.getBoundingClientRect();
-      const visibleWidth = Math.min(rect.right, carouselRect.right, window.innerWidth) - Math.max(rect.left, carouselRect.left, 0);
-      const cardStyle = getComputedStyle(card);
-      const photoStyle = getComputedStyle(photo);
-      const imageStyle = getComputedStyle(image);
-      return {
-        rect,
-        visible: visibleWidth > 32 && rect.bottom > 0 && rect.top < window.innerHeight,
-        cardStyle: { borderRadius: cardStyle.borderRadius, boxShadow: cardStyle.boxShadow },
-        photoStyle: { borderRadius: photoStyle.borderRadius, boxShadow: photoStyle.boxShadow },
-        imageStyle: { padding: imageStyle.padding, transform: imageStyle.transform },
-      };
-    });
-    if (sourceCards.some(source => !source || !source.rect.width || !source.rect.height)) return false;
-
-    const dock = catalog.querySelector('.combo-dock');
-    const topbar = catalog.querySelector('.catalog-topbar');
-    const intro = catalog.querySelector('.catalog-intro');
-    const sourceDockStyle = dock && getComputedStyle(dock);
-    const sourceDock = dock ? {
-      rect: dock.getBoundingClientRect(),
-      borderRadius: sourceDockStyle.borderRadius,
-      boxShadow: sourceDockStyle.boxShadow,
-    } : null;
-    const sourceTopbar = topbar ? topbar.getBoundingClientRect() : null;
-    const sourceIntro = intro ? intro.getBoundingClientRect() : null;
-    const previousOverflow = flow.style.overflowY;
-
-    flow.style.overflowY = 'hidden';
-    catalog.classList.add('expanding');
-    void catalog.offsetWidth;
-
-    const animations = [];
-    let finished = false;
-    let fallbackTimer;
-    const finish = () => {
-      if (finished) return;
-      finished = true;
-      window.clearTimeout(fallbackTimer);
-      window.removeEventListener('resize', finish);
-      animations.forEach(animation => {
-        animation.onfinish = null;
-        animation.oncancel = null;
-        if (animation.playState !== 'idle') animation.cancel();
-      });
-      cards.forEach(card => { card.style.zIndex = ''; });
-      flow.style.overflowY = previousOverflow;
-      this.setState({ introDismissed: true });
-      requestAnimationFrame(() => {
-        const currentFlow = document.querySelector('.shop-flow');
-        if (currentFlow) currentFlow.scrollTo({ top: 0, behavior: 'auto' });
-        this._catalogTransitioning = false;
-        this._lockingIntro = false;
-        if (this._finishCatalogTransition === finish) this._finishCatalogTransition = null;
-      });
-    };
-    this._finishCatalogTransition = finish;
-    window.addEventListener('resize', finish, { once: true });
-
-    animations.push(catalog.animate([
-      { borderRadius: '34px 34px 0 0', boxShadow: '0 -14px 34px rgba(4,17,38,.2)' },
-      { borderRadius: '0', boxShadow: 'none' },
-    ], { duration: 420, easing: 'cubic-bezier(.22,.84,.2,1)', fill: 'both' }));
-
-    [[topbar, sourceTopbar], [intro, sourceIntro]].forEach(([element, source], index) => {
-      if (!element || !source) return;
-      const target = element.getBoundingClientRect();
-      animations.push(element.animate([
-        { opacity: .78, transform: `translate3d(0,${source.top - target.top}px,0)` },
-        { opacity: 1, transform: 'translate3d(0,0,0)' },
-      ], { duration: 380, delay: index * 28, easing: 'cubic-bezier(.22,.84,.2,1)', fill: 'both' }));
-    });
-
-    if (dock && sourceDock && sourceDock.rect.width) {
-      const target = dock.getBoundingClientRect();
-      const targetStyle = getComputedStyle(dock);
-      const dx = sourceDock.rect.left - target.left;
-      const dy = sourceDock.rect.top - target.top;
-      const sx = sourceDock.rect.width / target.width;
-      const sy = sourceDock.rect.height / target.height;
-      animations.push(dock.animate([
-        {
-          transformOrigin: 'top left',
-          transform: `translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,
-          borderRadius: sourceDock.borderRadius,
-          boxShadow: sourceDock.boxShadow,
-        },
-        {
-          transformOrigin: 'top left',
-          transform: 'translate3d(0,0,0) scale(1)',
-          borderRadius: targetStyle.borderRadius,
-          boxShadow: targetStyle.boxShadow,
-        },
-      ], { duration: 500, easing: 'cubic-bezier(.22,.84,.2,1)', fill: 'both' }));
-    }
-
-    let finishingMotion = null;
-    let finishingTime = 0;
-    cards.forEach((card, index) => {
-      const source = sourceCards[index];
-      const target = card.getBoundingClientRect();
-      const photo = card.querySelector('.flavor-photo');
-      const image = photo.querySelector('img');
-      const label = card.querySelector('.flavor-name');
-      const targetCardStyle = getComputedStyle(card);
-      const targetPhotoStyle = getComputedStyle(photo);
-      const targetImageStyle = getComputedStyle(image);
-      const delay = index * 22 + (source.visible ? 0 : 90);
-      let keyframes;
-
-      if (source.visible) {
-        card.style.zIndex = '2';
-        const scale = Math.max(.86, Math.min(1.08, source.rect.width / target.width));
-        const dx = source.rect.left - target.left;
-        const dy = source.rect.top - target.top;
-        const visibleTargetHeight = source.rect.height / scale;
-        const clippedBottom = Math.max(0, target.height - visibleTargetHeight);
-        const movesToSecondRow = index >= 2;
-        keyframes = [
-          {
-            transformOrigin: 'top left',
-            transform: `translate3d(${dx}px,${dy}px,0) scale(${scale})`,
-            clipPath: `inset(0 0 ${clippedBottom}px 0 round ${source.photoStyle.borderRadius})`,
-            borderRadius: source.cardStyle.borderRadius,
-            boxShadow: source.photoStyle.boxShadow,
-            opacity: 1,
-            easing: 'cubic-bezier(.4,0,.2,1)',
-          },
-          {
-            offset: movesToSecondRow ? .38 : .32,
-            transformOrigin: 'top left',
-            transform: movesToSecondRow
-              ? `translate3d(${dx}px,${dy * .18}px,0) scale(${1 + (scale - 1) * .22})`
-              : `translate3d(${dx * .82}px,${dy * .3}px,0) scale(${1 + (scale - 1) * .72})`,
-            clipPath: movesToSecondRow ? 'inset(0 0 5% 0 round 22px)' : 'inset(0 0 0 0 round 22px)',
-            opacity: 1,
-            easing: 'cubic-bezier(.22,.84,.2,1)',
-          },
-          {
-            transformOrigin: 'top left',
-            transform: 'translate3d(0,0,0) scale(1)',
-            clipPath: 'inset(0 0 0 0 round 22px)',
-            borderRadius: targetCardStyle.borderRadius,
-            boxShadow: targetCardStyle.boxShadow,
-            opacity: 1,
-          },
-        ];
-      } else {
-        card.style.zIndex = '1';
-        const direction = source.rect.right <= carouselRect.left ? -1 : 1;
-        keyframes = [
-          { transform: `translate3d(${direction * 26}px,12px,0) scale(.97)`, clipPath: 'inset(0 0 10% 0 round 22px)', opacity: 0, easing: 'linear' },
-          { offset: .42, transform: `translate3d(${direction * 18}px,8px,0) scale(.98)`, clipPath: 'inset(0 0 7% 0 round 22px)', opacity: 0, easing: 'cubic-bezier(.22,.84,.2,1)' },
-          { transform: 'translate3d(0,0,0) scale(1)', clipPath: 'inset(0 0 0 0 round 22px)', opacity: 1 },
-        ];
+    requestAnimationFrame(() => {
+      const currentFlow = document.querySelector('.shop-flow');
+      if (currentFlow) {
+        currentFlow.scrollTo({ top: 0, behavior: 'auto' });
+        currentFlow.style.overflowY = previousOverflow;
       }
-
-      const cardMotion = card.animate(keyframes, {
-        duration: 560,
-        delay,
-        easing: 'linear',
-        fill: 'both',
-      });
-      animations.push(cardMotion);
-      if (delay + 560 > finishingTime) {
-        finishingTime = delay + 560;
-        finishingMotion = cardMotion;
-      }
-
-      animations.push(photo.animate([
-        { borderRadius: source.photoStyle.borderRadius, boxShadow: source.photoStyle.boxShadow },
-        { borderRadius: targetPhotoStyle.borderRadius, boxShadow: targetPhotoStyle.boxShadow },
-      ], { duration: 420, delay, easing: 'ease-out', fill: 'both' }));
-      animations.push(image.animate([
-        { padding: source.imageStyle.padding, transform: source.imageStyle.transform },
-        { padding: targetImageStyle.padding, transform: targetImageStyle.transform },
-      ], { duration: 460, delay, easing: 'cubic-bezier(.22,.84,.2,1)', fill: 'both' }));
-      animations.push(label.animate([
-        { opacity: 0, transform: 'translate3d(0,8px,0)' },
-        { opacity: 1, transform: 'translate3d(0,0,0)' },
-      ], { duration: 300, delay: 180 + delay, easing: 'ease-out', fill: 'both' }));
-
+      this._catalogTransitioning = false;
+      this._lockingCatalog = false;
     });
-    if (finishingMotion) finishingMotion.onfinish = finish;
-    fallbackTimer = window.setTimeout(finish, 850);
-    return true;
+  };
+  handleCatalogScrollEnd = () => {
+    if (!this.state.catalogLocked && !this._lockingCatalog && this.isCatalogActive()) this.lockCatalog();
   };
   handleFlowScroll = () => {
-    if (this.state.introDismissed || this._lockingIntro || !this.isCatalogActive()) return;
-    this._lockingIntro = true;
-    this._catalogTransitioning = true;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !this.animateCatalogToGrid()) {
-      this.setState({ introDismissed: true });
-      requestAnimationFrame(() => {
-        const flow = document.querySelector('.shop-flow');
-        if (flow) flow.scrollTo({ top: 0, behavior: 'auto' });
-        this._catalogTransitioning = false;
-        this._lockingIntro = false;
-      });
+    if (this.state.catalogLocked || this._lockingCatalog) return;
+    const flow = document.querySelector('.shop-flow');
+    const catalog = document.querySelector('.catalog-screen');
+    if (flow && catalog) {
+      if (!this._catalogScrollEndBound) {
+        flow.addEventListener('scrollend', this.handleCatalogScrollEnd);
+        this._catalogScrollEndBound = true;
+      }
+      const flowTop = flow.getBoundingClientRect().top;
+      const catalogTop = catalog.getBoundingClientRect().top - flowTop;
+      const travel = flow.scrollTop + Math.max(0, catalogTop);
+      const progress = travel > 0 ? Math.min(1, Math.max(0, flow.scrollTop / travel)) : 1;
+      catalog.style.setProperty('--catalog-progress', progress.toFixed(3));
     }
-  };
-  heroKeyDown = (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      this.goToCatalog();
-    }
+    window.clearTimeout(this._catalogSettleTimer);
+    this._catalogSettleTimer = window.setTimeout(this.handleCatalogScrollEnd, 90);
+    if (!this.isCatalogActive()) return;
+    this.lockCatalog();
   };
   prepareDetailMorph = (event) => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
@@ -797,23 +658,17 @@ class Component extends DCLogic {
     const nextFlavors = [...this.state.selectedFlavors, name];
     const shouldAutoOpenCheckout = nextFlavors.length === 2 && !this._didAutoOpenCheckout;
     if (shouldAutoOpenCheckout) this._didAutoOpenCheckout = true;
-    const feedbackMessage = nextFlavors.length === 2
-      ? '✓ Combo completo — confira antes de finalizar.'
-      : `✓ ${name} entrou no combo — escolha mais 1 sabor.`;
-    window.clearTimeout(this._feedbackTimer);
     this._detailOrigin = null;
     this.setState({
       selectedFlavors: nextFlavors,
       detailFlavor: null,
       detailTransitioning: false,
-      feedbackMessage,
     });
     this.animateFlavorToDock(preparedFlight);
     if (shouldAutoOpenCheckout) {
       window.clearTimeout(this._checkoutTimer);
       this._checkoutTimer = window.setTimeout(() => this.openCheckout(), preparedFlight ? 760 : 60);
     }
-    this._feedbackTimer = window.setTimeout(() => this.setState({ feedbackMessage: '' }), 2200);
   };
   removeFlavor = (name) => {
     const selectedFlavors = [...this.state.selectedFlavors];
@@ -870,7 +725,7 @@ class Component extends DCLogic {
   };
 
   renderVals() {
-    const { introDismissed, selectedFlavors, detailFlavor, detailTransitioning, feedbackMessage } = this.state;
+    const { catalogLocked, selectedFlavors, detailFlavor, detailTransitioning } = this.state;
     const selectedCount = selectedFlavors.length;
     const detail = FLAVORS.find(f => f.name === detailFlavor);
     const countFlavor = (name) => selectedFlavors.filter(item => item === name).length;
@@ -903,22 +758,17 @@ class Component extends DCLogic {
     });
 
     return {
-      goToCatalog: this.goToCatalog,
       handleFlowScroll: this.handleFlowScroll,
-      heroKeyDown: this.heroKeyDown,
+      expandCatalog: this.expandCatalog,
       closeDetail: this.closeDetail,
       confirmDetail: this.confirmDetail,
       openCheckout: this.openCheckout,
       backToCatalog: this.backToCatalog,
       finalizarCompra: this.finalizarCompra,
-      catalogHeading: selectedCount === 0 ? 'Escolha seu primeiro sabor' : selectedCount === 1 ? 'Escolha mais um sabor' : 'Seu combo está pronto',
-      catalogSubheading: feedbackMessage || (selectedCount === 0 ? 'Toque em um produto para ver a embalagem completa.' : selectedCount === 1 ? 'Escolha outro sabor ou toque no mesmo para repetir.' : 'Confira os sabores e deslize para baixo para finalizar.'),
-      catalogSubheadingClass: `catalog-subheading${feedbackMessage ? ' feedback' : ''}`,
-      showHero: !introDismissed,
-      catalogScreenClass: `catalog-screen${introDismissed ? ' locked' : ''}`,
-      progressLabel: `${selectedCount}/2`,
+      catalogTitle: selectedCount === 0 ? 'MONTE SEU COMBO DOT' : selectedCount === 1 ? 'ESCOLHA SEU SABOR GRÁTIS' : 'OFERTA APLICADA',
+      showHero: !catalogLocked,
+      catalogScreenClass: `catalog-screen${catalogLocked ? ' locked' : ''}`,
       dockClass: `combo-dock${selectedCount === 2 ? ' ready' : ''}`,
-      dockHint: selectedCount === 0 ? 'Escolha 2 sabores' : selectedCount === 1 ? 'Escolha mais 1' : '',
       comboCountClass: `combo-count${selectedCount === 2 ? ' ready' : ''}`,
       comboCountLabel: selectedCount === 2 ? 'Ir para o checkout' : selectedCount,
       showFirstEmpty: selectedCount === 0,
@@ -929,6 +779,7 @@ class Component extends DCLogic {
       flavorList,
       hasDetail: !!detail,
       detailName: detail ? detail.name : '',
+      detailDescription: detail ? detail.description : '',
       detailImg: detail ? detail.img : '',
       detailPhotoClass: detail ? `detail-visual ${detail.color}${detailTransitioning ? ' detail-awaiting' : ''}` : 'detail-visual',
       detailActionLabel: selectedCount >= 2 ? 'COMBO COMPLETO' : 'ADICIONAR AO COMBO',
