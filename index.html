@@ -134,7 +134,11 @@ button,input,select,textarea{font-family:var(--font-dot)}
 .detail-carousel-track::-webkit-scrollbar{display:none}
 .detail-slide{position:relative;width:100%;height:100%;flex:0 0 100%;box-sizing:border-box;scroll-snap-align:start;scroll-snap-stop:always}
 .detail-product-photo{position:absolute;inset:0;width:100%;height:100%;padding:4%;box-sizing:border-box;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(5,20,43,.17));transform:scale(1.04)}
-.detail-info-slide{padding:24px 12px 29px;background:linear-gradient(145deg,rgba(255,221,226,.85),rgba(239,54,132,.76));display:flex;flex-direction:column;justify-content:flex-start;color:#07172e}
+.detail-info-slide{padding:24px 12px 29px;background-position:center;background-repeat:no-repeat;background-size:cover;display:flex;flex-direction:column;justify-content:flex-start;color:#07172e}
+.detail-info-slide.fl-mint{background-image:linear-gradient(145deg,rgba(222,255,251,.82),rgba(65,214,201,.7)),url('./assets/flavor-bg-menta.jpg')}
+.detail-info-slide.fl-berry{background-image:linear-gradient(145deg,rgba(255,221,226,.82),rgba(239,54,132,.7)),url('./assets/flavor-bg-frutas-vermelhas.jpg')}
+.detail-info-slide.fl-lime{background-image:linear-gradient(145deg,rgba(241,255,217,.82),rgba(171,218,72,.7)),url('./assets/flavor-bg-melancia-limao.jpg')}
+.detail-info-slide.fl-citrus{background-image:linear-gradient(145deg,rgba(255,242,193,.82),rgba(255,157,31,.7)),url('./assets/flavor-bg-citrus.jpg')}
 .info-equation{min-height:0;flex:1;display:grid;grid-template-columns:minmax(94px,.7fr) 22px minmax(155px,1.3fr);gap:6px;align-items:center}
 .info-pouch{width:100%;max-height:218px;object-fit:contain;filter:drop-shadow(0 9px 10px rgba(91,8,47,.22))}
 .info-equals{font-size:27px;font-weight:900;text-align:center}
@@ -320,7 +324,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
               <div onScroll="{{ detailCarouselScroll }}" class="{{ detailCarouselTrackClass }}">
                 <div class="detail-slide"><img class="detail-product-photo" src="{{ detailImg }}" alt="{{ detailName }}"></div>
                 <sc-if value="{{ hasInfoCarousel }}" hint-placeholder-val="{{ true }}">
-                  <div class="detail-slide detail-info-slide">
+                  <div class="{{ detailInfoSlideClass }}">
                     <div class="info-equation" aria-label="Um pouch equivale a 25 latas de energético">
                       <img class="info-pouch" src="{{ detailImg }}" alt="">
                       <span class="info-equals">=</span>
@@ -721,7 +725,7 @@ class Component extends DCLogic {
     this.openDetail(name, event, index);
   };
   detailCarouselScroll = (event) => {
-    if (this.state.detailFlavor !== 'Frutas Vermelhas' || this._detailCarouselScrollFrame) return;
+    if (!this.state.detailFlavor || this._detailCarouselScrollFrame) return;
     const track = event.currentTarget;
     this._detailCarouselScrollFrame = requestAnimationFrame(() => {
       this._detailCarouselScrollFrame = null;
@@ -1074,7 +1078,7 @@ class Component extends DCLogic {
       firstEmptyClass: `dock-empty${flavorPickerOpen && !pickerClosing && pickerSource === 0 ? ' open' : ''}`,
       pickerFlavors: FLAVORS.map(f => ({ name: f.name, icon: f.icon, onPick: () => this.pickFromPicker(f.name) })),
       toggleFlavorPicker: this.toggleFlavorPicker,
-      freeEmptyClass: `dock-empty free${selectedCount === 0 ? ' blocked' : ''}${flavorPickerOpen && !pickerClosing && pickerSource === 1 ? ' open' : ''}`,
+      freeEmptyClass: `dock-empty free${flavorPickerOpen && !pickerClosing && pickerSource === 1 ? ' open' : ''}`,
       showFirstEmpty: selectedCount === 0,
       showSecondEmpty: selectedCount < 2,
       comboComplete: selectedCount === 2,
@@ -1086,7 +1090,8 @@ class Component extends DCLogic {
       detailDescription: detail ? detail.description : '',
       detailImg: detail ? detail.img : '',
       detailPhotoClass: detail ? `detail-visual ${detail.color}${detailTransitioning ? ' detail-awaiting' : ''}` : 'detail-visual',
-      hasInfoCarousel: detail ? detail.name === 'Frutas Vermelhas' : false,
+      hasInfoCarousel: !!detail,
+      detailInfoSlideClass: detail ? `detail-slide detail-info-slide ${detail.color}` : 'detail-slide detail-info-slide',
       detailCarouselTrackClass: 'detail-carousel-track',
       detailPrevClass: `detail-carousel-arrow prev${detailSlide === 0 ? ' hidden' : ''}`,
       detailNextClass: `detail-carousel-arrow next${detailSlide === 1 ? ' hidden' : ''}`,
