@@ -61,7 +61,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
 .catalog-scroll-cue span::after{content:'';position:absolute;width:13px;height:13px;top:-7px;left:-7px;border-right:2px solid rgba(4,20,47,.46);border-bottom:2px solid rgba(4,20,47,.46)}
 .catalog-screen.locked .catalog-scroll-cue{display:none}
 @keyframes catalogCueBounce{0%,100%{translate:0 -2px}50%{translate:0 3px}}
-.flavor-card{position:relative;min-height:0;overflow:hidden;border:0;border-radius:22px;background:#dbe8ea;box-shadow:0 8px 22px rgba(11,32,62,.12);display:flex;flex-direction:column;transition:box-shadow .18s ease,transform .18s ease}
+.flavor-card{position:relative;min-height:0;overflow:hidden;border:0;border-radius:22px;background:#dbe8ea;box-shadow:0 2px 4px rgba(4,17,38,.16),0 12px 28px rgba(4,17,38,.18);display:flex;flex-direction:column;transition:box-shadow .18s ease,transform .18s ease}
 .flavor-open{position:relative;min-height:0;flex:1;display:flex;flex-direction:column;overflow:hidden;cursor:pointer;transition:transform .16s ease}
 .flavor-open:active{transform:scale(.98)}
 .flavor-photo{position:relative;min-height:0;margin:0;border-radius:inherit;overflow:hidden;display:flex;flex:1;align-items:center;justify-content:center;background-size:cover;background-position:center;background-repeat:no-repeat}
@@ -85,10 +85,39 @@ button,input,select,textarea{font-family:var(--font-dot)}
 .dock-free-badge.visible{position:absolute;top:-11px;right:-15px;z-index:3;min-height:18px;padding:0 6px;border:2px solid #07172e;border-radius:10px;background:#fceb2e;color:#07172e;font-size:8px;font-weight:900;line-height:16px;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 3px 8px rgba(0,0,0,.24);display:block;animation:freeBadgeArrive .3s ease-out .14s both}
 @keyframes freeFlavorArrive{0%{transform:scale(.68) rotate(-8deg);box-shadow:0 0 0 0 rgba(252,235,46,0)}70%{transform:scale(1.06) rotate(1deg);box-shadow:0 0 0 5px rgba(252,235,46,.46)}100%{transform:scale(1) rotate(0);box-shadow:0 0 0 3px #fceb2e}}
 @keyframes freeBadgeArrive{from{opacity:0;transform:translateY(5px) scale(.72)}to{opacity:1;transform:translateY(0) scale(1)}}
-.dock-empty{position:relative;width:46px;height:46px;border:1px dashed rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:12px;box-sizing:border-box}
+.flavor-picker{position:absolute;right:14px;bottom:99px;left:14px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:8px}
+@keyframes barOpen{from{width:46px;height:46px}to{width:var(--bar-w,100%);height:var(--bar-h,auto)}}
+@keyframes barSlide{from{transform:translate(var(--dx,0px),var(--dy,0px))}to{transform:translate(var(--rest-dx,0px),0)}}
+@keyframes barClose{from{width:var(--bar-w,100%);height:var(--bar-h,auto)}to{width:46px;height:46px}}
+@keyframes barSlideBack{from{transform:translate(var(--rest-dx,0px),0)}to{transform:translate(var(--dx,0px),var(--dy,0px))}}
+@keyframes headLeave{to{opacity:0;transform:translateX(var(--rest-dx,0px)) translateY(7px) scale(.88)}}
+@keyframes itemLeave{to{opacity:0;transform:scale(.35)}}
+.flavor-picker.closing .flavor-picker-bar{animation:barClose .52s cubic-bezier(.68,0,.72,.14) forwards,barSlideBack .52s cubic-bezier(.68,0,.72,.14) forwards}
+.flavor-picker.closing .flavor-picker-head{animation:headLeave .18s ease-in forwards}
+.flavor-picker.closing .flavor-picker-item{animation:itemLeave .16s ease-in forwards}
+.flavor-picker.closing .flavor-picker-item:nth-child(1){animation-delay:.06s}
+.flavor-picker.closing .flavor-picker-item:nth-child(2){animation-delay:.04s}
+.flavor-picker.closing .flavor-picker-item:nth-child(3){animation-delay:.02s}
+.flavor-picker.closing .flavor-picker-item:nth-child(4){animation-delay:0s}
+@keyframes headArrive{from{opacity:0;transform:translateX(var(--rest-dx,0px)) translateY(9px) scale(.86)}to{opacity:1;transform:translateX(var(--rest-dx,0px))}}
+@keyframes pickerItemPop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+.flavor-picker-head{padding:9px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(7,23,46,.5);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);color:#fff;font-family:var(--font-dot);font-size:12px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;text-align:center;box-shadow:0 10px 26px rgba(4,17,38,.3);transform:translateX(var(--rest-dx,0px));animation:headArrive .24s ease-out .3s backwards}
+.flavor-picker-bar{max-width:100%;display:flex;gap:4px;padding:7px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(7,23,46,.5);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);box-shadow:0 12px 30px rgba(4,17,38,.32);overflow:hidden;box-sizing:border-box;transform:translateX(var(--rest-dx,0px));will-change:width,height,transform;animation:barOpen .52s cubic-bezier(.28,.86,.32,1) backwards,barSlide .52s cubic-bezier(.28,.86,.32,1) backwards}
+.flavor-picker-item{flex:0 0 auto;width:58px;height:58px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;transition:background .16s ease,transform .14s ease;animation:pickerItemPop .22s cubic-bezier(.2,1.35,.4,1) backwards}
+.flavor-picker-item:nth-child(1){animation-delay:.28s}
+.flavor-picker-item:nth-child(2){animation-delay:.32s}
+.flavor-picker-item:nth-child(3){animation-delay:.36s}
+.flavor-picker-item:nth-child(4){animation-delay:.40s}
+.flavor-picker-item:active{background:rgba(255,255,255,.16);transform:scale(.93)}
+.flavor-picker-item img{width:36px;height:32px;object-fit:contain}
+.dock-plus{display:block;line-height:1;transition:transform .34s cubic-bezier(.3,1.2,.4,1)}
+.dock-empty.open .dock-plus{transform:rotate(135deg)}
+.dock-empty{position:relative;width:46px;height:46px;padding:0;font-family:inherit;cursor:pointer;background:transparent;-webkit-appearance:none;border:1px dashed rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;color:rgba(255,255,255,.5);font-size:12px;box-sizing:border-box}
 .dock-empty.free{border:3px solid #fceb2e;color:#fceb2e}
+.dock-empty.blocked{opacity:.35;pointer-events:none}
 .dock-empty.free::after{content:'GRÁTIS';position:absolute;top:-12px;right:-17px;z-index:3;min-height:18px;padding:0 6px;border:2px solid #07172e;border-radius:10px;background:#fceb2e;color:#07172e;font-size:8px;font-weight:900;line-height:16px;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 3px 8px rgba(0,0,0,.24)}
 .combo-count{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#fceb2e;color:#0b203e;font-size:14px;font-weight:900;display:grid;place-items:center}
+.combo-count.pending{background-image:url('./assets/cart-checkout-transparent.png');background-position:center;background-repeat:no-repeat;background-size:30px auto;opacity:.35;pointer-events:none}
 .combo-count.ready{width:48px;border-radius:50%;background-image:url('./assets/cart-checkout-transparent.png');background-position:center;background-repeat:no-repeat;background-size:30px auto;font-size:0;color:transparent;overflow:hidden}
 
 .flavor-flight{position:fixed;z-index:1000;overflow:hidden;pointer-events:none;box-sizing:border-box;box-shadow:0 18px 42px rgba(7,23,46,.26);will-change:top,left,width,height,border-radius,transform}
@@ -218,6 +247,18 @@ button,input,select,textarea{font-family:var(--font-dot)}
               </div>
             </sc-for>
           </div>
+          <sc-if value="{{ flavorPickerOpen }}" hint-placeholder-val="{{ false }}">
+            <div class="{{ pickerClass }}">
+              <div class="flavor-picker-head">Escolha 1 dos sabores</div>
+              <div class="flavor-picker-bar">
+                <sc-for list="{{ pickerFlavors }}" as="pf" hint-placeholder-count="4">
+                  <button onClick="{{ pf.onPick }}" class="flavor-picker-item" aria-label="{{ pf.name }}">
+                    <img src="{{ pf.icon }}" alt="">
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
           <div onClick="{{ openCheckout }}" class="{{ dockClass }}">
             <span class="dock-title">Combo</span>
             <div class="dock-thumbs">
@@ -227,8 +268,8 @@ button,input,select,textarea{font-family:var(--font-dot)}
                   <span class="{{ item.freeBadgeClass }}">GRÁTIS</span>
                 </button>
               </sc-for>
-              <sc-if value="{{ showFirstEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty">+</span></sc-if>
-              <sc-if value="{{ showSecondEmpty }}" hint-placeholder-val="{{ true }}"><span class="dock-empty free">+</span></sc-if>
+              <sc-if value="{{ showFirstEmpty }}" hint-placeholder-val="{{ true }}"><button onClick="{{ togglePickerFirst }}" class="{{ firstEmptyClass }}" aria-label="Escolha 1 dos sabores"><span class="dock-plus">+</span></button></sc-if>
+              <sc-if value="{{ showSecondEmpty }}" hint-placeholder-val="{{ true }}"><button onClick="{{ togglePickerFree }}" class="{{ freeEmptyClass }}" aria-label="Escolha 1 dos sabores"><span class="dock-plus">+</span></button></sc-if>
             </div>
             <span class="{{ comboCountClass }}">{{ comboCountLabel }}</span>
           </div>
@@ -338,24 +379,28 @@ button,input,select,textarea{font-family:var(--font-dot)}
 const FLAVORS = [
   {
     name: 'Menta',
+    icon: './assets/flavor-preview-menta.png',
     description: 'Super fresh, com doçura equilibrada e só um toque de azedinho. Refrescância intensa do começo ao fim.',
     img: './assets/pouch-menta-25.png',
     color: 'fl-mint',
   },
   {
     name: 'Frutas Vermelhas',
+    icon: './assets/flavor-preview-frutas-vermelhas.png',
     description: 'Bem azedinho, levemente doce e cheio de sabor. Perfeito para quem gosta de uma experiência mais intensa.',
     img: './assets/pouch-frutas-vermelhas-25.png',
     color: 'fl-berry',
   },
   {
     name: 'Melancia com Limão',
+    icon: './assets/flavor-preview-melancia.png',
     description: 'Docinho, refrescante e com um suave toque azedinho. Um sabor leve e irresistível para qualquer momento.',
     img: './assets/pouch-melancia-limao-25-cropped.png',
     color: 'fl-lime',
   },
   {
     name: 'Citrus',
+    icon: './assets/flavor-preview-citrus.png',
     description: 'Uma mistura equilibrada de azedinho, doçura e frescor. Vibrante, leve e refrescante na medida certa.',
     img: './assets/pouch-citrus-25.png',
     color: 'fl-citrus',
@@ -371,6 +416,9 @@ class Component extends DCLogic {
 
   state = {
     catalogLocked: false,
+    flavorPickerOpen: false,
+    pickerSource: null,
+    pickerClosing: false,
     selectedFlavors: [],
     detailFlavor: null,
     detailPriceIndex: null,
@@ -378,6 +426,60 @@ class Component extends DCLogic {
     detailTransitioning: false,
   };
 
+  closeFlavorPicker = () => {
+    if (this.state.pickerClosing) return;
+    this.setState({ pickerClosing: true });
+    window.clearTimeout(this._pickerCloseTimer);
+    this._pickerCloseTimer = window.setTimeout(() => {
+      this.setState({ flavorPickerOpen: false, pickerSource: null, pickerClosing: false });
+    }, 520);
+  };
+  toggleFlavorPicker = (event, index) => {
+    if (this.state.pickerClosing) return;
+    const opening = !(this.state.flavorPickerOpen && this.state.pickerSource === index);
+    if (!opening) { this.closeFlavorPicker(); return; }
+    this._pickerSource = opening && event ? event.currentTarget : null;
+    this.setState({ flavorPickerOpen: opening, pickerSource: opening ? index : null });
+    if (opening) requestAnimationFrame(this.applyPickerOrigin);
+  };
+  applyPickerOrigin = () => {
+    const panel = document.querySelector('.flavor-picker');
+    const source = this._pickerSource;
+    if (!panel || !source || !source.isConnected) return;
+    const bar = panel.querySelector('.flavor-picker-bar');
+    if (!bar) return;
+    const root = document.documentElement;
+    ['--bar-w', '--bar-h', '--dx', '--dy', '--rest-dx'].forEach(v => root.style.removeProperty(v));
+    bar.style.animation = 'none';
+    bar.style.transform = 'none';
+    bar.style.width = 'auto';
+    bar.style.height = 'auto';
+    void bar.offsetWidth;
+    const b = bar.getBoundingClientRect();
+    const s = source.getBoundingClientRect();
+    const box = panel.getBoundingClientRect();
+    const rawDx = s.left + s.width / 2 - (b.left + b.width / 2);
+    const restDx = Math.max(box.left - b.left, Math.min(box.right - b.right, rawDx));
+    // a bola tem 46px de altura e a barra e ancorada embaixo: ao encolher,
+    // o centro dela desce (b.height - 46) / 2. Compensa para cair no circulo.
+    const recuo = (b.height - 46) / 2;
+    const rawDy = s.top + s.height / 2 - (b.top + b.height / 2) - recuo;
+    root.style.setProperty('--bar-w', `${b.width.toFixed(1)}px`);
+    root.style.setProperty('--bar-h', `${b.height.toFixed(1)}px`);
+    root.style.setProperty('--dx', `${rawDx.toFixed(1)}px`);
+    root.style.setProperty('--dy', `${rawDy.toFixed(1)}px`);
+    root.style.setProperty('--rest-dx', `${restDx.toFixed(1)}px`);
+    bar.style.width = '';
+    bar.style.height = '';
+    bar.style.transform = '';
+    bar.style.animation = '';
+    void bar.offsetWidth;
+  };
+  pickFromPicker = (name) => {
+    if (this.state.selectedFlavors.length >= 2) return;
+    this.addFlavor(name);
+    this.setState({ flavorPickerOpen: false });
+  };
   scrollToSection = (selector, behavior = 'smooth') => {
     const section = document.querySelector(selector);
     if (section) section.scrollIntoView({ behavior, block: 'start' });
@@ -899,7 +1001,7 @@ class Component extends DCLogic {
   };
 
   renderVals() {
-    const { catalogLocked, selectedFlavors, detailFlavor, detailPriceIndex, detailSlide, detailTransitioning } = this.state;
+    const { catalogLocked, flavorPickerOpen, pickerSource, pickerClosing, selectedFlavors, detailFlavor, detailPriceIndex, detailSlide, detailTransitioning } = this.state;
     const selectedCount = selectedFlavors.length;
     const detail = FLAVORS.find(f => f.name === detailFlavor);
     const countFlavor = (name) => selectedFlavors.filter(item => item === name).length;
@@ -963,8 +1065,16 @@ class Component extends DCLogic {
       showHero: true,
       catalogScreenClass: `catalog-screen${catalogLocked ? ' locked' : ''}`,
       dockClass: `combo-dock${selectedCount === 2 ? ' ready' : ''}`,
-      comboCountClass: `combo-count${selectedCount === 2 ? ' ready' : ''}`,
-      comboCountLabel: selectedCount === 2 ? 'Carrinho' : selectedCount,
+      comboCountClass: `combo-count${selectedCount === 2 ? ' ready' : ' pending'}`,
+      comboCountLabel: selectedCount === 2 ? 'Carrinho' : '',
+      flavorPickerOpen: flavorPickerOpen && selectedCount < 2,
+      togglePickerFirst: (event) => this.toggleFlavorPicker(event, 0),
+      togglePickerFree: (event) => this.toggleFlavorPicker(event, 1),
+      pickerClass: `flavor-picker${pickerClosing ? ' closing' : ''}`,
+      firstEmptyClass: `dock-empty${flavorPickerOpen && !pickerClosing && pickerSource === 0 ? ' open' : ''}`,
+      pickerFlavors: FLAVORS.map(f => ({ name: f.name, icon: f.icon, onPick: () => this.pickFromPicker(f.name) })),
+      toggleFlavorPicker: this.toggleFlavorPicker,
+      freeEmptyClass: `dock-empty free${selectedCount === 0 ? ' blocked' : ''}${flavorPickerOpen && !pickerClosing && pickerSource === 1 ? ' open' : ''}`,
       showFirstEmpty: selectedCount === 0,
       showSecondEmpty: selectedCount < 2,
       comboComplete: selectedCount === 2,
