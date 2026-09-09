@@ -193,26 +193,26 @@ button,input,select,textarea{font-family:var(--font-dot)}
 .checkout-item-price strong{color:#fff}
 .checkout-item-price.free strong{color:#fceb2e}
 .remove-item{width:40px;height:40px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(255,255,255,.05);color:#fff;font-size:21px;cursor:pointer}
-.checkout-add-zone{position:relative;z-index:5;display:flex;justify-content:center;flex-shrink:0;padding:12px 0 10px}
+.checkout-add-zone{position:relative;z-index:5;min-height:66px;padding-left:7px;display:flex;align-items:center;justify-content:flex-start}
 .checkout-add-button{position:relative;width:52px;height:52px;padding:0;border:2px solid #fceb2e;border-radius:50%;background:rgba(252,235,46,.08);color:#fceb2e;font-family:inherit;font-size:28px;font-weight:600;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:background .16s ease,transform .16s ease,box-shadow .16s ease}
-.checkout-add-button::after{content:'MAIS SABORES';position:absolute;top:50%;left:calc(100% + 10px);color:#aeb8c7;font-size:9px;font-weight:900;line-height:1;letter-spacing:.08em;white-space:nowrap;transform:translateY(-50%)}
+.checkout-add-label{position:absolute;top:50%;left:calc(100% + 10px);color:#fff;font-size:12px;font-weight:900;line-height:1;letter-spacing:.025em;white-space:nowrap;transform:translateY(-50%)}
 .checkout-add-button:active{transform:scale(.92)}
 .checkout-add-button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .checkout-add-button.open{background:#fceb2e;color:#07172e;box-shadow:0 0 0 5px rgba(252,235,46,.15),0 10px 28px rgba(0,0,0,.24)}
 .checkout-add-button .dock-plus{font-size:0}
 .checkout-add-button .dock-plus::before{content:'+';font-size:28px}
 .checkout-add-button.open .dock-plus{transform:rotate(135deg)}
-.checkout-flavor-picker{--bar-w:258px;--bar-h:72px;--dx:0px;--dy:0px;--rest-dx:0px;position:absolute;right:0;bottom:calc(100% + 2px);left:0;z-index:7;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
-.checkout-flavor-picker .flavor-picker-head,.checkout-flavor-picker .flavor-picker-bar{pointer-events:auto}
+.checkout-flavor-picker{--bar-w:258px;--bar-h:72px;--dx:0px;--dy:0px;--rest-dx:0px;position:absolute;top:50%;left:68px;z-index:7;display:flex;align-items:center;transform:translateY(-50%);pointer-events:none}
+.checkout-flavor-picker .flavor-picker-bar{pointer-events:auto}
 .checkout-flavor-picker .flavor-picker-bar{background:rgba(17,39,70,.72)}
 .checkout-summary{flex-shrink:0;padding-top:20px;border-top:1px solid rgba(255,255,255,.12)}
 .summary-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px}
-.summary-row span{color:#aeb8c7;font-size:15px}
-.summary-row strong{max-width:62%;font-size:27px;line-height:1.05;letter-spacing:-.035em;text-align:right}
+.summary-row>span{color:#fff;font-size:16px;font-weight:800}
+.summary-row strong{max-width:62%;color:#fff;font-size:34px;font-weight:900;line-height:1;letter-spacing:-.045em;text-align:right}
 .checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#fceb2e;color:#0b203e;font-family:inherit;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px}
 .checkout-button i{font-size:15px;line-height:0;display:inline-flex}
 @media (min-width:520px){.offer-app{--catalog-preview:calc(20dvh - 6px);height:calc(100dvh - 32px);margin:16px auto;border-radius:34px;box-shadow:0 28px 70px rgba(4,17,38,.24)}.offer-hero,.catalog-screen,.checkout-screen{height:calc(100dvh - 32px)}.offer-products{height:170px}}
-@media (max-height:680px){.offer-copy{top:50px}.offer-copy h1{font-size:36px}.offer-copy p{margin-top:7px}.offer-products{height:160px}.selector-stage{padding-top:6px}.catalog-topbar{height:42px}.flavor-icons-preview{top:46px}.flavor-icon-preview{width:47px;height:42px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.checkout-head{margin-bottom:12px}.checkout-list{gap:12px}.checkout-add-zone{padding:6px 0}.checkout-add-button{width:46px;height:46px}.checkout-summary{padding-top:12px}.summary-row{margin-bottom:12px}.checkout-button{min-height:52px}}
+@media (max-height:680px){.offer-copy{top:50px}.offer-copy h1{font-size:36px}.offer-copy p{margin-top:7px}.offer-products{height:160px}.selector-stage{padding-top:6px}.catalog-topbar{height:42px}.flavor-icons-preview{top:46px}.flavor-icon-preview{width:47px;height:42px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.checkout-head{margin-bottom:12px}.checkout-list{gap:12px}.checkout-add-zone{min-height:56px;padding-left:10px}.checkout-add-button{width:46px;height:46px}.checkout-flavor-picker{left:62px}.checkout-summary{padding-top:12px}.summary-row{margin-bottom:12px}.checkout-button{min-height:52px}}
 @media (prefers-reduced-motion:reduce){.shop-flow{scroll-behavior:auto}.catalog-screen,.flavor-grid,.detail-carousel-track{transition:none}.catalog-scroll-cue span,.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap,.dock-thumb-button.free,.dock-free-badge.visible,.flavor-picker-bar,.flavor-picker-head,.flavor-picker-item{animation:none}.flavor-card,.flavor-open,.dock-thumb-button,.checkout-thumb-button,.checkout-add-button{transition:none}}
 
 </style>
@@ -319,23 +319,23 @@ button,input,select,textarea{font-family:var(--font-dot)}
                   <button onClick="{{ item.onRemove }}" class="remove-item" aria-label="Remover {{ item.name }}">×</button>
                 </div>
               </sc-for>
-            </div>
-            <div class="checkout-add-zone">
-              <sc-if value="{{ checkoutPickerOpen }}" hint-placeholder-val="{{ false }}">
-                <div id="checkout-flavor-picker" class="checkout-flavor-picker">
-                  <div class="flavor-picker-head">Escolha mais um sabor</div>
-                  <div class="flavor-picker-bar">
-                    <sc-for list="{{ checkoutPickerFlavors }}" as="cpf" hint-placeholder-count="4">
-                      <button onClick="{{ cpf.onPick }}" class="flavor-picker-item" aria-label="Adicionar {{ cpf.name }}">
-                        <img src="{{ cpf.icon }}" alt="">
-                      </button>
-                    </sc-for>
+              <div class="checkout-add-zone">
+                <sc-if value="{{ checkoutPickerOpen }}" hint-placeholder-val="{{ false }}">
+                  <div id="checkout-flavor-picker" class="checkout-flavor-picker">
+                    <div class="flavor-picker-bar">
+                      <sc-for list="{{ checkoutPickerFlavors }}" as="cpf" hint-placeholder-count="4">
+                        <button onClick="{{ cpf.onPick }}" class="flavor-picker-item" aria-label="Adicionar {{ cpf.name }}">
+                          <img src="{{ cpf.icon }}" alt="">
+                        </button>
+                      </sc-for>
+                    </div>
                   </div>
-                </div>
-              </sc-if>
-              <button onClick="{{ toggleCheckoutPicker }}" class="{{ checkoutAddClass }}" aria-label="Adicionar outro produto" aria-expanded="{{ checkoutPickerExpanded }}" aria-controls="checkout-flavor-picker">
-                <span class="dock-plus">+</span>
-              </button>
+                </sc-if>
+                <button onClick="{{ toggleCheckoutPicker }}" class="{{ checkoutAddClass }}" aria-label="Adicionar outro produto" aria-expanded="{{ checkoutPickerExpanded }}" aria-controls="checkout-flavor-picker">
+                  <span class="dock-plus">+</span>
+                  <span class="checkout-add-label" aria-hidden="true">{{ checkoutAddLabel }}</span>
+                </button>
+              </div>
             </div>
             <div class="checkout-summary">
               <div class="summary-row"><span>Oferta aplicada</span><strong>{{ checkoutTotalText }}</strong></div>
@@ -446,23 +446,23 @@ const INFO_CANS = Array.from({ length: 25 }, (_, index) => ({
   index,
   img: './assets/info-can-frutas-vermelhas.png',
 }));
-const CHECKOUT_TOTALS_CENTS = {
-  2: 16249,
-  3: 29990,
-  4: 37491,
-  5: 49988,
-  6: 62485,
+const REGULAR_PRODUCT_CENTS = 16249;
+const CHECKOUT_PAID_TOTALS_CENTS = {
+  1: 16249,
+  2: 29998,
+  3: 37491,
+  4: 49998,
 };
-const EXTRA_PRODUCT_CENTS = 12497;
+const ADDITIONAL_PAID_PRODUCT_CENTS = 12507;
 const formatBRL = (cents) => new Intl.NumberFormat('pt-BR', {
   style: 'currency',
   currency: 'BRL',
 }).format(cents / 100);
 const checkoutTotalCents = (count) => {
   if (count <= 0) return 0;
-  if (count === 1) return 16249;
-  if (count <= 6) return CHECKOUT_TOTALS_CENTS[count];
-  return CHECKOUT_TOTALS_CENTS[6] + (count - 6) * EXTRA_PRODUCT_CENTS;
+  const paidCount = Math.max(count - 1, 1);
+  if (paidCount <= 4) return CHECKOUT_PAID_TOTALS_CENTS[paidCount];
+  return CHECKOUT_PAID_TOTALS_CENTS[4] + (paidCount - 4) * ADDITIONAL_PAID_PRODUCT_CENTS;
 };
 
 class Component extends DCLogic {
@@ -1104,19 +1104,29 @@ class Component extends DCLogic {
       };
     });
 
-    const checkoutItems = selectedFlavors.map((name, index) => {
+    const checkoutOrder = selectedFlavors.map((name, sourceIndex) => ({ name, sourceIndex }));
+    if (checkoutOrder.length >= 2) checkoutOrder.unshift(checkoutOrder.splice(1, 1)[0]);
+    const paidCount = Math.max(selectedCount - 1, 1);
+    const paidTotalCents = checkoutTotalCents(selectedCount);
+    const basePaidPriceCents = Math.floor(paidTotalCents / paidCount);
+    const remainderCents = paidTotalCents % paidCount;
+    let paidPosition = 0;
+
+    const checkoutItems = checkoutOrder.map(({ name, sourceIndex }) => {
       const flavor = FLAVORS.find(f => f.name === name);
-      const isFree = index === 1;
+      const isFree = sourceIndex === 1;
+      const itemPriceCents = isFree ? 0 : basePaidPriceCents + (paidPosition++ < remainderCents ? 1 : 0);
+      const isDiscounted = itemPriceCents < REGULAR_PRODUCT_CENTS;
       return {
         name,
         img: flavor.img,
-        showPrice: index < 2,
+        showPrice: true,
         thumbClass: `checkout-thumb ${flavor.color}`,
         priceClass: `checkout-item-price${isFree ? ' free' : ''}`,
-        oldPriceClass: isFree ? '' : 'hidden',
-        priceText: isFree ? 'GRÁTIS' : 'R$ 162,49',
-        onOpen: (event) => this.openCartFlavor(name, event, index),
-        onRemove: () => this.removeItem(index),
+        oldPriceClass: isDiscounted ? '' : 'hidden',
+        priceText: isFree ? 'GRÁTIS' : formatBRL(itemPriceCents),
+        onOpen: (event) => this.openCartFlavor(name, event, sourceIndex),
+        onRemove: () => this.removeItem(sourceIndex),
       };
     });
 
@@ -1159,6 +1169,7 @@ class Component extends DCLogic {
       checkoutPickerOpen: checkoutPickerOpen && selectedCount >= 2,
       checkoutPickerExpanded: checkoutPickerOpen && selectedCount >= 2 ? 'true' : 'false',
       checkoutAddClass: `checkout-add-button${checkoutPickerOpen && selectedCount >= 2 ? ' open' : ''}`,
+      checkoutAddLabel: selectedCount <= 2 ? 'QUER ADICIONAR MAIS SABORES?' : 'MAIS SABORES',
       checkoutPickerFlavors: FLAVORS.map(f => ({ name: f.name, icon: f.icon, onPick: () => this.pickFromCheckoutPicker(f.name) })),
       checkoutTotalText: formatBRL(checkoutTotalCents(selectedCount)),
       flavorList,
