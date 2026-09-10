@@ -4,6 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<style id="perf-tweaks">
+/* Blur mais leve: saturate() forca um passe extra a cada composicao. */
+.flavor-picker-head,.flavor-picker-bar{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+/* drop-shadow() em PNGs grandes repinta o bitmap inteiro a cada frame. */
+.flavor-photo img,.detail-product-photo{filter:none}
+/* Mantem camadas de GPU so onde ha animacao real. */
+.flavor-flight,.detail-morph,.detail-morph img{will-change:auto}
+/* Permite pular secoes fora da tela durante a rolagem. */
+.catalog-screen,.offer-hero{contain:layout paint}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
 </head>
 <body>
 <x-dc>
@@ -217,7 +230,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
       <section class="offer-hero" aria-labelledby="offer-title">
         <h1 id="offer-title" class="visually-hidden">Pague 1, leve 2</h1>
         <div class="offer-banner-wrap">
-          <img src="./assets/banner-pague1-leve2-mobile.png" alt="Oferta limitada: pague 1, leve 2. Escolha dois sabores DOT e leve o segundo pouch grátis." class="offer-banner">
+          <img decoding="async" src="./assets/banner-pague1-leve2-mobile.png" alt="Oferta limitada: pague 1, leve 2. Escolha dois sabores DOT e leve o segundo pouch grátis." class="offer-banner">
           <button onClick="{{ expandCatalog }}" class="offer-banner-cta" aria-label="Quero aproveitar a oferta"></button>
         </div>
       </section>
@@ -232,10 +245,10 @@ button,input,select,textarea{font-family:var(--font-dot)}
             <span></span>
           </div>
           <div class="flavor-icons-preview" aria-hidden="true">
-            <img class="flavor-icon-preview" src="./assets/flavor-preview-menta.png" alt="">
-            <img class="flavor-icon-preview" src="./assets/flavor-preview-frutas-vermelhas.png" alt="">
-            <img class="flavor-icon-preview" src="./assets/flavor-preview-melancia.png" alt="">
-            <img class="flavor-icon-preview" src="./assets/flavor-preview-citrus.png" alt="">
+            <img decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-menta.png" alt="">
+            <img decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-frutas-vermelhas.png" alt="">
+            <img decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-melancia.png" alt="">
+            <img decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-citrus.png" alt="">
           </div>
           <button onClick="{{ expandCatalog }}" class="catalog-scroll-cue" aria-label="Descer para escolher os pouches">
             <span aria-hidden="true"></span>
@@ -244,7 +257,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
             <sc-for list="{{ flavorList }}" as="fl" hint-placeholder-count="4">
               <div class="{{ fl.cardClass }}">
                 <div onClick="{{ fl.onOpen }}" class="flavor-open">
-                  <div class="{{ fl.photoClass }}"><img src="{{ fl.img }}" alt="{{ fl.name }}"></div>
+                  <div class="{{ fl.photoClass }}"><img decoding="async" src="{{ fl.img }}" alt="{{ fl.name }}"></div>
                   <span class="flavor-name">{{ fl.name }}</span>
                 </div>
               </div>
@@ -256,7 +269,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
               <div class="flavor-picker-bar">
                 <sc-for list="{{ pickerFlavors }}" as="pf" hint-placeholder-count="4">
                   <button onClick="{{ pf.onPick }}" class="flavor-picker-item" aria-label="{{ pf.name }}">
-                    <img src="{{ pf.icon }}" alt="">
+                    <img decoding="async" src="{{ pf.icon }}" alt="">
                   </button>
                 </sc-for>
               </div>
@@ -267,7 +280,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
             <div class="dock-thumbs">
               <sc-for list="{{ cartItems }}" as="item" hint-placeholder-count="2">
                 <button onClick="{{ item.onOpen }}" class="{{ item.buttonClass }}" aria-label="Editar {{ item.name }}">
-                  <img class="{{ item.thumbClass }}" src="{{ item.img }}" alt="">
+                  <img decoding="async" class="{{ item.thumbClass }}" src="{{ item.img }}" alt="">
                   <span class="{{ item.freeBadgeClass }}">GRÁTIS</span>
                 </button>
               </sc-for>
@@ -290,7 +303,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
               <sc-for list="{{ checkoutItems }}" as="item" hint-placeholder-count="2">
                 <div class="checkout-item">
                   <button onClick="{{ item.onOpen }}" class="checkout-thumb-button" aria-label="Ver detalhes de {{ item.name }}">
-                    <img class="{{ item.thumbClass }}" src="{{ item.img }}" alt="">
+                    <img decoding="async" class="{{ item.thumbClass }}" src="{{ item.img }}" alt="">
                   </button>
                   <span>
                     <small>1 × sabor</small>
@@ -311,7 +324,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
                     <div class="flavor-picker-bar">
                       <sc-for list="{{ checkoutPickerFlavors }}" as="cpf" hint-placeholder-count="4">
                         <button onClick="{{ cpf.onPick }}" class="flavor-picker-item" aria-label="Adicionar {{ cpf.name }}">
-                          <img src="{{ cpf.icon }}" alt="">
+                          <img decoding="async" src="{{ cpf.icon }}" alt="">
                         </button>
                       </sc-for>
                     </div>
@@ -340,15 +353,15 @@ button,input,select,textarea{font-family:var(--font-dot)}
             </div>
             <div class="{{ detailPhotoClass }}">
               <div onScroll="{{ detailCarouselScroll }}" class="{{ detailCarouselTrackClass }}">
-                <div class="detail-slide"><img class="detail-product-photo" src="{{ detailImg }}" alt="{{ detailName }}"></div>
+                <div class="detail-slide"><img decoding="async" class="detail-product-photo" src="{{ detailImg }}" alt="{{ detailName }}"></div>
                 <sc-if value="{{ hasInfoCarousel }}" hint-placeholder-val="{{ true }}">
                   <div class="{{ detailInfoSlideClass }}">
                     <div class="info-equation" aria-label="Um pouch equivale a 25 latas de energético">
-                      <img class="info-pouch" src="{{ detailImg }}" alt="">
+                      <img decoding="async" class="info-pouch" src="{{ detailImg }}" alt="">
                       <span class="info-equals">=</span>
                       <div class="info-can-grid" aria-hidden="true">
                         <sc-for list="{{ infoCans }}" as="can" hint-placeholder-count="25">
-                          <img class="info-can" src="{{ can.img }}" alt="">
+                          <img decoding="async" class="info-can" src="{{ can.img }}" alt="">
                         </sc-for>
                       </div>
                     </div>
@@ -392,7 +405,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
 
   <!-- Lightbox -->
   <div id="img-lightbox" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(4,20,47,.88);align-items:center;justify-content:center;padding:24px;cursor:zoom-out">
-    <img id="img-lightbox-img" src="" alt="" style="max-width:100%;max-height:88vh;border-radius:14px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)">
+    <img decoding="async" id="img-lightbox-img" src="" alt="" style="max-width:100%;max-height:88vh;border-radius:14px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)">
   </div>
 </div>
 
