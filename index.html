@@ -15,26 +15,17 @@
 :root{--font-dot:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif}
 body{margin:0;overflow:hidden;background:#e8e7e2;font-family:var(--font-dot);overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 button,input,select,textarea{font-family:var(--font-dot)}
+.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 
 /* One continuous mobile story: 80% campaign, 20% of the real selector. */
 .offer-app{--catalog-preview:20dvh;position:relative;width:100%;max-width:480px;height:100dvh;margin:0 auto;overflow:hidden;background:#07172e}
 .shop-flow{height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-behavior:smooth;overscroll-behavior-y:contain;touch-action:pan-y;background:#e8e7e2;-webkit-overflow-scrolling:touch}
 .shop-flow::-webkit-scrollbar{display:none}
-.offer-hero{position:relative;z-index:1;width:100%;height:100dvh;margin:0;flex-shrink:0;overflow:hidden;touch-action:pan-y;background:#06194d url('./assets/textura-navy.png') center/cover;scroll-snap-align:start;scroll-snap-stop:always;isolation:isolate}
-.offer-hero::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 28%,rgba(30,82,183,.38),transparent 48%),linear-gradient(180deg,rgba(1,15,55,.08),rgba(2,13,37,.5))}
-.offer-logo-crop{position:absolute;top:12px;left:50%;width:94px;height:42px;overflow:hidden;transform:translateX(-50%);pointer-events:none}
-.offer-logo-crop img{position:absolute;top:-26px;left:2px;width:90px;height:90px;object-fit:contain}
-.offer-copy{position:absolute;top:60px;right:22px;left:22px;z-index:3;text-align:center;color:#fffdf0}
-.offer-kicker{display:inline-flex;min-height:22px;padding:0 10px;border:1px solid rgba(255,255,255,.34);border-radius:99px;align-items:center;color:#fff200;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-.offer-copy h1{margin:10px 0 0;font-size:clamp(39px,11vw,51px);font-weight:800;line-height:.88;letter-spacing:-.065em;text-transform:uppercase}
-.offer-copy h1 span{display:block;color:#fff200}
-.offer-copy p{max-width:310px;margin:12px auto 0;color:rgba(255,255,255,.86);font-size:12px;font-weight:600;line-height:1.35}
-.offer-products{position:absolute;right:0;bottom:calc(var(--catalog-preview) + 8px);left:0;height:clamp(180px,23dvh,205px);z-index:2;pointer-events:none}
-.offer-product{position:absolute;bottom:0;width:33%;height:100%;object-fit:contain;filter:drop-shadow(0 15px 18px rgba(0,0,0,.36))}
-.offer-product:nth-child(1){left:3%;transform:rotate(-8deg)}
-.offer-product:nth-child(2){left:23%;transform:rotate(-3deg)}
-.offer-product:nth-child(3){right:23%;transform:rotate(3deg)}
-.offer-product:nth-child(4){right:3%;transform:rotate(8deg)}
+.offer-hero{position:relative;z-index:1;width:100%;height:min(100dvh,calc(128.115vw + var(--catalog-preview)));margin:0;flex-shrink:0;overflow:hidden;touch-action:pan-y;background:#f8fbfc;scroll-snap-align:start;scroll-snap-stop:always;isolation:isolate}
+.offer-banner-wrap{position:absolute;inset:0 0 var(--catalog-preview);overflow:hidden;background:#f8fbfc}
+.offer-banner{display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
+.offer-banner-cta{position:absolute;top:34%;left:17.5%;z-index:2;width:65%;height:9%;padding:0;border:0;border-radius:999px;background:transparent;cursor:pointer}
+.offer-banner-cta:focus-visible{outline:3px solid #fceb2e;outline-offset:4px}
 
 /* Full-screen shop: ivory catalog, navy checkout, yellow interaction. */
 .catalog-screen{--catalog-progress:0;position:relative;z-index:2;height:100dvh;min-height:560px;margin-top:calc(0px - var(--catalog-preview));overflow:hidden;border-radius:34px 34px 0 0;scroll-snap-align:start;scroll-snap-stop:always;background:#fefbe6;box-shadow:0 -14px 34px rgba(4,17,38,.2);transition:border-radius .18s ease,box-shadow .18s ease}
@@ -211,8 +202,8 @@ button,input,select,textarea{font-family:var(--font-dot)}
 .summary-row strong{max-width:62%;color:#fff;font-size:34px;font-weight:900;line-height:1;letter-spacing:-.045em;text-align:right}
 .checkout-button{width:100%;min-height:58px;border:0;border-radius:18px;background:#fceb2e;color:#0b203e;font-family:inherit;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px}
 .checkout-button i{font-size:15px;line-height:0;display:inline-flex}
-@media (min-width:520px){.offer-app{--catalog-preview:calc(20dvh - 6px);height:calc(100dvh - 32px);margin:16px auto;border-radius:34px;box-shadow:0 28px 70px rgba(4,17,38,.24)}.offer-hero,.catalog-screen,.checkout-screen{height:calc(100dvh - 32px)}.offer-products{height:170px}}
-@media (max-height:680px){.offer-copy{top:50px}.offer-copy h1{font-size:36px}.offer-copy p{margin-top:7px}.offer-products{height:160px}.selector-stage{padding-top:6px}.catalog-topbar{height:42px}.flavor-icons-preview{top:46px}.flavor-icon-preview{width:47px;height:42px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.checkout-head{margin-bottom:12px}.checkout-list{gap:12px}.checkout-add-zone{min-height:56px;padding-left:10px}.checkout-add-button{width:46px;height:46px}.checkout-flavor-picker{left:62px}.checkout-summary{padding-top:12px}.summary-row{margin-bottom:12px}.checkout-button{min-height:52px}}
+@media (min-width:520px){.offer-app{--catalog-preview:calc(20dvh - 6px);height:calc(100dvh - 32px);margin:16px auto;border-radius:34px;box-shadow:0 28px 70px rgba(4,17,38,.24)}.offer-hero{height:min(calc(100dvh - 32px),calc(615px + var(--catalog-preview)))}.catalog-screen,.checkout-screen{height:calc(100dvh - 32px)}}
+@media (max-height:680px){.selector-stage{padding-top:6px}.catalog-topbar{height:42px}.flavor-icons-preview{top:46px}.flavor-icon-preview{width:47px;height:42px}.flavor-grid{padding-bottom:98px}.combo-dock{height:83px}.detail-info{padding-top:16px}.checkout-head{margin-bottom:12px}.checkout-list{gap:12px}.checkout-add-zone{min-height:56px;padding-left:10px}.checkout-add-button{width:46px;height:46px}.checkout-flavor-picker{left:62px}.checkout-summary{padding-top:12px}.summary-row{margin-bottom:12px}.checkout-button{min-height:52px}}
 @media (prefers-reduced-motion:reduce){.shop-flow{scroll-behavior:auto}.catalog-screen,.flavor-grid,.detail-carousel-track{transition:none}.catalog-scroll-cue span,.detail-screen,.detail-topbar,.detail-info,.detail-action-wrap,.dock-thumb-button.free,.dock-free-badge.visible,.flavor-picker-bar,.flavor-picker-head,.flavor-picker-item{animation:none}.flavor-card,.flavor-open,.dock-thumb-button,.checkout-thumb-button,.checkout-add-button{transition:none}}
 
 </style>
@@ -222,17 +213,10 @@ button,input,select,textarea{font-family:var(--font-dot)}
   <div onScroll="{{ handleFlowScroll }}" onTouchStart="{{ handleCarouselTouchStart }}" onTouchEnd="{{ handleCarouselTouchEnd }}" onTouchCancel="{{ handleCarouselTouchCancel }}" class="shop-flow">
     <sc-if value="{{ showHero }}" hint-placeholder-val="{{ true }}">
       <section class="offer-hero" aria-labelledby="offer-title">
-        <div class="offer-logo-crop"><img src="./assets/dot-logo.png" alt="DOT"></div>
-        <div class="offer-copy">
-          <span class="offer-kicker">OFERTA 2 POR 1</span>
-          <h1 id="offer-title">LEVE 2.<span>PAGUE 1.</span></h1>
-          <p>Escolha dois sabores e o segundo produto DOT é grátis.</p>
-        </div>
-        <div class="offer-products" aria-hidden="true">
-          <img src="./assets/pouch-menta-25.png" alt="" class="offer-product">
-          <img src="./assets/pouch-frutas-vermelhas-25.png" alt="" class="offer-product">
-          <img src="./assets/pouch-melancia-limao-25-cropped.png" alt="" class="offer-product">
-          <img src="./assets/pouch-citrus-25.png" alt="" class="offer-product">
+        <h1 id="offer-title" class="visually-hidden">Pague 1, leve 2</h1>
+        <div class="offer-banner-wrap">
+          <img src="./assets/banner-pague1-leve2-mobile.png" alt="Oferta limitada: pague 1, leve 2. Escolha dois sabores DOT e leve o segundo pouch grátis." class="offer-banner">
+          <button onClick="{{ expandCatalog }}" class="offer-banner-cta" aria-label="Quero aproveitar a oferta"></button>
         </div>
       </section>
     </sc-if>
