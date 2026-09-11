@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script src="./support.js" defer></script>
 <style id="perf-tweaks">
 /* Blur mais leve: saturate() forca um passe extra a cada composicao. */
 .flavor-picker-head,.flavor-picker-bar{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
@@ -23,7 +23,6 @@
 <helmet data-dc-atomics>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link href="https://cdn-uicons.flaticon.com/4.0.0/uicons-solid-straight/css/uicons-solid-straight.css" rel="stylesheet">
 <style>
 :root{--font-dot:'Space Grotesk',ui-rounded,'Avenir Next',sans-serif}
 body{margin:0;overflow:hidden;background:#e8e7e2;font-family:var(--font-dot);overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
@@ -230,7 +229,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
       <section class="offer-hero" aria-labelledby="offer-title">
         <h1 id="offer-title" class="visually-hidden">Pague 1, leve 2</h1>
         <div class="offer-banner-wrap">
-          <img decoding="async" src="./assets/banner-pague1-leve2-mobile.png" alt="Oferta limitada: pague 1, leve 2. Escolha dois sabores DOT e leve o segundo pouch grátis." class="offer-banner">
+          <img fetchpriority="high" loading="eager" decoding="async" src="./assets/banner-pague1-leve2-mobile.png" alt="Oferta limitada: pague 1, leve 2. Escolha dois sabores DOT e leve o segundo pouch grátis." class="offer-banner">
           <button onClick="{{ expandCatalog }}" class="offer-banner-cta" aria-label="Quero aproveitar a oferta"></button>
         </div>
       </section>
@@ -245,10 +244,10 @@ button,input,select,textarea{font-family:var(--font-dot)}
             <span></span>
           </div>
           <div class="flavor-icons-preview" aria-hidden="true">
-            <img decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-menta.png" alt="">
-            <img decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-frutas-vermelhas.png" alt="">
-            <img decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-melancia.png" alt="">
-            <img decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-citrus.png" alt="">
+            <img loading="lazy" decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-menta-mobile.png" alt="">
+            <img loading="lazy" decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-frutas-vermelhas-mobile.png" alt="">
+            <img loading="lazy" decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-melancia-mobile.png" alt="">
+            <img loading="lazy" decoding="async" class="flavor-icon-preview" src="./assets/flavor-preview-citrus-mobile.png" alt="">
           </div>
           <button onClick="{{ expandCatalog }}" class="catalog-scroll-cue" aria-label="Descer para escolher os pouches">
             <span aria-hidden="true"></span>
@@ -338,7 +337,7 @@ button,input,select,textarea{font-family:var(--font-dot)}
             </div>
             <div class="checkout-summary">
               <div class="summary-row"><span>Oferta aplicada</span><strong>{{ checkoutTotalText }}</strong></div>
-              <button onClick="{{ finalizarCompra }}" class="checkout-button">FINALIZAR COMPRA <i class="fi fi-ss-angle-double-right" aria-hidden="true"></i></button>
+              <button onClick="{{ finalizarCompra }}" class="checkout-button">FINALIZAR COMPRA <span aria-hidden="true">»</span></button>
             </div>
       </section>
     </sc-if>
